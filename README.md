@@ -5,7 +5,7 @@
 - the username and passwords of at least 5 of the test users
 
 # Group 7 
-- Sai Sandeep Vemula (ID)
+- Sai Sandeep Vemula (220224206)
 - Ilenia Maietta (220322742)
 - Amy Anigboro (ID)
 - Mariam (ID)
