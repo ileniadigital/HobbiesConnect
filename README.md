@@ -1,3 +1,23 @@
+# TO-ADD on ReadMe
+- List of group members with a short description (one sentence) of what each member was assigned to do, and what they actually did in terms of contributing to the final deliverable (we can use tasks assignment in github)
+- the URL of your deployed application
+- the username and password for the admin user
+- the username and passwords of at least 5 of the test users
+
+# Group 7 
+- Sai Sandeep Vemula (ID)
+- Ilenia Maietta (220322742)
+- Amy Anigboro (ID)
+- Mariam (ID)
+
+# URL of Deployed Application
+
+# Admin User Log In Details
+- Username: admin
+- Password: admin
+
+# Login details for Test Users
+
 # Template for ECS639U Group Coursework
 
 This template should be used as the starting point for your group coursework in the module ECS639U Web Programming (at Queen Mary University of London). Use Git (github.qmul.ac.uk) to collaborate on the coursework with your group members. Module leader: Paulo Oliva <[p.oliva@qmul.ac.uk](mailto:p.oliva@qmul.ac.uk)>
