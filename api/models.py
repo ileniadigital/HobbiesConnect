@@ -75,8 +75,8 @@ class Friendship(models.Model):
     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend')
     status = models.CharField(
         max_length=50,
-        choices=UserHobby.FriendshipStatus.choices,
-        default=UserHobby.FriendshipStatus.PENDING
+        choices=FriendshipStatus.choices,
+        default=FriendshipStatus.PENDING
     )
     accepted= models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
