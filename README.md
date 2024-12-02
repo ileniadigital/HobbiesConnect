@@ -7,7 +7,7 @@
 # Group 7 
 - Sai Sandeep Vemula (220224206)
 - Ilenia Maietta (220322742)
-- Amy Anigboro (ID)
+- Amy Anigboro (220476137)
 - Mariam (2103028471)
 
 # URL of Deployed Application

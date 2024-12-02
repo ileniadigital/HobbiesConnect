@@ -39,3 +39,48 @@ class User(AbstractUser):
     #hi
 
 
+class Hobbies(models.Model):
+    '''
+    Hobbies model to store hobbies
+    '''
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=150)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+    
+
+class UserHobby(models.Model):
+    '''
+    UserHobby model to store hobbies of users
+    '''
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    hobby = models.ForeignKey(Hobbies, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.hobby
+
+
+class FriendshipStatus(models.TextChoices):
+    PENDING = 'PENDING', 'Pending'
+    ACCEPTED = 'ACCEPTED', 'Accepted'
+    REJECTED = 'REJECTED', 'Rejected'
+
+
+class Friendship(models.Model):
+    '''
+    Friendship model to store friends and friends requests
+    '''
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend')
+    status = models.CharField(
+        max_length=50,
+        choices=UserHobby.FriendshipStatus.choices,
+        default=UserHobby.FriendshipStatus.PENDING
+    )
+    accepted= models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.friend
