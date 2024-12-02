@@ -61,22 +61,21 @@ class UserHobby(models.Model):
         return self.hobby
 
 
-class FriendshipStatus(models.TextChoices):
-    PENDING = 'PENDING', 'Pending'
-    ACCEPTED = 'ACCEPTED', 'Accepted'
-    REJECTED = 'REJECTED', 'Rejected'
-
-
 class Friendship(models.Model):
     '''
     Friendship model to store friends and friends requests
     '''
+    class FriendshipStatus(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        ACCEPTED = 'ACCEPTED', 'Accepted'
+        REJECTED = 'REJECTED', 'Rejected'
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend')
     status = models.CharField(
         max_length=50,
-        choices=UserHobby.FriendshipStatus.choices,
-        default=UserHobby.FriendshipStatus.PENDING
+        choices=FriendshipStatus.choices,
+        default=FriendshipStatus.PENDING
     )
     accepted= models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
