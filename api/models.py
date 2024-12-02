@@ -65,6 +65,7 @@ class Friendship(models.Model):
     '''
     Friendship model to store friends and friends requests
     '''
+
     class FriendshipStatus(models.TextChoices):
         PENDING = 'PENDING', 'Pending'
         ACCEPTED = 'ACCEPTED', 'Accepted'
