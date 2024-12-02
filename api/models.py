@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from collections import Counter
 # Create your models here.
 
 
@@ -23,20 +23,33 @@ class User(AbstractUser):
     
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='custom_user_set',  # Avoid reverse accessor clashes
+        related_name='custom_user_set', 
         blank=True,
         help_text='The groups this user belongs to.',
     )
+    #no specific permisions
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='custom_user_permissions_set',  # Avoid reverse accessor clashes
+        related_name='custom_user_permissions_set',
         blank=True,
         help_text='Specific permissions for this user.',
     )
 
-    USERNAME_FIELD = 'email' #username is emai
+    USERNAME_FIELD = 'email' #username is emai;
     REQUIRED_FIELDS = ['first_name', 'last_name']
-    #hi
+    @staticmethod
+    def count_common_hobbies(user1, user2):
+        """
+        Static method to count common hobbies between two users.
+        """
+        # Get hobbies for both users
+        user1_hobbies = set(UserHobby.objects.filter(user=user1).values_list('hobby', flat=True))
+        user2_hobbies = set(UserHobby.objects.filter(user=user2).values_list('hobby', flat=True))
+
+        # Find common hobbies
+        common_hobbies = user1_hobbies.intersection(user2_hobbies)
+        return len(common_hobbies)
+    
 
 
 class Hobbies(models.Model):
