@@ -3,10 +3,8 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import count_common_hobbies
-from .forms import UserForm, UserAuthenticationForm
-
 from .models import User
+from .forms import UserForm, UserAuthenticationForm
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -28,7 +26,7 @@ def signup(request):
             # Save the new user
             user = form.save()
             login(request, user)  # Log the user in immediately after registration
-            return redirect('home')  # Redirect to a home page or another page
+            return redirect('main_spa')  # Redirect to a home page or another page
     else:
         form = UserForm()
     
@@ -39,7 +37,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')  # Redirect to a home page or another page
+            return redirect('main_spa')  # Redirect to a home page or another page
     else:
         form = UserAuthenticationForm()
     
@@ -48,3 +46,13 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login') 
+
+def test_max_heap_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'User not authenticated'}, status=401)
+
+    user = request.user
+    max_heap = build_max_heap(user)
+    sorted_heap = [(-count, other_user.email) for count, other_user in max_heap]
+
+    return JsonResponse({'max_heap': sorted_heap})
