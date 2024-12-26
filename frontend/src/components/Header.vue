@@ -13,11 +13,11 @@
             </li>
             <!-- Find friends link -->
             <li class="nav-item">
-                <router-link class="nav-link" to="/">Find Friends</router-link>
+                <router-link class="nav-link" to="/other">Find Friends</router-link>
             </li>
             <!-- Friends Request -->
             <li class="nav-item">
-                <router-link class="nav-link" to="/">Friend Requests</router-link>
+                <router-link class="nav-link" to="/other">Friend Requests</router-link>
             </li>
         </ul>
         <button class="btn" @click="logout">Logout</button>

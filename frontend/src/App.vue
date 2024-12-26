@@ -15,8 +15,8 @@
             >
                 Profile
             </router-link>
-        </div>
-        <RouterView class="flex-shrink-0" /> -->
+        </div> -->
+        <RouterView class="flex-shrink-0" />
     </main>
 </template>
 
