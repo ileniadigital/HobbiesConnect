@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render
-from models import PageView, User, Hobbies, UserHobby, Friendship
+from .models import PageView, User, Hobbies, UserHobby, Friendship
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})

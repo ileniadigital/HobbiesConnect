@@ -1,19 +1,25 @@
 <template>
-  <div class="h1">
-    {{ title }}
+  <div>
+    <div class="h1">
+      {{ title }}
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-    import { defineComponent } from "vue";
+  import { defineComponent } from "vue";
+  import Header from "@/components/Header.vue";
 
-    export default defineComponent({
-        data() {
-            return {
-                title: "Main Page",
-            }
-        }
-    })
+  export default defineComponent({
+      components: {
+          Header
+      },
+      data() {
+          return {
+              title: "Main Page",
+          }
+      }
+  })
 </script>
 
 <style scoped>
