@@ -34,7 +34,7 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.',
     )
 
-    USERNAME_FIELD = 'email' #username is emai
+    USERNAME_FIELD = 'email' #username is email
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
 
