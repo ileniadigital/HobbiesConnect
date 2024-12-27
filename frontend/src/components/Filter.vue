@@ -30,6 +30,7 @@ export default defineComponent({
             }
             console.log('Age from:', this.ageFrom);
             console.log('Age to:', this.ageTo);
+            this.$emit('filter-age', this.ageFrom, this.ageTo);
         }
     }
 })

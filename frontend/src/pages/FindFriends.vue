@@ -3,10 +3,10 @@
         Hi, {{ name }}
     </div>
     <!-- Add a filter -->
-    <Filter />
+    <Filter @filter-age="filterFriendsByAge" />
     <!-- Friends List -->
-    <div class="friend-card" v-for="friend in friends" :key="friend.name">
-        <Friend :name="friend.name" :hobbies="friend.hobbies" />
+    <div class="friend-card" v-for="friend in filteredFriends" :key="friend.name">
+        <Friend :name="friend.name" :hobbies="friend.hobbies" :age="friend.age" />
     </div>
 </template>
 
@@ -27,8 +27,24 @@ export default defineComponent({
                 { name: "Alice", age: 25, hobbies: ["reading", "hiking"] },
                 { name: "Bob", age: 30, hobbies: ["swimming", "biking"] },
                 { name: "Charlie", age: 35, hobbies: ["cooking", "painting"] },
-            ]
+            ],
+            ageFrom: 0,
+            ageTo: Infinity,
         };
+    },
+    computed: {
+        filteredFriends() {
+            if (this.ageFrom === null || this.ageTo === null) {
+                return this.friends;
+            }
+            return this.friends.filter(friend => friend.age >= this.ageFrom && friend.age <= this.ageTo);
+        }
+    },
+    methods: {
+        filterFriendsByAge(ageFrom: number, ageTo: number) {
+            this.ageFrom = ageFrom;
+            this.ageTo = ageTo;
+        }
     }
 })
 </script>
