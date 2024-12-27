@@ -79,3 +79,52 @@ def user_hobby_delete(request: HttpRequest) -> JsonResponse:
 def user_hobby_put(request: HttpRequest) -> JsonResponse:
     user= request.POST.get('user_id')
     hobby= request.POST.get('hobby_id')
+def get_hobby(request: HttpRequest) -> JsonResponse:
+    '''
+    Get hobby
+    '''
+    hobbies = Hobbies.objects.all()
+    data = []
+    data.append({
+        'id': hobby.id,
+        'name': hobby.name,
+        'description': hobby.description
+    })
+    return JsonResponse(data, safe=False)
+
+def add_hobby(request: HttpRequest) -> JsonResponse:
+    '''
+    Add hobby
+    '''
+    data = json.loads(request.body)
+    hobby = Hobbies.objects.create(
+        name=data['name'],
+        description=data['description']
+    )
+    return JsonResponse({
+        'id': hobby.id,
+        'name': hobby.name,
+        'description': hobby.description
+    })
+
+def update_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
+    '''
+    Update hobby
+    '''
+    data = json.loads(request.body)
+    hobby = Hobbies.objects.get(id=hobby_id)
+    return JsonResponse({
+        'id': hobby.id,
+        'name': hobby.name,
+        'description': hobby.description
+    })
+
+def delete_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
+    '''
+    Delete hobbies
+    '''
+    hobby = Hobbies.objects.get(id=hobby_id)
+    hobby.delete()
+    return JsonResponse({
+        'message': 'Hobby deleted successfully'
+    })
