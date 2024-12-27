@@ -24,6 +24,10 @@ export default defineComponent({
     },
     methods: {
         filter() {
+            if (this.ageFrom === '' || this.ageTo === '') {
+                alert('Please fill in both age fields.');
+                return;
+            }
             console.log('Age from:', this.ageFrom);
             console.log('Age to:', this.ageTo);
         }
