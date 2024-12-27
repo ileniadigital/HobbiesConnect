@@ -15,7 +15,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.btn-primary {
+.btn-primary,
+.btn-primary:hover {
     background-color: #fce26d;
     color: black;
     border: none;

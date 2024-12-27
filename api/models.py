@@ -34,6 +34,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email' #username is email
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
+    def __str__(self):
+        return self.first_name
 
 class Hobbies(models.Model):
     '''
@@ -55,7 +57,7 @@ class UserHobby(models.Model):
     hobby = models.ForeignKey(Hobbies, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.hobby
+        return self.hobby.name
 
 
 class Friendship(models.Model):
@@ -79,4 +81,4 @@ class Friendship(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.friend
+        return f"{self.user.email} is friends with {self.friend.email} - Status: {self.status}"
