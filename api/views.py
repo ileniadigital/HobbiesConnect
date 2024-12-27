@@ -5,6 +5,31 @@ from django.shortcuts import render
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
+# PageView views
+def page_view(request: HttpRequest) -> JsonResponse:
+    page_view = PageView.objects.first()
+    page_view.count += 1
+    page_view.save()
+    return JsonResponse({'count': page_view.count})
+
+# UserHobby
+def user_hobby_get(request: HttpRequest) -> JsonResponse:
+    user_hobbies = UserHobby.objects.all()
+    return JsonResponse({'user_hobbies': list(user_hobbies.values())})
+
+def user_hobby_post(request: HttpRequest) -> JsonResponse:
+    user = request.POST.get('user_id')
+    hobby = request.POST.get('hobby_id')
+    
+def user_hobby_delete(request: HttpRequest) -> JsonResponse:
+    user= request.POST.get('user_id')
+    hobby = request.POST.get('hobby_id')
+
+def user_hobby_put(request: HttpRequest) -> JsonResponse:
+    user= request.POST.get('user_id')
+    hobby= request.POST.get('hobby_id')
+
+#Hobbies
 def get_hobby(request: HttpRequest) -> JsonResponse:
     '''
     Get hobby
@@ -12,9 +37,9 @@ def get_hobby(request: HttpRequest) -> JsonResponse:
     hobbies = Hobbies.objects.all()
     data = []
     data.append({
-        'id': hobby.id,
-        'name': hobby.name,
-        'description': hobby.description
+        'id': hobbies.id,
+        'name': hobbies.name,
+        'description': hobbies.description
     })
     return JsonResponse(data, safe=False)
 
