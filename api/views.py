@@ -1,6 +1,7 @@
+import json
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render
-
+from api.models import Hobbies, UserHobby, PageView
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -79,3 +80,11 @@ def delete_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
     return JsonResponse({
         'message': 'Hobby deleted successfully'
     })
+
+# PageView views
+def page_view(request: HttpRequest) -> JsonResponse:
+    page_view = PageView.objects.first()
+    page_view.count += 1
+    page_view.save()
+    return JsonResponse({'count': page_view.count})
+

@@ -34,7 +34,7 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.',
     )
 
-    USERNAME_FIELD = 'email' #username is emai
+    USERNAME_FIELD = 'email' #username is email
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
 
@@ -61,16 +61,16 @@ class UserHobby(models.Model):
         return self.hobby
 
 
-class FriendshipStatus(models.TextChoices):
-    PENDING = 'PENDING', 'Pending'
-    ACCEPTED = 'ACCEPTED', 'Accepted'
-    REJECTED = 'REJECTED', 'Rejected'
-
-
 class Friendship(models.Model):
     '''
     Friendship model to store friends and friends requests
     '''
+
+    class FriendshipStatus(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        ACCEPTED = 'ACCEPTED', 'Accepted'
+        REJECTED = 'REJECTED', 'Rejected'
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friend')
     status = models.CharField(
