@@ -22,13 +22,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { RouterView } from "vue-router";
+import { useMainStore } from "./data/data";
+
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
 
 export default defineComponent({
     components: { RouterView, Header, Footer },
+    setup() {
+        const mainStore = useMainStore();
+
+        onMounted(() => {
+            mainStore.fetchData();
+        });
+        console.log('Data at set up:', mainStore.user);
+    }
 });
 
 </script>
