@@ -37,7 +37,7 @@ export default defineComponent({
         onMounted(() => {
             mainStore.fetchData();
         });
-        console.log('Data at set up:', mainStore.user);
+        // console.log('Data at set up:', mainStore);
     }
 });
 
