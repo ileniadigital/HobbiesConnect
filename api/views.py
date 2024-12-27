@@ -13,18 +13,18 @@ def page_view(request: HttpRequest) -> JsonResponse:
     return JsonResponse({'count': page_view.count})
 
 # UserHobby
-def user_hobbies_get(request: HttpRequest) -> JsonResponse:
+def user_hobby_get(request: HttpRequest) -> JsonResponse:
     user_hobbies = UserHobby.objects.all()
     return JsonResponse({'user_hobbies': list(user_hobbies.values())})
 
-def user_hobbies_post(request: HttpRequest) -> JsonResponse:
+def user_hobby_post(request: HttpRequest) -> JsonResponse:
     user_id = request.POST.get('user_id')
     hobby_id = request.POST.get('hobby_id')
     
-def user_hobbies_delete(request: HttpRequest) -> JsonResponse:
+def user_hobby_delete(request: HttpRequest) -> JsonResponse:
     user_id = request.POST.get('user_id')
     hobby_id = request.POST.get('hobby_id')
 
-def user_hobbies_put(request: HttpRequest) -> JsonResponse:
+def user_hobby_put(request: HttpRequest) -> JsonResponse:
     user_id = request.POST.get('user_id')
     hobby_id = request.POST.get('hobby_id')

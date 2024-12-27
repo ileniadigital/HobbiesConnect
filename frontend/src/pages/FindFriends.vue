@@ -1,8 +1,9 @@
 <template>
     <div class="h3">
-        Hi {{ name }}
+        Hi, {{ name }}
     </div>
     <!-- Add a filter -->
+    <Filter />
     <!-- Friends List -->
     <div v-for="friend in friends" :key="friend.name">
         <div>{{ friend.name }} is {{ friend.age }} years old</div>
@@ -11,8 +12,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Filter from "../components/Filter.vue";
 
 export default defineComponent({
+    components: {
+        Filter
+    },
     data() {
         return {
             name: "Ilenia", // Change this to dynamic data

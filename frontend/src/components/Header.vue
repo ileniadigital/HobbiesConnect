@@ -1,37 +1,44 @@
 <template>
     <nav class="navbar navbar-expand-lg custom-navbar">
-    <div class="container-fluid">
-        <router-link class="navbar-brand" to="/">HobbiesConnect</router-link>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <!-- Profile link -->
-            <li class="nav-item">
-                <router-link class="nav-link active" aria-current="page" to="/">Profile</router-link>
-            </li>
-            <!-- Find friends link -->
-            <li class="nav-item">
-                <router-link class="nav-link" to="/findfriends">Find Friends</router-link>
-            </li>
-            <!-- Friends Request -->
-            <li class="nav-item">
-                <router-link class="nav-link" to="/friendrequests">Friend Requests</router-link>
-            </li>
-        </ul>
-        <button class="btn" @click="logout">Logout</button>
+        <div class="container-fluid">
+            <router-link class="navbar-brand" to="/">HobbiesConnect</router-link>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- Profile link -->
+                    <li class="nav-item">
+                        <router-link class="nav-link active" aria-current="page" to="/">Profile</router-link>
+                    </li>
+                    <!-- Find friends link -->
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="/findfriends">Find Friends</router-link>
+                    </li>
+                    <!-- Friends Request -->
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="/friendrequests">Friend Requests</router-link>
+                    </li>
+                </ul>
+                <button class="btn" @click="logout">Logout</button>
+            </div>
         </div>
-    </div>
     </nav>
 </template>
 
 <script lang="ts">
-    import { defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 
-    export default defineComponent({
-        name: 'Header',
-    });
+export default defineComponent({
+    name: 'Header',
+    methods: {
+        logout() {
+            console.log('Logout');
+        }
+    }
+});
 </script>
 
 <style scoped>
@@ -44,7 +51,7 @@
 }
 
 .btn {
-    background-color:#FCE26D;
+    background-color: #FCE26D;
     color: #000000;
 }
 
