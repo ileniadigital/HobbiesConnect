@@ -7,20 +7,19 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue";
-  import Header from "@/components/Header.vue";
+import { defineComponent } from "vue";
+import Header from "../components/Header.vue";
 
-  export default defineComponent({
-      components: {
-          Header
-      },
-      data() {
-          return {
-              title: "Profile",
-          }
-      }
-  })
+export default defineComponent({
+  components: {
+    Header
+  },
+  data() {
+    return {
+      title: "Profile",
+    }
+  }
+})
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
