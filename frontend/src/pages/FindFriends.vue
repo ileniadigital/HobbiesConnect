@@ -5,30 +5,36 @@
     <!-- Add a filter -->
     <Filter />
     <!-- Friends List -->
-    <div v-for="friend in friends" :key="friend.name">
-        <div>{{ friend.name }} is {{ friend.age }} years old</div>
+    <div class="friend-card" v-for="friend in friends" :key="friend.name">
+        <Friend :name="friend.name" :hobbies="friend.hobbies" />
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import Filter from "../components/Filter.vue";
+import Friend from "../components/Friend.vue";
 
 export default defineComponent({
     components: {
-        Filter
+        Filter,
+        Friend
     },
     data() {
         return {
             name: "Ilenia", // Change this to dynamic data
             friends: [
-                { name: "Alice", age: 25 },
-                { name: "Bob", age: 30 },
-                { name: "Charlie", age: 35 },
+                { name: "Alice", age: 25, hobbies: ["reading", "hiking"] },
+                { name: "Bob", age: 30, hobbies: ["swimming", "biking"] },
+                { name: "Charlie", age: 35, hobbies: ["cooking", "painting"] },
             ]
         };
     }
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.friend-card {
+    margin: 1.5rem 0 1.5rem 0;
+}
+</style>
