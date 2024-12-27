@@ -16,7 +16,7 @@
       },
       data() {
           return {
-              title: "Main Page",
+              title: "Profile",
           }
       }
   })
