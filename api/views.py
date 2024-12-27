@@ -86,9 +86,9 @@ def get_hobby(request: HttpRequest) -> JsonResponse:
     hobbies = Hobbies.objects.all()
     data = []
     data.append({
-        'id': hobby.id,
-        'name': hobby.name,
-        'description': hobby.description
+        'id': hobbies.id,
+        'name': hobbies.name,
+        'description': hobbies.description
     })
     return JsonResponse(data, safe=False)
 
