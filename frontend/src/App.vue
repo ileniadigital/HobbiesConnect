@@ -27,7 +27,6 @@ import { RouterView } from "vue-router";
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
 
-// import 'bootstrap-icons/font/bootstrap-icons.css'
 export default defineComponent({
     components: { RouterView, Header, Footer },
 });
