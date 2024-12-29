@@ -32,7 +32,7 @@ urlpatterns = [
     path('user_hobbies/delete/<int:user_hobby_id>/', delete_user_hobby, name='delete_user_hobby'),
     path('user/<int:user_id>/hobbies/', get_user_hobbies, name='get_user_hobbies'),
     # Friendship paths
-    # path('friendship/', get_friendship, name='get_friendship'),
+    path('user/<int:user_id>/friendships/', get_friendship, name='get_friendship'),
     # path('friendship/add/', add_friendship, name='add_friendship'),
     
 ]

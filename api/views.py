@@ -1,7 +1,7 @@
 import json
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render
-from api.models import Hobbies, UserHobby, PageView, User
+from api.models import Hobbies, UserHobby, PageView, User, Friendship
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -160,3 +160,33 @@ def delete_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
     return JsonResponse({
         'message': 'User hobby deleted successfully'
     })
+
+
+def get_all_friendships(request: HttpRequest) -> JsonResponse:
+    '''
+    Get all friends
+    '''
+    friendships = Friendship.objects.all()
+    return JsonResponse({'friendships': list(friendships.values())})
+
+def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
+    '''
+    Get user's friends
+    '''
+    try:
+        user = User.objects.get(id=user_id)
+        friendships = Friendship.objects.filter(user=user) | Friendship.objects.filter(friend=user)
+        friendships_data = [
+            {
+                'id': friendship.id,
+                'user': friendship.user.email,
+                'friend': friendship.friend.email,
+                'status': friendship.status,
+                'accepted': friendship.accepted,
+                'created_at': friendship.created_at
+            }
+            for friendship in friendships
+        ]
+        return JsonResponse(friendships_data, safe=False)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
