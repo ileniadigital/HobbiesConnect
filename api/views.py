@@ -179,8 +179,8 @@ def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
         friendships_data = [
             {
                 'id': friendship.id,
-                'user': friendship.user.email,
-                'friend': friendship.friend.email,
+                'user': friendship.user.first_name,
+                'friend': friendship.friend.first_name,
                 'status': friendship.status,
                 'accepted': friendship.accepted,
                 'created_at': friendship.created_at
