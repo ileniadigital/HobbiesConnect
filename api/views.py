@@ -36,8 +36,6 @@ def get_user_by_id(request: HttpRequest, user_id: int) -> JsonResponse:
             'first_name': user.first_name,
             'last_name': user.last_name,
             'dob': user.dob,
-            'is_staff': user.is_staff,
-            'is_active': user.is_active,
         }
         return JsonResponse(user_data)
     except User.DoesNotExist:
