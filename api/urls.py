@@ -13,9 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from .views import get_user_by_id, get_all_users, get_hobby, add_hobby, update_hobby, delete_hobby, get_user_hobby, add_user_hobby, update_user_hobby, delete_user_hobby
+from django.urls import path
+from .views import *
 
 urlpatterns = [
     # User paths
@@ -27,9 +26,13 @@ urlpatterns = [
     path('hobbies/update/<int:hobby_id>/', update_hobby, name='update_hobby'),
     path('hobbies/delete/<int:hobby_id>/', delete_hobby, name='delete_hobby'),
     # User Hobby paths
-    path('user_hobbies/', get_user_hobby, name='get_user_hobby'),
+    path('user_hobbies/', get_all_user_hobbies, name='get_user_hobby'),
     path('user_hobbies/add/', add_user_hobby, name='add_user_hobby'),
     path('user_hobbies/update/<int:user_hobby_id>/', update_user_hobby, name='update_user_hobby'),
     path('user_hobbies/delete/<int:user_hobby_id>/', delete_user_hobby, name='delete_user_hobby'),
+    path('user/<int:user_id>/hobbies/', get_user_hobbies, name='get_user_hobbies'),
+    # Friendship paths
+    # path('friendship/', get_friendship, name='get_friendship'),
+    # path('friendship/add/', add_friendship, name='add_friendship'),
     
 ]

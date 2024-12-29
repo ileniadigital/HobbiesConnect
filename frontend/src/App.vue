@@ -37,7 +37,12 @@ export default defineComponent({
         onMounted(() => {
             mainStore.fetchData();
         });
-        // console.log('Data at set up:', mainStore);
+        return {
+            user: mainStore.user,
+            hobbies: mainStore.hobbies,
+            userHobbies: mainStore.userHobbies,
+            friends: mainStore.friends,
+        };
     }
 });
 
