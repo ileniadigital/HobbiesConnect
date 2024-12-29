@@ -22,7 +22,7 @@ export const useMainStore = defineStore('main', {
                 console.log("Hobbies data", this.hobbies);
 
                 const userHobbiesResponse = await axios.get(`/api/user/${userId}/hobbies/`);
-                this.hobbies = userHobbiesResponse.data;
+                this.userHobbies = userHobbiesResponse.data;
                 console.log("Hobbies user data", this.userHobbies);
                 // const friendsResponse = await axios.get('/api/friends/');
                 // this.friends = friendsResponse.data;
