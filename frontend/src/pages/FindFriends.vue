@@ -18,7 +18,8 @@ import Friend from "../components/Friend.vue";
 export default defineComponent({
     components: {
         Filter,
-        Friend
+        Friend,
+
     },
     data() {
         return {
