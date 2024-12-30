@@ -1,27 +1,23 @@
 <template>
-    <div>
-      <div class="h1">
-        {{ title }}
-      </div>
+  <div>
+    <div class="h1">
+      {{ title }}
     </div>
-  </template>
-  
-  <script lang="ts">
-    import { defineComponent } from "vue";
-    import Header from "@/components/Header.vue";
-  
-    export default defineComponent({
-        components: {
-            Header
-        },
-        data() {
-            return {
-                title: "Friend Requests",
-            }
-        }
-    })
-  </script>
-  
-  <style scoped>
-  </style>
-  
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  components: {
+  },
+  data() {
+    return {
+      title: "Friend Requests",
+    }
+  }
+})
+</script>
+
+<style scoped></style>
