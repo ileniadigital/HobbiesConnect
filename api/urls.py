@@ -16,13 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from . import views
+from .views import main_spa, UserHobby
 from .views import main_spa
 
-urlpatterns = [ 
+urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('', views.main_spa, name='main_spa'),
-    path('test-max-heap/', views.test_max_heap_view, name='test_max_heap'),
+    path('test-max-heap/', views.test_max_heap_view, name='test_max_heap')
+    path('', main_spa),
+    path('findfriends/', UserHobby, name='Find Friends'),
+    path('admin/', admin.site.urls),
 ]
 
