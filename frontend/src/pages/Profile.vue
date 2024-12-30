@@ -5,13 +5,13 @@
     </div>
     <hr>
     <div class="h3">
-      Hi, {{ username }}
+      Hi, {{ name }}
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
         <form>
-          <div class="form-row">
+          <div class="form-row vertical">
             <div class="form-field">
               <label for="dob">Date of Birth:</label>
               <input type="date" v-model="dateofbirth" id="dob">
@@ -24,12 +24,13 @@
               <label for="email">Email</label>
               <input type="email" v-model="email" id="email">
             </div>
+            <button type="submit" class="btn btn-primary" v-on:click="">Update Profile</button>
           </div>
-          <button type="submit" v-on:click="">Update Profile</button>
+          
         </form>
     </div>
     <div>
-      <button type="button">Update Password</button>
+      <button type="button" class="btn btn-primary">Update Password</button>
     </div>
   </div>
   <div class="container">
@@ -41,7 +42,7 @@
               <div class="form-field">
                 <legend>Hobbies</legend>
                 <input list="hobbies">
-                <button type="submit">Add</button>
+                <button type="submit" class="btn btn-primary">Add</button>
                 <datalist id="hobbies">
                   <option v-for="hobby in hobbies" :key="hobby.name">
                     {{ hobby.name }}
