@@ -39,4 +39,20 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.pagination .page-item .page-link {
+    border: 0.0625rem solid #8DE2CD;
+    color: black;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #FCE26D;
+    border-color: #8DE2CD;
+    color: black;
+    font-weight: bold;
+}
+
+.pagination .page-item.disabled .page-link {
+    border-color: #8DE2CD;
+}
+</style>
