@@ -15,17 +15,30 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from . import views
-from .views import main_spa, UserHobby
-from .views import main_spa
+from .views import *
 
 urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('test-max-heap/', views.test_max_heap_view, name='test_max_heap')
-    path('', main_spa),
-    path('findfriends/', UserHobby, name='Find Friends'),
-    path('admin/', admin.site.urls),
+    path('test-max-heap/', views.test_max_heap_view, name='test_max_heap'),
+    # User paths
+    path('user/', get_all_users, name='get_all_users'),
+    path('user/<int:user_id>/', get_user_by_id, name='get_user_by_id'),
+    # Hobby paths
+    path('hobbies/', get_hobby, name='get_hobby'),
+    path('hobbies/add/', add_hobby, name='add_hobby'),
+    path('hobbies/update/<int:hobby_id>/', update_hobby, name='update_hobby'),
+    path('hobbies/delete/<int:hobby_id>/', delete_hobby, name='delete_hobby'),
+    # User Hobby paths
+    path('user_hobbies/', get_all_user_hobbies, name='get_user_hobby'),
+    path('user_hobbies/add/', add_user_hobby, name='add_user_hobby'),
+    path('user_hobbies/update/<int:user_hobby_id>/', update_user_hobby, name='update_user_hobby'),
+    path('user_hobbies/delete/<int:user_hobby_id>/', delete_user_hobby, name='delete_user_hobby'),
+    path('user/<int:user_id>/hobbies/', get_user_hobbies, name='get_user_hobbies'),
+    # Friendship paths
+    path('user/<int:user_id>/friendships/', get_friendship, name='get_friendship'),
+    # path('friendship/add/', add_friendship, name='add_friendship'),
+    
 ]
 
