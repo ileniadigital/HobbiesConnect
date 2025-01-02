@@ -1,66 +1,100 @@
 <template>
   <div>
-    <div class="h1">
-      {{ title }}
-    </div>
+    <div class="h1">{{ title }}</div>
     <hr>
-    <div class="h3">
-      Hi, {{ name }}
-    </div>
-  </div>
-  <!-- Profile Form -->
-  <div class="row">
-    <div class="col-md-12">
-      <form>
-        <div class="form-row vertical">
-          <div class="form-field">
-            <label for="dob">Date of Birth:</label>
-            <input type="date" v-model="dateofbirth" id="dob">
+    <div class="h3">Hi, {{ name }}</div>
+
+    <!-- Profile Form -->
+    <div class="row">
+      <div class="col-md-12">
+        <form @submit.prevent="updateUserProfile">
+          <div class="form-row vertical">
+            <div class="form-field">
+              <label for="dob">Date of Birth:</label>
+              <input type="date" v-model="dateofbirth" id="dob" />
+            </div>
+            <div class="form-field">
+              <label for="name">Name</label>
+              <input type="text" v-model="name" id="name" />
+            </div>
+            <div class="form-field">
+              <label for="email">Email</label>
+              <input type="email" v-model="email" id="email" />
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
           </div>
-          <div class="form-field">
-            <label for="name">Name</label>
-            <input type="text" v-model="name" id="name">
-          </div>
-          <div class="form-field">
-            <label for="email">Email</label>
-            <input type="email" v-model="email" id="email">
-          </div>
-          <button type="submit" class="btn btn-primary" v-on:click="">Update Profile</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
-    <div>
-      <button type="button" class="btn btn-primary">Update Password</button>
+    <!-- Update Password -->
+    <div class="updatepassword">
+      <UpdatePassword />
     </div>
-  </div>
-  <!-- List of Hobbies -->
-  <div class="hobbylist">
-    <HobbyList />
+
+    <!-- List of Hobbies -->
+    <div class="hobbylist">
+      <HobbyList />
+    </div>
   </div>
 </template>
+
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import HobbyList from "../components/HobbyList.vue";
+import UpdatePassword from "../components/UpdatePassword.vue";
+import axios from "axios";
 
 export default defineComponent({
   components: {
     HobbyList,
+    UpdatePassword,
   },
   data() {
     return {
       title: "Profile",
-      name: "Ilenia",
-      username: "Amy123",
-      hobbies: [
-        { name: "Reading" },
-        { name: "Swimming" },
-        { name: "Coding" }
-      ],
-    }
-  }
-})
+      name: "",
+      email: "",
+      dateofbirth: "",
+      userId: 1, // temporary 
+    };
+  },
+  methods: {
+    async fetchUserProfile() {
+      try {
+        const response = await axios.get(`/api/users/${this.userId}/`);
+        const user = response.data;
+        this.name = user.first_name + " " + user.last_name;
+        this.email = user.email;
+        this.dateofbirth = user.dob;
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    },
+    async updateUserProfile() {
+      try {
+        const [firstName, ...lastNameParts] = this.name.split(" ");
+        const lastName = lastNameParts.join(" ");
+        const data = {
+          first_name: firstName,
+          last_name: lastName,
+          email: this.email,
+          dob: this.dateofbirth,
+        };
+        await axios.put(`/api/users/${this.userId}/`, data);
+        alert("Profile updated successfully!");
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Failed to update profile.");
+      }
+    },
+  },
+  mounted() {
+    this.fetchUserProfile(); 
+  },
+});
 </script>
+
 
 <style scoped>
 .hobbylist {
