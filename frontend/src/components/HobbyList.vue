@@ -1,7 +1,7 @@
 <template>
     <div class="head">
         <h2>Hobbies</h2>
-        <button class="btn btn-primary" @click="addHobby">Add Hobby</button>
+        <button class="btn btn-primary" @click="showAddHobbyModal">Add Hobby</button>
     </div>
     <!-- Hobbies list -->
     <ul class="list-group">
@@ -10,11 +10,15 @@
         </li>
         <li v-if="userHobbies.length === 0" class="list-group-item">No hobbies found.</li>
     </ul>
+    <!-- Add Hobby Modal -->
+    <AddHobby :visible="isAddHobbyModalVisible" @close="isAddHobbyModalVisible = false"
+        @hobby-added="fetchUserHobbies" />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import { useMainStore } from "../data/data";
+import AddHobby from "./AddHobby.vue";
 
 interface Hobby {
     hobby_id: number;
@@ -23,17 +27,31 @@ interface Hobby {
 }
 
 export default defineComponent({
+    components: {
+        AddHobby,
+    },
     setup() {
         const mainStore = useMainStore();
         const userHobbies = ref<Hobby[]>([]);
+        const isAddHobbyModalVisible = ref(false);
 
-        onMounted(async () => {
+        // Fetch user hobbies
+        const fetchUserHobbies = async () => {
             await mainStore.fetchData();
             userHobbies.value = mainStore.userHobbies as Hobby[];
-        });
+        }
+        onMounted(fetchUserHobbies);
 
+        // Show Add Hobby Modal
+        const showAddHobbyModal = () => {
+            isAddHobbyModalVisible.value = true;
+            console.log('Add Hobby Modal is visible:', isAddHobbyModalVisible.value);
+        }
         return {
             userHobbies,
+            isAddHobbyModalVisible,
+            showAddHobbyModal,
+            fetchUserHobbies
         };
     }
 });
@@ -47,7 +65,9 @@ export default defineComponent({
     margin-bottom: 1rem;
 }
 
-.btn {
+.btn,
+.btn:active,
+.btn:hover {
     padding: 0.5rem 1rem;
     background-color: #FCE26D;
     border: none;
