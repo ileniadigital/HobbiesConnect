@@ -118,7 +118,7 @@ def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
         user = User.objects.get(id=user_id)
         user_hobbies = UserHobby.objects.filter(user=user)
         hobbies = [user_hobby.hobby for user_hobby in user_hobbies]
-        hobbies_data = [{'user id': user_id, 'user': user.first_name,'hobby id': hobby.id,'hobby': hobby.name, 'description': hobby.description} for hobby in hobbies]
+        hobbies_data = [{'user_id': user_id, 'user': user.first_name,'hobby_id': hobby.id,'hobby': hobby.name, 'description': hobby.description} for hobby in hobbies]
         return JsonResponse(hobbies_data, safe=False)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)

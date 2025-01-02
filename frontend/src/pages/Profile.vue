@@ -8,7 +8,7 @@
       Hi, {{ name }}
     </div>
   </div>
-  <div class="row">
+  <!-- <div class="row">
     <div class="col-md-12">
       <form>
         <div class="form-row vertical">
@@ -32,7 +32,7 @@
     <div>
       <button type="button" class="btn btn-primary">Update Password</button>
     </div>
-  </div>
+  </div> -->
   <!-- <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -69,6 +69,7 @@ export default defineComponent({
   data() {
     return {
       title: "Profile",
+      name: "Ilenia",
       username: "Amy123",
       hobbies: [
         { name: "Reading" },
