@@ -5,6 +5,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000';
 export const useMainStore = defineStore('main', {
     state: () => ({
         user: null, //Get id from log in
+        userId: 1,
         hobbies: [],
         userHobbies: [],
         friends: [],
@@ -15,6 +16,7 @@ export const useMainStore = defineStore('main', {
                 const userId = 1;
                 const userResponse = await axios.get(`/api/user/${userId}/`);
                 this.user = userResponse.data;
+                this.userId = this.user.id;
                 console.log("User data", this.user);
 
                 const hobbiesResponse = await axios.get('/api/hobbies/');
