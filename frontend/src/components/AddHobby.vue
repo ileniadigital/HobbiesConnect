@@ -35,6 +35,10 @@ export default defineComponent({
         visible: {
             type: Boolean,
             required: true
+        },
+        userId: {
+            type: Number,
+            required: true
         }
     },
     emits: ["close", "hobby-added"],
@@ -57,11 +61,29 @@ export default defineComponent({
             emit("close");
         };
 
-        const addHobby = () => {
-            // Simulate adding a hobby
-            console.log("Hobby added:", hobby.value, description.value);
-            emit("hobby-added");
-            close();
+        const addHobby = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/hobbies/add_user_hobby/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: props.userId,
+                        name: hobby.value,
+                        description: description.value
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error('Something went wrong');
+                }
+                const data = await response.json();
+                console.log("Hobby added:", data);
+                emit("hobby-added");
+                close();
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
         };
 
         return {

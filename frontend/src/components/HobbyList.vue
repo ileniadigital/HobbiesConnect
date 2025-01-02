@@ -11,7 +11,7 @@
         <li v-if="userHobbies.length === 0" class="list-group-item">No hobbies found.</li>
     </ul>
     <!-- Add Hobby Modal -->
-    <AddHobby :visible="isAddHobbyModalVisible" @close="isAddHobbyModalVisible = false"
+    <AddHobby :visible="isAddHobbyModalVisible" :userId="userId" @close="isAddHobbyModalVisible = false"
         @hobby-added="fetchUserHobbies" />
 </template>
 
@@ -34,24 +34,27 @@ export default defineComponent({
         const mainStore = useMainStore();
         const userHobbies = ref<Hobby[]>([]);
         const isAddHobbyModalVisible = ref(false);
+        const userId = ref(mainStore.userId);
 
         // Fetch user hobbies
         const fetchUserHobbies = async () => {
             await mainStore.fetchData();
             userHobbies.value = mainStore.userHobbies as Hobby[];
-        }
+        };
         onMounted(fetchUserHobbies);
 
         // Show Add Hobby Modal
         const showAddHobbyModal = () => {
             isAddHobbyModalVisible.value = true;
             console.log('Add Hobby Modal is visible:', isAddHobbyModalVisible.value);
-        }
+        };
+
         return {
             userHobbies,
             isAddHobbyModalVisible,
             showAddHobbyModal,
-            fetchUserHobbies
+            fetchUserHobbies,
+            userId
         };
     }
 });

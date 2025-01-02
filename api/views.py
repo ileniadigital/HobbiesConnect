@@ -2,6 +2,7 @@ import json
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
+from django.views.decorators.csrf import csrf_exempt
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -95,6 +96,40 @@ def delete_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
         'message': 'Hobby deleted successfully'
     })
 
+@csrf_exempt
+def add_hobby_and_user_hobby(request: HttpRequest) -> JsonResponse:
+    '''
+    Add a new hobby for a user and to the overall hobbies list
+    '''
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        hobby_name = data.get('name')
+        hobby_description = data.get('description')
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+
+        hobby = Hobbies.objects.create(
+            name=hobby_name,
+            description=hobby_description
+        )
+
+        UserHobby.objects.create(
+            user=user,
+            hobby=hobby
+        )
+
+        return JsonResponse({
+            'user_id': user.id,
+            'hobby_id': hobby.id,
+            'name': hobby.name,
+            'description': hobby.description
+        })
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def page_view(request: HttpRequest) -> JsonResponse:
     page_view = PageView.objects.first()
