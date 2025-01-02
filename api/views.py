@@ -1,6 +1,6 @@
 import json
 from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
 from django.views.decorators.csrf import csrf_exempt
 
@@ -158,19 +158,19 @@ def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
-def add_user_hobby(request: HttpRequest) -> JsonResponse:
-    '''
-    Add user hobby
-    '''
-    data = json.loads(request.body)
-    user_hobby = UserHobby.objects.create(
-        user_id=data['user_id'],
-        hobby_id=data['hobby_id']
-    )
-    return JsonResponse({
-        'user_id': user_hobby.user_id,
-        'hobby_id': user_hobby.hobby_id
-    })
+@csrf_exempt
+def add_user_hobby(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        hobby_id = data.get('hobby_id')
+
+        user = get_object_or_404(User, id=user_id)
+        hobby = get_object_or_404(Hobbies, id=hobby_id)
+        UserHobby.objects.create(user=user, hobby=hobby)
+
+        return JsonResponse({'message': 'Existing hobby added successfully'}, status=201)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def update_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
     '''

@@ -12,7 +12,7 @@
     </ul>
     <!-- Add Hobby Modal -->
     <AddHobby :visible="isAddHobbyModalVisible" :userId="userId" @close="isAddHobbyModalVisible = false"
-        @hobby-added="fetchUserHobbies" />
+        @hobby-added="fetchUserHobbies" :hobbies="hobbies" />
 </template>
 
 <script lang="ts">
@@ -20,9 +20,15 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useMainStore } from "../data/data";
 import AddHobby from "./AddHobby.vue";
 
-interface Hobby {
+interface UserHobby {
     hobby_id: number;
     hobby: string;
+    description: string;
+}
+
+interface Hobby {
+    id: number;
+    name: string;
     description: string;
 }
 
@@ -32,14 +38,18 @@ export default defineComponent({
     },
     setup() {
         const mainStore = useMainStore();
-        const userHobbies = ref<Hobby[]>([]);
+        const userHobbies = ref<UserHobby[]>([]);
+        const hobbies = ref<Hobby[]>([]);
         const isAddHobbyModalVisible = ref(false);
         const userId = ref(mainStore.userId);
 
         // Fetch user hobbies
         const fetchUserHobbies = async () => {
             await mainStore.fetchData();
-            userHobbies.value = mainStore.userHobbies as Hobby[];
+            userHobbies.value = mainStore.userHobbies as UserHobby[];
+            hobbies.value = mainStore.hobbies as Hobby[];
+            console.log('Hobbies in list:', hobbies.value);
+
         };
         onMounted(fetchUserHobbies);
 
@@ -51,6 +61,7 @@ export default defineComponent({
 
         return {
             userHobbies,
+            hobbies,
             isAddHobbyModalVisible,
             showAddHobbyModal,
             fetchUserHobbies,

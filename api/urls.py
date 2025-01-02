@@ -27,7 +27,7 @@ urlpatterns = [
     path('hobbies/delete/<int:hobby_id>/', delete_hobby, name='delete_hobby'),
     # User Hobby paths
     path('user_hobbies/', get_all_user_hobbies, name='get_user_hobby'),
-    path('user_hobbies/add/', add_user_hobby, name='add_user_hobby'),
+    path('api/user_hobbies/add/', add_user_hobby, name='add_user_hobby'),
     path('user_hobbies/update/<int:user_hobby_id>/', update_user_hobby, name='update_user_hobby'),
     path('user_hobbies/delete/<int:user_hobby_id>/', delete_user_hobby, name='delete_user_hobby'),
     path('user/<int:user_id>/hobbies/', get_user_hobbies, name='get_user_hobbies'),
