@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 
 export default defineComponent({
     props: {
@@ -41,6 +41,17 @@ export default defineComponent({
     setup(props, { emit }) {
         const hobby = ref("");
         const description = ref("");
+
+        watch(
+            () => props.visible,
+            (newVal) => {
+                if (!newVal) {
+                    // Clear input fields when the modal is closed
+                    hobby.value = "";
+                    description.value = "";
+                }
+            }
+        );
 
         const close = () => {
             emit("close");
@@ -74,7 +85,6 @@ export default defineComponent({
     background-color: #FCE26D;
     border: none;
     color: black;
-
 }
 
 .btn-primary:hover,
