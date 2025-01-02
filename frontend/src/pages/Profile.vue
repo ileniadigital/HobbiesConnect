@@ -8,6 +8,7 @@
       Hi, {{ name }}
     </div>
   </div>
+  <!-- Profile Form -->
   <div class="row">
     <div class="col-md-12">
       <form>
@@ -26,7 +27,6 @@
           </div>
           <button type="submit" class="btn btn-primary" v-on:click="">Update Profile</button>
         </div>
-
       </form>
     </div>
     <div>
@@ -34,7 +34,9 @@
     </div>
   </div>
   <!-- List of Hobbies -->
-  <HobbyList />
+  <div class="hobbylist">
+    <HobbyList />
+  </div>
 </template>
 
 <script lang="ts">
@@ -60,4 +62,15 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.hobbylist {
+  margin: 2rem 0 2rem 0;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  background-color: #FCE26D;
+  border: none;
+  color: black;
+}
+</style>

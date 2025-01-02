@@ -1,5 +1,9 @@
 <template>
-    <h2>Hobbies</h2>
+    <div class="head">
+        <h2>Hobbies</h2>
+        <button class="btn btn-primary" @click="addHobby">Add Hobby</button>
+    </div>
+    <!-- Hobbies list -->
     <ul class="list-group">
         <li class="list-group-item" v-for="uHobby in userHobbies" :key="uHobby.hobby_id">
             {{ uHobby.hobby }}
@@ -35,4 +39,22 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.head {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    background-color: #FCE26D;
+    border: none;
+    color: black;
+}
+
+.list-group {
+    width: 17rem;
+}
+</style>
