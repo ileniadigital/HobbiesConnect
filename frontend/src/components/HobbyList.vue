@@ -12,7 +12,7 @@
     </ul>
     <!-- Add Hobby Modal -->
     <AddHobby :visible="isAddHobbyModalVisible" :userId="userId" @close="isAddHobbyModalVisible = false"
-        @hobby-added="fetchUserHobbies" :hobbies="hobbies" />
+        @hobby-added="fetchUserHobbies" :hobbies="filteredHobbies()" />
 </template>
 
 <script lang="ts">
@@ -53,6 +53,12 @@ export default defineComponent({
         };
         onMounted(fetchUserHobbies);
 
+        // Filter hobbies to existing ones from master list the user does not have
+        const filteredHobbies = () => {
+            const userHobbyIds = userHobbies.value.map(uHobby => uHobby.hobby_id);
+            return hobbies.value.filter(hobby => !userHobbyIds.includes(hobby.id));
+        };
+
         // Show Add Hobby Modal
         const showAddHobbyModal = () => {
             isAddHobbyModalVisible.value = true;
@@ -65,7 +71,8 @@ export default defineComponent({
             isAddHobbyModalVisible,
             showAddHobbyModal,
             fetchUserHobbies,
-            userId
+            userId,
+            filteredHobbies,
         };
     }
 });
