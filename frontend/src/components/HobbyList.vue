@@ -54,6 +54,10 @@ export default defineComponent({
     color: black;
 }
 
+.btn:hover {
+    font-weight: bold;
+}
+
 .list-group {
     width: 17rem;
 }

@@ -67,10 +67,15 @@ export default defineComponent({
   margin: 2rem 0 2rem 0;
 }
 
-.btn {
+.btn,
+.btn:hover {
   padding: 0.5rem 1rem;
   background-color: #FCE26D;
   border: none;
   color: black;
+}
+
+.btn:hover {
+  font-weight: bold;
 }
 </style>
