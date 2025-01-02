@@ -8,7 +8,7 @@
       Hi, {{ name }}
     </div>
   </div>
-  <!-- <div class="row">
+  <div class="row">
     <div class="col-md-12">
       <form>
         <div class="form-row vertical">
@@ -32,29 +32,8 @@
     <div>
       <button type="button" class="btn btn-primary">Update Password</button>
     </div>
-  </div> -->
-  <!-- <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="hobbies">
-          <form>
-            <div class="form-row">
-              <div class="form-field">
-                <legend>Hobbies</legend>
-                <input list="hobbies">
-                <button type="submit" class="btn btn-primary">Add</button>
-                <datalist id="hobbies">
-                  <option v-for="hobby in hobbies" :key="hobby.name">
-                    {{ hobby.name }}
-                  </option>
-                </datalist>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div> -->
+  </div>
+  <!-- List of Hobbies -->
   <HobbyList />
 </template>
 
