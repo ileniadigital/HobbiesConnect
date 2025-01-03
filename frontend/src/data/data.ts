@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
 
+const BASE_URL = "http://127.0.0.1:8000/api";
 export const useMainStore = defineStore('main', {
     state: () => ({
-        user: null, // Get id from log in
+        user: [], // Get id from log in
         userId: 1,
         hobbies: [],
         userHobbies: [],
@@ -14,7 +15,7 @@ export const useMainStore = defineStore('main', {
                 const userId = 1;
 
                 // Fetch user data
-                const userResponse = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`);
+                const userResponse = await fetch(`${BASE_URL}/user/${userId}/`);
                 if (!userResponse.ok) {
                     throw new Error('Failed to fetch user data');
                 }
@@ -23,7 +24,7 @@ export const useMainStore = defineStore('main', {
                 console.log("User data", this.user);
 
                 // Fetch hobbies data
-                const hobbiesResponse = await fetch('http://127.0.0.1:8000/api/hobbies/');
+                const hobbiesResponse = await fetch(`${BASE_URL}/hobbies/`);
                 if (!hobbiesResponse.ok) {
                     throw new Error('Failed to fetch hobbies data');
                 }
@@ -31,7 +32,7 @@ export const useMainStore = defineStore('main', {
                 console.log("Hobbies data", this.hobbies);
 
                 // Fetch user hobbies data
-                const userHobbiesResponse = await fetch(`http://127.0.0.1:8000/api/user/${userId}/hobbies/`);
+                const userHobbiesResponse = await fetch(`${BASE_URL}/user/${userId}/hobbies/`);
                 if (!userHobbiesResponse.ok) {
                     throw new Error('Failed to fetch user hobbies data');
                 }
@@ -39,7 +40,7 @@ export const useMainStore = defineStore('main', {
                 console.log("Hobbies user data", this.userHobbies);
 
                 // Fetch friends data
-                const friendshipResponse = await fetch(`http://127.0.0.1:8000/api/user/${userId}/friendships/`);
+                const friendshipResponse = await fetch(`${BASE_URL}/user/${userId}/friendships/`);
                 if (!friendshipResponse.ok) {
                     throw new Error('Failed to fetch friends data');
                 }
