@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
 from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -225,3 +226,35 @@ def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
         return JsonResponse(friendships_data, safe=False)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
+    
+@csrf_exempt
+def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
+    """
+    Update user profile by ID
+    """
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body)
+
+            # Update user fields
+            user.first_name = data.get('first_name', user.first_name)
+            user.last_name = data.get('last_name', user.last_name)
+            user.email = data.get('email', user.email)
+            user.dob = data.get('dob', user.dob)
+
+            user.save()
+            return JsonResponse({
+                'message': 'Profile updated successfully',
+                'user': {
+                    'id': user.id,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'email': user.email,
+                    'dob': user.dob
+                }
+            })
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
