@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useMainStore } from "../data/data";
 import HobbyList from "../components/Profile/HobbyList.vue";
 import UpdatePassword from "../components/Profile/UpdatePassword.vue";
 
@@ -50,9 +51,10 @@ export default defineComponent({
     UpdatePassword,
   },
   data() {
+    const mainStore = useMainStore();
     return {
       title: "Profile",
-      name: "",
+      name: mainStore.user.first_name,
       email: "",
       dateofbirth: "",
       userId: 1, // temporary 
