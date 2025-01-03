@@ -6,7 +6,10 @@
     <!-- Hobbies list -->
     <ul class="list-group">
         <li class="list-group-item" v-for="uHobby in userHobbies" :key="uHobby.hobby_id">
-            {{ uHobby.hobby }}
+            <div class="d-flex justify-content-between">
+                {{ uHobby.hobby }}
+                <DeleteHobby />
+            </div>
         </li>
         <li v-if="userHobbies.length === 0" class="list-group-item">No hobbies found.</li>
     </ul>
@@ -17,8 +20,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { useMainStore } from "../data/data";
+import { useMainStore } from "../../data/data";
 import AddHobby from "./AddHobby.vue";
+import DeleteHobby from "./DeleteHobby.vue";
 
 interface UserHobby {
     hobby_id: number;
@@ -35,6 +39,7 @@ interface Hobby {
 export default defineComponent({
     components: {
         AddHobby,
+        DeleteHobby,
     },
     setup() {
         const mainStore = useMainStore();
@@ -100,6 +105,6 @@ export default defineComponent({
 }
 
 .list-group {
-    width: 17rem;
+    width: 20rem;
 }
 </style>

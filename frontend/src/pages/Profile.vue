@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HobbyList from "../components/HobbyList.vue";
+import HobbyList from "../components/Profile/HobbyList.vue";
 
 export default defineComponent({
   components: {
