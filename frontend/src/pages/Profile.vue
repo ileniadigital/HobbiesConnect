@@ -27,9 +27,9 @@
       </div>
     </div>
     <!-- Update Password -->
-    <!-- <div class="updatepassword">
+    <div class="updatepassword">
       <UpdatePassword />
-    </div> -->
+    </div>
 
     <!-- List of Hobbies -->
     <div class="hobbylist">
@@ -42,12 +42,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import HobbyList from "../components/Profile/HobbyList.vue";
-// import UpdatePassword from "../components/Profile/UpdatePassword.vue";
+import UpdatePassword from "../components/Profile/UpdatePassword.vue";
 
 export default defineComponent({
   components: {
     HobbyList,
-    // UpdatePassword,
+    UpdatePassword,
   },
   data() {
     return {
