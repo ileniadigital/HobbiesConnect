@@ -40,6 +40,14 @@ import { useMainStore } from "../data/data";
 import Request from "../components/FriendRequests/Request.vue";
 import DeleteRequest from "../components/FriendRequests/DeleteRequest.vue";
 
+interface Friend {
+  id: number;
+  friend: string;
+  status: string;
+  created_at: string;
+  accepted: boolean;
+}
+
 export default defineComponent({
   components: {
     Request,
@@ -47,12 +55,12 @@ export default defineComponent({
   },
   setup() {
     const mainStore = useMainStore();
-    const friends = ref([]);
-    const pendingRequests = ref([]);
-    const acceptedRequests = ref([]);
+    const friends = ref<Friend[]>([]);
+    const pendingRequests = ref<Friend[]>([]);
+    const acceptedRequests = ref<Friend[]>([]);
     const isDeleteModalVisible = ref(false);
-    const selectedFriendId = ref<number | null>(null);
-    const selectedStatus = ref<string | null>(null);
+    const selectedFriendId = ref<number>(-1);
+    const selectedStatus = ref<string>("none");
     const userId = ref(mainStore.userId);
 
     const fetchFriends = async () => {
