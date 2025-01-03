@@ -1,7 +1,7 @@
-<template>
+<!-- <template>
   <div class="main">
     <button class="btn btn-primary updatepassword" v-if="!showForm" @click="toggleForm">Update Password</button>
-    
+
     <div v-else>
       <form @submit.prevent="updatePassword" class="d-flex flex-column">
         <div class="d-flex flex-column align-items-end">
@@ -28,8 +28,9 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
   data() {
     return {
       showForm: false,
@@ -64,49 +65,48 @@ export default {
       this.showForm = false;
     }
   }
-};
+});
 </script>
 
 <style scoped>
 .btn,
 .btn:active,
 .btn:hover {
-    padding: 0.5rem 1rem;
-    background-color: #FCE26D;
-    border: none;
-    color: black;
+  padding: 0.5rem 1rem;
+  background-color: #FCE26D;
+  border: none;
+  color: black;
 }
 
 .btn:hover {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .btn.cancel {
-    background-color: #ca3f3f;
-    color: white
+  background-color: #ca3f3f;
+  color: white
 }
+
 .btn.confirm {
-    background-color: #1e823a;
-    color: white;
+  background-color: #1e823a;
+  color: white;
 }
 
 .formaction {
-    margin-top: 1rem;
+  margin-top: 1rem;
 }
 
 form>div {
-    float: right;
+  float: right;
 }
 
 form {
-    margin-top: 1rem;
-    border: 1px solid grey;
-    border-radius: 0.5rem;
-    border-color: grey;
-    padding: 1rem;
-    width: fit-content;
-    height:fit-content;
+  margin-top: 1rem;
+  border: 1px solid grey;
+  border-radius: 0.5rem;
+  border-color: grey;
+  padding: 1rem;
+  width: fit-content;
+  height: fit-content;
 }
-
-
-</style>
+</style> -->

@@ -20,7 +20,7 @@ urlpatterns = [
     # User paths
     path('user/', get_all_users, name='get_all_users'),
     path('user/<int:user_id>/', get_user_by_id, name='get_user_by_id'),
-    path('users/<int:user_id>/', update_user, name='update_user'),
+    # path('users/<int:user_id>/', update_user, name='update_user'),
     # Hobby paths
     path('hobbies/', get_hobby, name='get_hobby'),
     path('hobbies/add/', add_hobby, name='add_hobby'),
