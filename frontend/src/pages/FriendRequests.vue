@@ -9,18 +9,28 @@
       <!-- Pending Requests -->
       <div class="col-md-6">
         <h2>Pending Requests</h2>
-        <div v-for="request in pendingRequests" :key="request.id">
-          <Request :name="request.friend" :status="request.status" :createdAt="request.created_at" />
-        </div>
+        <ul class="list-unstyled">
+          <li v-for="request in pendingRequests" :key="request.id">
+            <Request :name="request.friend" :status="request.status" :createdAt="request.created_at"
+              @delete-request="openDeleteModal(request.id, request.status)" />
+          </li>
+        </ul>
       </div>
       <!-- My friends -->
       <div class="col-md-6">
         <h2>My Friends</h2>
-        <div v-for="friend in acceptedRequests" :key="friend.id">
-          <Request :name="friend.friend" :status="friend.status" :createdAt="friend.created_at" />
-        </div>
+        <ul class="list-unstyled">
+          <li v-for="friend in acceptedRequests" :key="friend.id">
+            <Request :name="friend.friend" :status="friend.status" :createdAt="friend.created_at"
+              @delete-request="openDeleteModal(friend.id, friend.status)" />
+          </li>
+        </ul>
       </div>
     </div>
+
+    <!-- Delete Request Modal -->
+    <DeleteRequest :visible="isDeleteModalVisible" :userId="userId" :friendId="selectedFriendId"
+      :status="selectedStatus" @close="isDeleteModalVisible = false" @request-deleted="fetchFriends" />
   </div>
 </template>
 
@@ -28,33 +38,48 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { useMainStore } from "../data/data";
 import Request from "../components/FriendRequests/Request.vue";
+import DeleteRequest from "../components/FriendRequests/DeleteRequest.vue";
 
 export default defineComponent({
   components: {
     Request,
+    DeleteRequest,
   },
   setup() {
     const mainStore = useMainStore();
     const friends = ref([]);
     const pendingRequests = ref([]);
     const acceptedRequests = ref([]);
+    const isDeleteModalVisible = ref(false);
+    const selectedFriendId = ref<number | null>(null);
+    const selectedStatus = ref<string | null>(null);
+    const userId = ref(mainStore.userId);
 
-    async function fetchFriends() {
+    const fetchFriends = async () => {
       await mainStore.fetchData();
       friends.value = mainStore.friends;
-      console.log("Friends:", friends.value);
-      // Sort friendships into accepted and pending
-      pendingRequests.value = friends.value.filter((f) => f.status === "PENDING");
-      console.log("Pending:", pendingRequests.value);
-      acceptedRequests.value = friends.value.filter((f) => f.status === "ACCEPTED");
-      console.log("Accepted:", acceptedRequests.value);
-    }
+      pendingRequests.value = friends.value.filter(friend => !friend.accepted);
+      acceptedRequests.value = friends.value.filter(friend => friend.accepted);
+    };
+
+    const openDeleteModal = (friendId: number, status: string) => {
+      selectedFriendId.value = friendId;
+      selectedStatus.value = status;
+      isDeleteModalVisible.value = true;
+    };
+
     onMounted(fetchFriends);
 
     return {
       title: "Friend Requests",
       pendingRequests,
       acceptedRequests,
+      isDeleteModalVisible,
+      selectedFriendId,
+      selectedStatus,
+      userId,
+      openDeleteModal,
+      fetchFriends,
     };
   }
 });
@@ -63,5 +88,9 @@ export default defineComponent({
 <style scoped>
 .row {
   margin-top: 2rem;
+}
+
+.list-unstyled {
+  padding: 0;
 }
 </style>
