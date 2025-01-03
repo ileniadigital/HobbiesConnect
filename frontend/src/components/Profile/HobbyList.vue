@@ -8,7 +8,7 @@
         <li class="list-group-item" v-for="uHobby in userHobbies" :key="uHobby.hobby_id">
             <div class="d-flex justify-content-between">
                 {{ uHobby.hobby }}
-                <DeleteHobby />
+                <button class="btn btn-danger btn-sm" @click="showDeleteHobbyModal(uHobby.hobby_id)">Delete</button>
             </div>
         </li>
         <li v-if="userHobbies.length === 0" class="list-group-item">No hobbies found.</li>
@@ -16,6 +16,9 @@
     <!-- Add Hobby Modal -->
     <AddHobby :visible="isAddHobbyModalVisible" :userId="userId" @close="isAddHobbyModalVisible = false"
         @hobby-added="fetchUserHobbies" :hobbies="filteredHobbies()" />
+    <!-- Delete Hobby Modal -->
+    <DeleteHobby :visible="isDeleteHobbyModalVisible" :userId="userId" :hobbyId="selectedHobbyId ?? 0"
+        @close="isDeleteHobbyModalVisible = false" @hobby-deleted="fetchUserHobbies" />
 </template>
 
 <script lang="ts">
@@ -46,6 +49,8 @@ export default defineComponent({
         const userHobbies = ref<UserHobby[]>([]);
         const hobbies = ref<Hobby[]>([]);
         const isAddHobbyModalVisible = ref(false);
+        const isDeleteHobbyModalVisible = ref(false);
+        const selectedHobbyId = ref<number | null>(null);
         const userId = ref(mainStore.userId);
 
         // Fetch user hobbies
@@ -54,7 +59,6 @@ export default defineComponent({
             userHobbies.value = mainStore.userHobbies as UserHobby[];
             hobbies.value = mainStore.hobbies as Hobby[];
             console.log('Hobbies in list:', hobbies.value);
-
         };
         onMounted(fetchUserHobbies);
 
@@ -70,11 +74,21 @@ export default defineComponent({
             console.log('Add Hobby Modal is visible:', isAddHobbyModalVisible.value);
         };
 
+        // Show Delete Hobby Modal
+        const showDeleteHobbyModal = (hobbyId: number) => {
+            selectedHobbyId.value = hobbyId;
+            isDeleteHobbyModalVisible.value = true;
+            console.log('Delete Hobby Modal is visible:', isDeleteHobbyModalVisible.value);
+        };
+
         return {
             userHobbies,
             hobbies,
             isAddHobbyModalVisible,
+            isDeleteHobbyModalVisible,
+            selectedHobbyId,
             showAddHobbyModal,
+            showDeleteHobbyModal,
             fetchUserHobbies,
             userId,
             filteredHobbies,
@@ -106,5 +120,15 @@ export default defineComponent({
 
 .list-group {
     width: 20rem;
+}
+
+.btn-danger,
+.btn-danger:hover {
+    background-color: red;
+    color: white;
+}
+
+.btn-danger:hover {
+    font-weight: bold;
 }
 </style>

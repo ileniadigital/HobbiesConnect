@@ -30,7 +30,7 @@ urlpatterns = [
     path('user_hobbies/', get_all_user_hobbies, name='get_user_hobby'),
     path('api/user_hobbies/add/', add_user_hobby, name='add_user_hobby'),
     path('user_hobbies/update/<int:user_hobby_id>/', update_user_hobby, name='update_user_hobby'),
-    path('user_hobbies/delete/<int:user_hobby_id>/', delete_user_hobby, name='delete_user_hobby'),
+    path('user_hobbies/delete/', delete_user_hobby, name='delete_user_hobby'),
     path('user/<int:user_id>/hobbies/', get_user_hobbies, name='get_user_hobbies'),
     # User and Hobby paths
     path('hobbies/add_user_hobby/', add_hobby_and_user_hobby, name='add_hobby_and_user_hobby'),

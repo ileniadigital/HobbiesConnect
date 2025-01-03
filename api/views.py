@@ -132,12 +132,6 @@ def add_hobby_and_user_hobby(request: HttpRequest) -> JsonResponse:
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-def page_view(request: HttpRequest) -> JsonResponse:
-    page_view = PageView.objects.first()
-    page_view.count += 1
-    page_view.save()
-    return JsonResponse({'count': page_view.count})
-
 
 def get_all_user_hobbies(request: HttpRequest) -> JsonResponse:
     '''
@@ -160,7 +154,7 @@ def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
         return JsonResponse({'error': 'User not found'}, status=404)
 
 @csrf_exempt
-def add_user_hobby(request):
+def add_user_hobby(request: HttpRequest) -> JsonResponse:
     if request.method == 'POST':
         data = json.loads(request.body)
         user_id = data.get('user_id')
@@ -187,15 +181,18 @@ def update_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
         'hobby_id': user_hobby.hobby_id
     })
 
-def delete_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
-    '''
-    Delete user hobby
-    '''
-    user_hobby = UserHobby.objects.get(id=user_hobby_id)
-    user_hobby.delete()
-    return JsonResponse({
-        'message': 'User hobby deleted successfully'
-    })
+@csrf_exempt
+def delete_user_hobby(request: HttpRequest) -> JsonResponse:
+    if request.method == 'DELETE':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        hobby_id = data.get('hobby_id')
+
+        user_hobby = get_object_or_404(UserHobby, user_id=user_id, hobby_id=hobby_id)
+        user_hobby.delete()
+
+        return JsonResponse({'message': 'User hobby deleted successfully'}, status=200)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 def get_all_friendships(request: HttpRequest) -> JsonResponse:
