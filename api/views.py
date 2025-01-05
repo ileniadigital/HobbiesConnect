@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .models import User
-from .forms import UserForm, UserAuthenticationFormfrom api.models, Hobbies, UserHobby, PageView, User, Friendship
+from .forms import UserForm, UserAuthenticationForm
+from api.models import Hobbies, UserHobby, PageView, User, Friendship
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
