@@ -4,6 +4,7 @@
 <head>
     <title>Sign Up</title>
     {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 </head>
 <body>
@@ -11,7 +12,7 @@
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Sign Up</button>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
     </form>
     <p>Don't have an account?</p>
     {% url 'login' as login_url %}
