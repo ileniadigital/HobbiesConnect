@@ -4,6 +4,7 @@
       {{ title }}
     </div>
     <hr />
+    <div class="h3">Hi, {{ name }}</div>
 
     <div class="row">
       <!-- Pending Requests -->
@@ -80,6 +81,7 @@ export default defineComponent({
 
     return {
       title: "Friend Requests",
+      name: mainStore.user.first_name,
       pendingRequests,
       acceptedRequests,
       isDeleteModalVisible,
