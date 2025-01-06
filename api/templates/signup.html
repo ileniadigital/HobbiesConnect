@@ -1,0 +1,18 @@
+<!-- signup.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>Don't have an account?</p>
+    {% url 'login' as login_url %}
+    <button onclick="window.location.href='{{ login_url }}'">Log in</button>
+</body>
+</html>
