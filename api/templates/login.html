@@ -11,5 +11,11 @@
         {{ form.as_p }}
         <button type="submit">Login</button>
     </form>
+
+    <p>Don't have an account?</p>
+    {% url 'signup' as signup_url %}
+    <button onclick="window.location.href='{{ signup_url }}'">Sign Up</button>
+
+    
 </body>
 </html>

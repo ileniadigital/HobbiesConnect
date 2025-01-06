@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.core.paginator import Paginator
 from .models import User
 from .forms import UserForm, UserAuthenticationForm
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
@@ -11,101 +11,99 @@ from api.models import Hobbies, UserHobby, PageView, User, Friendship
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
-def build_max_heap(user):
-    
-    users = User.objects.exclude(id=user.id)
+def build_max_heap(request):
+    '''
+    View to get users with the most similar hobbies using a max heap.
+    returns paginated results.
+    '''
+    # checks if user is logged in 
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'User not authenticated'}, status=401)
+
+    user = request.user
     max_heap = []
-    
-    for other_user in users:
+
+    #get all users except the current one
+    other_users = User.objects.exclude(id=user.id)
+
+    for other_user in other_users:
         common_hobbies_count = User.count_common_hobbies(user, other_user)
-        heapq.heappush(max_heap, (-common_hobbies_count, other_user))
-    
-    return max_heap
+        if common_hobbies_count > 0:
+            heapq.heappush(max_heap, (-common_hobbies_count, other_user.id))
+
+    #convert heap to a list
+    sorted_users = []
+    while max_heap:
+        common_hobbies_count, other_user_id = heapq.heappop(max_heap)
+        other_user = User.objects.get(id=other_user_id)
+        sorted_users.append({
+            'id': other_user.id,
+            'email': other_user.email,
+            'first_name': other_user.first_name,
+            'last_name': other_user.last_name,
+            'common_hobbies_count': -common_hobbies_count
+        })
+
+    #paginate results limited to 10 users
+    paginator = Paginator(sorted_users, 10)
+    page_number = request.GET.get('page', 1)
+    page = paginator.get_page(page_number)
+
+    return JsonResponse({
+        'users': list(page.object_list),
+        'has_next': page.has_next(),
+        'has_previous': page.has_previous(),
+        'page_number': page.number,
+        'total_pages': paginator.num_pages
+    })
+
+
 def signup(request):
+    '''
+    View for user signing up 
+    '''
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
-            # Save the new user
+            #save the new user
             user = form.save()
-            login(request, user)  # Log the user in immediately after registration
-            return redirect('main_spa')  # Redirect to a home page or another page
+            login(request, user) 
+            return redirect('http://localhost:5173/')  # redirect to vue page, need to sort out the logic of this as it is hardcoded
+            #return redirect('main_spa')  # Redirect to a home page
     else:
         form = UserForm()
     
     return render(request, 'signup.html', {'form': form})
 def login_view(request):
+    '''
+    View for user to log in
+    '''
     if request.method == 'POST':
         form = UserAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('main_spa')  # Redirect to a home page or another page
+            return redirect('http://localhost:5173/') # same as signup
+            #return redirect('main_spa')  # Redirect to a home page or another page
     else:
         form = UserAuthenticationForm()
     
     return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
+    '''
+    View for user to log out
+    '''
     logout(request)
     return redirect('login') 
 
-def test_max_heap_view(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
+def authenticated_view(request):
+    '''
+    View to check if user is authenticated
+    '''
+    return JsonResponse({'isAuthenticated': request.user.is_authenticated})
 
-    user = request.user
-    max_heap = build_max_heap(user)
-    sorted_heap = [(-count, other_user.email) for count, other_user in max_heap]
 
-    return JsonResponse({'max_heap': sorted_heap})
-
-def build_max_heap(user):
-    
-    users = User.objects.exclude(id=user.id)
-    max_heap = []
-    
-    for other_user in users:
-        common_hobbies_count = User.count_common_hobbies(user, other_user)
-        heapq.heappush(max_heap, (-common_hobbies_count, other_user))
-    
-    return max_heap
-def signup(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            # Save the new user
-            user = form.save()
-            login(request, user)  # Log the user in immediately after registration
-            return redirect('main_spa')  # Redirect to a home page or another page
-    else:
-        form = UserForm()
-    
-    return render(request, 'signup.html', {'form': form})
-def login_view(request):
-    if request.method == 'POST':
-        form = UserAuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('main_spa')  # Redirect to a home page or another page
-    else:
-        form = UserAuthenticationForm()
-    
-    return render(request, 'login.html', {'form': form})
-
-def logout_view(request):
-    logout(request)
-    return redirect('login') 
-
-def test_max_heap_view(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
-    user = request.user
-    max_heap = build_max_heap(user)
-    sorted_heap = [(-count, other_user.email) for count, other_user in max_heap]
-
-    return JsonResponse({'max_heap': sorted_heap})
 
 def get_all_users(request: HttpRequest) -> JsonResponse:
     '''
