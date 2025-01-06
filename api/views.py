@@ -1,7 +1,7 @@
 import heapq
 import json
 from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from .models import User
