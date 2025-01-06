@@ -22,7 +22,10 @@
                         <router-link class="nav-link" to="/friendrequests">Friend Requests</router-link>
                     </li>
                 </ul>
-                <button class="btn" @click="logout">Logout</button>
+                <!-- Login/logout button depending -->
+                <button v-if="isAuthenticated" class="btn" @click="logout">Logout</button>
+                <a v-else class="btn" href="http://127.0.0.1:8000/login">Login</a>
+
             </div>
         </div>
     </nav>
@@ -30,14 +33,37 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import axios from 'axios';
 
 export default defineComponent({
-    name: 'Header',
-    methods: {
-        logout() {
-            console.log('Logout');
-        }
+  name: 'Header',
+  data() {
+    return {
+      isAuthenticated: false,
+      userEmail: null
+    };
+  },
+  created() {
+    axios
+      .get('/api/authenticated')
+      .then(response => {
+        this.isAuthenticated = response.data.isAuthenticated;
+        this.userEmail = response.data.email;
+      })
+      .catch(() => {
+        this.isAuthenticated = false;
+        this.userEmail = null;
+      });
+  },
+  methods: {
+    logout() {
+        axios.post('/api/logout')
+            .then(() => {
+                this.isAuthenticated = false;
+                window.location.href = 'http://127.0.0.1:8000/login';  // Redirect to Django login page
+            });
     }
+  }
 });
 </script>
 
