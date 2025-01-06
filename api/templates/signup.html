@@ -9,13 +9,18 @@
 </head>
 <body>
     <h2>Sign Up</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Sign Up</button>
-    </form>
-    <p>Don't have an account?</p>
-    {% url 'login' as login_url %}
-    <button onclick="window.location.href='{{ login_url }}'">Log in</button>
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+        <div class="login-button">
+            <p>Don't have an account?</p>
+            {% url 'login' as login_url %}
+            <button onclick="window.location.href='{{ login_url }}'" class="btn btn-primary">Log in</button>
+        </div>
+    </div>
+    
 </body>
 </html>

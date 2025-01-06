@@ -1,3 +1,47 @@
 body {
+  place-content: center;
+}
+
+h2 {
+  text-align: center;
+  padding-top: 1.25rem;
+}
+
+.container {
+  width: 40%;
   background-color: #8de2cd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+label {
+  width: 7rem;
+}
+
+input {
+  width: 12rem;
+}
+
+ul {
+  background-color: white;
+  border-radius: 0.3125rem;
+  width: 30rem;
+  font-size: 0.85rem;
+}
+.btn,
+.btn:hover,
+.btn:active {
+  background-color: #fce26d;
+  border: none;
+  color: black;
+  box-shadow: 0 0 0.3125rem 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover,
+.btn:active {
+  font-weight: bold;
 }
