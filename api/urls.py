@@ -21,12 +21,12 @@ from .views import main_spa
 
 urlpatterns = [
     path('', main_spa, name='main_spa'),
+    path('spa/', main_spa, name='main_spa'),
     path('signup/', views.signup, name='signup'),
     path('login/', views.login_view, name='login'),
+    path('authenticated/', authenticated_view, name='authenticated'),
     path('logout/', views.logout_view, name='logout'),
     path('similar-users/', build_max_heap, name='similar_users'),
-    path('authenticated/', authenticated_view, name='authenticated'),
-    path('spa/', main_spa, name='main_spa'),
     # User paths
     path('user/', get_all_users, name='get_all_users'),
     path('user/<int:user_id>/', get_user_by_id, name='get_user_by_id'),

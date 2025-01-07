@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { RouterView } from "vue-router";
+import { RouterView, useRouter } from "vue-router";
 import { useMainStore } from "./data/data";
 
 import Header from "./components/Header.vue";
@@ -33,9 +33,15 @@ export default defineComponent({
     components: { RouterView, Header, Footer },
     setup() {
         const mainStore = useMainStore();
+        const router = useRouter();
 
-        onMounted(() => {
-            mainStore.fetchData();
+        onMounted(async () => {
+            const isAuthenticated = await mainStore.checkAuthentication();
+            if (!isAuthenticated) {
+                window.location.href = ('http://127.0.0.1:8000/login');
+            } else {
+                mainStore.fetchData();
+            }
         });
         return {
             user: mainStore.user,
