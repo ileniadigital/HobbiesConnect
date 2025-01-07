@@ -3,6 +3,7 @@ import json
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .models import User
 from .forms import UserForm, UserAuthenticationForm
@@ -11,6 +12,7 @@ from api.models import Hobbies, UserHobby, PageView, User, Friendship
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
+@login_required
 def build_max_heap(request):
     '''
     View to get users with the most similar hobbies using a max heap.
@@ -74,6 +76,7 @@ def signup(request):
         form = UserForm()
     
     return render(request, 'signup.html', {'form': form})
+
 def login_view(request):
     '''
     View for user to log in
@@ -90,6 +93,7 @@ def login_view(request):
     
     return render(request, 'login.html', {'form': form})
 
+@login_required
 def logout_view(request):
     '''
     View for user to log out
@@ -103,8 +107,7 @@ def authenticated_view(request):
     '''
     return JsonResponse({'isAuthenticated': request.user.is_authenticated})
 
-
-
+@login_required
 def get_all_users(request: HttpRequest) -> JsonResponse:
     '''
     Get all users
@@ -123,6 +126,7 @@ def get_all_users(request: HttpRequest) -> JsonResponse:
         })
     return JsonResponse(user_data, safe=False)
 
+@login_required
 def get_user_by_id(request: HttpRequest, user_id: int) -> JsonResponse:
     '''
     Get user by id
@@ -140,6 +144,7 @@ def get_user_by_id(request: HttpRequest, user_id: int) -> JsonResponse:
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
+@login_required
 def get_hobby(request: HttpRequest) -> JsonResponse:
     '''
     Get hobby
@@ -154,6 +159,7 @@ def get_hobby(request: HttpRequest) -> JsonResponse:
         })
     return JsonResponse(data, safe=False)
 
+@login_required
 def add_hobby(request: HttpRequest) -> JsonResponse:
     '''
     Add hobby
@@ -169,6 +175,7 @@ def add_hobby(request: HttpRequest) -> JsonResponse:
         'description': hobby.description
     })
 
+@login_required
 def update_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
     '''
     Update hobby
@@ -184,6 +191,7 @@ def update_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
         'description': hobby.description
     })
 
+@login_required
 def delete_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
     '''
     Delete hobby
@@ -194,14 +202,15 @@ def delete_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
         'message': 'Hobby deleted successfully'
     })
 
-
+@login_required 
+# DO WE NEED THIS?
 def page_view(request: HttpRequest) -> JsonResponse:
     page_view = PageView.objects.first()
     page_view.count += 1
     page_view.save()
     return JsonResponse({'count': page_view.count})
 
-
+@login_required
 def get_all_user_hobbies(request: HttpRequest) -> JsonResponse:
     '''
     Get all user hobbies
@@ -209,6 +218,7 @@ def get_all_user_hobbies(request: HttpRequest) -> JsonResponse:
     user_hobbies = UserHobby.objects.all()
     return JsonResponse({'user_hobbies': list(user_hobbies.values())})
 
+@login_required
 def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
     '''
     Get hobbies for a specific user
@@ -222,6 +232,7 @@ def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
+@login_required
 def add_user_hobby(request: HttpRequest) -> JsonResponse:
     '''
     Add user hobby
@@ -236,6 +247,7 @@ def add_user_hobby(request: HttpRequest) -> JsonResponse:
         'hobby_id': user_hobby.hobby_id
     })
 
+@login_required
 def update_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
     '''
     Update user hobby
@@ -250,6 +262,7 @@ def update_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
         'hobby_id': user_hobby.hobby_id
     })
 
+@login_required
 def delete_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
     '''
     Delete user hobby
@@ -261,6 +274,7 @@ def delete_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
     })
 
 
+@login_required
 def get_all_friendships(request: HttpRequest) -> JsonResponse:
     '''
     Get all friends
@@ -268,6 +282,7 @@ def get_all_friendships(request: HttpRequest) -> JsonResponse:
     friendships = Friendship.objects.all()
     return JsonResponse({'friendships': list(friendships.values())})
 
+@login_required
 def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
     '''
     Get user's friends
