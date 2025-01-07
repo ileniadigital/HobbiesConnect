@@ -1,5 +1,5 @@
 body {
-  place-content: center;
+  height: 100%;
 }
 
 h2 {
@@ -15,7 +15,8 @@ h2 {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  margin-top: 3rem;
+  margin: 2rem auto;
+  border-radius: 0.3125rem;
 }
 
 label {
@@ -32,6 +33,25 @@ ul {
   width: 30rem;
   font-size: 0.85rem;
 }
+
+p:has(#id_password2_helptext) {
+  display: flex;
+  flex-direction: column;
+}
+
+p:has(#id_password2) label,
+p:has(#id_password2) input {
+  display: inline-block;
+  width: auto;
+  margin-bottom: 0.5rem;
+  grid-area: "label";
+}
+
+p:has(#id_password2) small {
+  margin-top: 0.5rem;
+  display: block;
+}
+
 .btn,
 .btn:hover,
 .btn:active {
@@ -44,6 +64,28 @@ ul {
 .btn:hover,
 .btn:active {
   font-weight: bold;
+}
+
+.submit {
+  display: block;
+  margin: 0 auto;
+}
+
+.switch-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 2rem;
+}
+
+hr {
+  width: 100%;
+  margin-top: 2rem;
+}
+.switch-button p {
+  margin: 0;
 }
 /* Header */
 .custom-navbar {
