@@ -1,6 +1,6 @@
 <template>
     <div class="h3">
-        Hi, {{ name }}
+        {{ title }}
     </div>
     <!-- Add a filter -->
     <Filter @filter-age="filterFriendsByAge" />
@@ -88,7 +88,8 @@ export default defineComponent({
         };
 
         return {
-            name: mainStore.user.first_name,
+            title: "Find Friends",
+            // name: mainStore.user.first_name,
             currentPage,
             itemsPerPage,
             ageFrom,

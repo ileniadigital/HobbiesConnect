@@ -12,7 +12,7 @@ export const useMainStore = defineStore('main', {
     actions: {
         async fetchData() {
             try {
-                const userId = 1;
+                const userId = 4;
 
                 // Fetch user data
                 const userResponse = await fetch(`${BASE_URL}/user/${userId}/`);

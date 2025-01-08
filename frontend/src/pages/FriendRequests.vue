@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="h1">
+    <div class="h3">
       {{ title }}
     </div>
     <hr />
-    <div class="h3">Hi, {{ name }}</div>
+    <!-- <div class="h3">Hi, {{ name }}</div> -->
 
     <div class="row">
       <!-- Pending Requests -->
