@@ -9,6 +9,7 @@ from .forms import UserForm, UserAuthenticationForm
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
+from django.shortcuts import get_object_or_404
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
