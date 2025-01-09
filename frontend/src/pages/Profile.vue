@@ -7,7 +7,7 @@
     <!-- Profile Form -->
     <div class="row">
       <!-- <div class="col-md-12"> -->
-      <form @submit.prevent="updateUserProfile"> <!--   ADD BACK ONCE CHANGED TO AJAX-->
+      <form> <!-- @submit.prevent="updateUserProfile"   ADD BACK ONCE CHANGED TO AJAX-->
         <div class="form-row">
           <div class="form-group col-md-4">
             <label for="dob">Date of Birth:</label>
