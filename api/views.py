@@ -390,6 +390,9 @@ def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
             if not user.check_password(current_password):
                 return JsonResponse({'error': 'Current password is incorrect'}, status=400)
 
+            if not new_password:
+                return JsonResponse({'error': 'New password cannot be empty'}, status=400)
+
             user.set_password(new_password)
             user.save()
             return JsonResponse({'message': 'Password updated successfully'})
