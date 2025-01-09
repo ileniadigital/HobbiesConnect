@@ -4,20 +4,20 @@
         <div class="row">
             <form @submit.prevent="updatePassword" class="col-md-12">
                 <div class="form-row">
-                    <div class="form-group col-md-5 d-flex align-items-center">
+                    <div class="form-group col-md-8 d-flex align-items-center">
                         <label for="current_password" class="col-form-label col-md-4">Current Password</label>
-                        <div class="col-md-5">
+                        <div class="col-md-8">
                             <input type="password" v-model="currentPassword" id="current_password"
                                 class="form-control" />
                         </div>
                     </div>
-                    <div class="form-group col-md-5 d-flex align-items-center">
+                    <div class="form-group col-md-8 d-flex align-items-center">
                         <label for="new_password" class="col-form-label col-md-4">New Password</label>
-                        <div class="col-md-5">
+                        <div class="col-md-8">
                             <input type="password" v-model="newPassword" id="new_password" class="form-control" />
                         </div>
                     </div>
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-12 mt-4">
                         <button type="submit" class="btn btn-primary">Update Password</button>
                     </div>
                 </div>

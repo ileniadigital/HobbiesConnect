@@ -4,31 +4,31 @@
     <div class="row">
       <form @submit.prevent="updateUserProfile" class="col-md-12">
         <div class="form-row">
-          <div class="form-group col-md-4 d-flex align-items-center">
-            <label for="dob" class="col-form-label col-md-4">Date of Birth</label>
+          <div class="form-group col-md-6 d-flex align-items-center">
+            <label for="dob" class="col-form-label col-md-6">Date of Birth</label>
             <div class="col-md-8">
               <input type="date" v-model="dob" id="dob" class="form-control" />
             </div>
           </div>
-          <div class="form-group col-md-4 d-flex align-items-center">
-            <label for="first_name" class="col-form-label col-md-4">First Name</label>
+          <div class="form-group col-md-6 d-flex align-items-center">
+            <label for="first_name" class="col-form-label col-md-6">First Name</label>
             <div class="col-md-8">
               <input type="text" v-model="first_name" id="first_name" class="form-control" />
             </div>
           </div>
-          <div class="form-group col-md-4 d-flex align-items-center">
-            <label for="last_name" class="col-form-label col-md-4">Last Name</label>
+          <div class="form-group col-md-6 d-flex align-items-center">
+            <label for="last_name" class="col-form-label col-md-6">Last Name</label>
             <div class="col-md-8">
               <input type="text" v-model="last_name" id="last_name" class="form-control" />
             </div>
           </div>
-          <div class="form-group col-md-4 d-flex align-items-center">
-            <label for="email" class="col-form-label col-md-4">Email</label>
+          <div class="form-group col-md-6 d-flex align-items-center">
+            <label for="email" class="col-form-label col-md-6">Email</label>
             <div class="col-md-8">
               <input type="email" v-model="email" id="email" class="form-control" />
             </div>
           </div>
-          <div class="form-group col-md-12">
+          <div class="form-group col-md-12 mt-4">
             <button type="submit" class="btn btn-primary">Update Profile</button>
           </div>
         </div>
