@@ -38,41 +38,71 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useMainStore } from "../../data/data";
 
 export default defineComponent({
+  components: {
+  },
   setup() {
     const mainStore = useMainStore();
-    const dob = ref("");
+    const title = ref("Profile");
     const first_name = ref("");
     const last_name = ref("");
     const email = ref("");
-    const userId = mainStore.userId;
+    const dob = ref("");
+    const userId = ref(1); // temporary
 
     onMounted(async () => {
       await mainStore.fetchData();
       if (mainStore.user) {
-        dob.value = mainStore.user?.dob || "";
-        first_name.value = mainStore.user?.first_name || "";
-        last_name.value = mainStore.user?.last_name || "";
-        email.value = mainStore.user?.email || "";
+        first_name.value = mainStore.user.first_name || "No name";
+        last_name.value = mainStore.user.last_name || "No name";
+        email.value = mainStore.user.email || "No email";
+        dob.value = mainStore.user.dob || "No date of birth";
+        userId.value = mainStore.user.id || 1;
       }
     });
 
-    const updateUserProfile = async () => {
-      // Your update logic here
-    };
-
     return {
-      dob,
+      title,
       first_name,
       last_name,
       email,
-      updateUserProfile,
+      dob,
+      userId,
+      mainStore,
     };
   },
+  methods: {
+    async updateUserProfile() {
+      try {
+        const apiURL = `http://127.0.0.1:8000/api/user/update/${this.userId}/`;
+        console.log("Updating profile with URL:", apiURL);
+        const updated = JSON.stringify({
+          first_name: this.first_name,
+          last_name: this.last_name,
+          email: this.email,
+          dob: this.dob,
+        });
+        console.log("Sending updated data:", updated);
+        const response = await fetch(apiURL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+          body: updated,
+        });
+        if (!response.ok) {
+          throw new Error(`Error updating profile: ${response.statusText}`);
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
+    },
+  },
 });
+
 </script>
 
 <style scoped>
@@ -80,7 +110,9 @@ export default defineComponent({
   margin-bottom: 1rem;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:hover:active {
   background-color: #FCE26D;
   border: none;
   color: black;
