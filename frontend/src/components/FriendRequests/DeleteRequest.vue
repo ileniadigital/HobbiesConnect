@@ -55,7 +55,7 @@ export default defineComponent({
                     },
                     body: JSON.stringify({
                         user_id: this.userId,
-                        friend_id: this.friendId
+                        friend_id: this.friendId,
                     })
                 });
                 if (!response.ok) {

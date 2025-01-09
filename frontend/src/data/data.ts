@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia';
+import {User, Hobbies, UserHobby, Friendship} from '../utils/interfaces';
 
 const BASE_URL = "http://127.0.0.1:8000/api";
 export const useMainStore = defineStore('main', {
     state: () => ({
-        user: [], // Get id from log in
+        user: null as User | null, 
         userId: 1,
-        hobbies: [],
-        userHobbies: [],
-        friends: [],
+        hobbies: [] as Hobbies[],
+        userHobbies: [] as UserHobby[],
+        friends: [] as Friendship[], 
     }),
     actions: {
         async fetchData() {
@@ -19,7 +20,7 @@ export const useMainStore = defineStore('main', {
                 if (!userResponse.ok) {
                     throw new Error('Failed to fetch user data');
                 }
-                this.user = await userResponse.json();
+                this.user = await userResponse.json() as User;
                 this.userId = this.user.id;
                 console.log("User data", this.user);
 
@@ -28,7 +29,7 @@ export const useMainStore = defineStore('main', {
                 if (!hobbiesResponse.ok) {
                     throw new Error('Failed to fetch hobbies data');
                 }
-                this.hobbies = await hobbiesResponse.json();
+                this.hobbies = await hobbiesResponse.json() as Hobbies[];
                 console.log("Hobbies data", this.hobbies);
 
                 // Fetch user hobbies data
@@ -36,7 +37,7 @@ export const useMainStore = defineStore('main', {
                 if (!userHobbiesResponse.ok) {
                     throw new Error('Failed to fetch user hobbies data');
                 }
-                this.userHobbies = await userHobbiesResponse.json();
+                this.userHobbies = await userHobbiesResponse.json() as UserHobby[];
                 console.log("Hobbies user data", this.userHobbies);
 
                 // Fetch friends data
@@ -44,7 +45,7 @@ export const useMainStore = defineStore('main', {
                 if (!friendshipResponse.ok) {
                     throw new Error('Failed to fetch friends data');
                 }
-                this.friends = await friendshipResponse.json();
+                this.friends = await friendshipResponse.json() as Friendship[];
                 console.log("Friends data", this.friends);
             } catch (error) {
                 console.error("Can't fetch initial data", error);

@@ -11,7 +11,7 @@
           <div class="form-row vertical">
             <div class="form-field">
               <label for="dob">Date of Birth:</label>
-              <input type="date" v-model="dateofbirth" id="dob" />
+              <input type="date" v-model="dob" id="dob" />
             </div>
             <div class="form-field">
               <label for="name">Name</label>
@@ -40,7 +40,7 @@
 
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useMainStore } from "../data/data";
 import HobbyList from "../components/Profile/HobbyList.vue";
 import UpdatePassword from "../components/Profile/UpdatePassword.vue";
@@ -50,50 +50,68 @@ export default defineComponent({
     HobbyList,
     UpdatePassword,
   },
-  data() {
+  setup() {
     const mainStore = useMainStore();
+
+    const title = ref("Profile");
+    const name = ref("");
+    const email = ref("");
+    const dob = ref("");
+    const userId = ref(1); // temporary
+
+    onMounted(async () => {
+      await mainStore.fetchData();
+      if (mainStore.user) {
+        name.value = mainStore.user.first_name || "No name";
+        email.value = mainStore.user.email || "No email";
+        dob.value = mainStore.user.dob || "No date of birth";
+        userId.value = mainStore.user.id || 1;
+      }
+    });
+
     return {
-      title: "Profile",
-      name: mainStore.user.first_name,
-      email: "",
-      dateofbirth: "",
-      userId: 1, // temporary 
+      title,
+      name,
+      email,
+      dob,
+      userId,
+      mainStore,
     };
   },
-  // methods: {
-  //   async fetchUserProfile() {
-  //     try {
-  //       const response = await axios.get(`/api/users/${this.userId}/`);
-  //       const user = response.data;
-  //       this.name = user.first_name + " " + user.last_name;
-  //       this.email = user.email;
-  //       this.dateofbirth = user.dob;
-  //     } catch (error) {
-  //       console.error("Error fetching user profile:", error);
-  //     }
-  //   },
-  //   async updateUserProfile() {
-  //     try {
-  //       const [firstName, ...lastNameParts] = this.name.split(" ");
-  //       const lastName = lastNameParts.join(" ");
-  //       const data = {
-  //         first_name: firstName,
-  //         last_name: lastName,
-  //         email: this.email,
-  //         dob: this.dateofbirth,
-  //       };
-  //       await axios.put(`/api/users/${this.userId}/`, data);
-  //       alert("Profile updated successfully!");
-  //     } catch (error) {
-  //       console.error("Error updating profile:", error);
-  //       alert("Failed to update profile.");
-  //     }
-  //   },
-  // },
-  // mounted() {
-  //   this.fetchUserProfile();
-  // },
 });
+// methods: {
+//   async fetchUserProfile() {
+//     try {
+//       const response = await axios.get(`/api/users/${this.userId}/`);
+//       const user = response.data;
+//       this.name = user.first_name + " " + user.last_name;
+//       this.email = user.email;
+//       this.dateofbirth = user.dob;
+//     } catch (error) {
+//       console.error("Error fetching user profile:", error);
+//     }
+//   },
+//   async updateUserProfile() {
+//     try {
+//       const [firstName, ...lastNameParts] = this.name.split(" ");
+//       const lastName = lastNameParts.join(" ");
+//       const data = {
+//         first_name: firstName,
+//         last_name: lastName,
+//         email: this.email,
+//         dob: this.dateofbirth,
+//       };
+//       await axios.put(`/api/users/${this.userId}/`, data);
+//       alert("Profile updated successfully!");
+//     } catch (error) {
+//       console.error("Error updating profile:", error);
+//       alert("Failed to update profile.");
+//     }
+//   },
+// },
+// mounted() {
+//   this.fetchUserProfile();
+// },
 </script>
 
 
