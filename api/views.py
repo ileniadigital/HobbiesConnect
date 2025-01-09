@@ -330,7 +330,7 @@ def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
     """
     Update user profile by ID
     """
-    if request.method == 'POST':
+    if request.method == 'PUT':
         try:
             user = User.objects.get(id=user_id)
             data = json.loads(request.body)

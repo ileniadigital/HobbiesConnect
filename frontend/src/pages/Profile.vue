@@ -7,23 +7,7 @@
     <!-- Profile Form -->
     <div class="row">
       <!-- <div class="col-md-12"> -->
-        <form @submit.prevent="updateUserProfile"> <!--   ADD BACK ONCE CHANGED TO AJAX-->
-          <div class="form-row">
-            <div class="form-group col-md-4">
-              <label for="dob">Date of Birth:</label>
-              <input type="date" v-model="dob" id="dob" />
-            </div>
-            <div class="form-group col-md-4">
-              <label for="name">Name</label>
-              <input type="text" v-model="name" id="name" />
-            </div>
-            <div class="form-group col-md-4">
-              <label for="email">Email</label>
-              <input type="email" v-model="email" id="email" />
-            </div>
-            <button type="submit" class="btn btn-primary">Update Profile</button>
-          </div>
-        </form>
+        <UpdateProfile />
       <!-- </div> -->
     </div>
     <!-- Update Password -->
@@ -40,42 +24,20 @@
 
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import { useMainStore } from "../data/data";
+import { defineComponent } from "vue";
 import HobbyList from "../components/Profile/HobbyList.vue";
 import UpdatePassword from "../components/Profile/UpdatePassword.vue";
+import UpdateProfile from "../components/Profile/UpdateProfile.vue";
 
 export default defineComponent({
   components: {
     HobbyList,
     UpdatePassword,
+    UpdateProfile,
   },
-  setup() {
-    const mainStore = useMainStore();
-
-    const title = ref("Profile");
-    const name = ref("");
-    const email = ref("");
-    const dob = ref("");
-    const userId = ref(1); // temporary
-
-    onMounted(async () => {
-      await mainStore.fetchData();
-      if (mainStore.user) {
-        name.value = mainStore.user.first_name || "No name";
-        email.value = mainStore.user.email || "No email";
-        dob.value = mainStore.user.dob || "No date of birth";
-        userId.value = mainStore.user.id || 1;
-      }
-    });
-
+  data() {
     return {
-      title,
-      name,
-      email,
-      dob,
-      userId,
-      mainStore,
+      title: "Profile",
     };
   },
 });
