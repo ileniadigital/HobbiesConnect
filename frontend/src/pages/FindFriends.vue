@@ -11,7 +11,7 @@
         </div>
     </div>
     <div v-else class="alert alert-info mt-3">
-        No recommendations available
+        No similar friends available
     </div>
     <!-- Pagination -->
     <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="changePage" />
