@@ -6,14 +6,14 @@
 
     <!-- Profile Form -->
     <div class="row">
-      <!-- <div class="col-md-12"> -->
-      <UpdateProfile />
-      <!-- </div> -->
+      <div class="col-md-6">
+        <UpdateProfile />
+      </div>
+      <div class="col-md-6">
+        <UpdatePassword />
+      </div>
     </div>
-    <!-- Update Password -->
-    <div class="updatepassword">
-      <UpdatePassword />
-    </div>
+    <hr>
     <!-- List of Hobbies -->
     <div class="hobbylist">
       <HobbyList />

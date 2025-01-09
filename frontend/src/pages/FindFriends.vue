@@ -5,8 +5,13 @@
     <!-- Add a filter -->
     <Filter @filter-age="filterFriendsByAge" />
     <!-- Friends List -->
-    <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.name">
-        <Friend :name="friend.name" :hobbies="friend.hobbies" :age="friend.age" />
+    <div v-if="paginatedFriends.length > 0">
+        <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.name">
+            <Friend :name="friend.name" :hobbies="friend.hobbies" :age="friend.age" />
+        </div>
+    </div>
+    <div v-else class="alert alert-info mt-3">
+        No similar friends available
     </div>
     <!-- Pagination -->
     <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="changePage" />
