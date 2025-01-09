@@ -352,6 +352,15 @@ def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
             user = User.objects.get(id=user_id)
             data = json.loads(request.body)
 
+            # Validate fields
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            dob = data.get('dob')
+
+            if not first_name or not last_name or not email or not dob:
+                return JsonResponse({'error': 'All fields are required and cannot be empty'}, status=400)
+            
             # Update user fields
             user.first_name = data.get('first_name', user.first_name)
             user.last_name = data.get('last_name', user.last_name)
@@ -371,6 +380,10 @@ def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
             })
         except User.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 

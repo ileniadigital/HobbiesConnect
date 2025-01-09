@@ -33,6 +33,7 @@
           </div>
         </div>
       </form>
+      <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
@@ -42,8 +43,6 @@ import { defineComponent, onMounted, ref } from "vue";
 import { useMainStore } from "../../data/data";
 
 export default defineComponent({
-  components: {
-  },
   setup() {
     const mainStore = useMainStore();
     const title = ref("Profile");
@@ -52,6 +51,7 @@ export default defineComponent({
     const email = ref("");
     const dob = ref("");
     const userId = ref(1); // temporary
+    const errorMessage = ref("");
 
     onMounted(async () => {
       await mainStore.fetchData();
@@ -64,26 +64,15 @@ export default defineComponent({
       }
     });
 
-    return {
-      title,
-      first_name,
-      last_name,
-      email,
-      dob,
-      userId,
-      mainStore,
-    };
-  },
-  methods: {
-    async updateUserProfile() {
+    const updateUserProfile = async () => {
       try {
-        const apiURL = `http://127.0.0.1:8000/api/user/update/${this.userId}/`;
+        const apiURL = `http://127.0.0.1:8000/api/user/update/${mainStore.userId}/`;
         console.log("Updating profile with URL:", apiURL);
         const updated = JSON.stringify({
-          first_name: this.first_name,
-          last_name: this.last_name,
-          email: this.email,
-          dob: this.dob,
+          first_name: first_name.value,
+          last_name: last_name.value,
+          email: email.value,
+          dob: dob.value,
         });
         console.log("Sending updated data:", updated);
         const response = await fetch(apiURL, {
@@ -94,12 +83,33 @@ export default defineComponent({
           body: updated,
         });
         if (!response.ok) {
-          throw new Error(`Error updating profile: ${response.statusText}`);
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Error updating profile: ${response.statusText}`);
         }
+        errorMessage.value = ''; // Clear any previous error messages
+        // Handle successful profile update
+
       } catch (error) {
         console.error("Error updating profile:", error);
+        if (error instanceof Error) {
+          errorMessage.value = error.message;
+        } else {
+          errorMessage.value = String(error);
+        }
       }
-    },
+    };
+
+    return {
+      title,
+      first_name,
+      last_name,
+      email,
+      dob,
+      userId,
+      mainStore,
+      errorMessage,
+      updateUserProfile,
+    };
   },
 });
 
