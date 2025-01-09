@@ -67,8 +67,8 @@ export default defineComponent({
     const fetchFriends = async () => {
       await mainStore.fetchData();
       friends.value = mainStore.friends;
-      pendingRequests.value = friends.value.filter(friend => !friend.accepted);
-      acceptedRequests.value = friends.value.filter(friend => friend.accepted);
+      pendingRequests.value = friends.value.filter(friend => !friend.accepted && friend.status === "PENDING");
+      acceptedRequests.value = friends.value.filter(friend => friend.accepted || friend.status === "ACCEPTED");
     };
 
     const openDeleteModal = (friendId: number, status: string) => {
@@ -81,7 +81,7 @@ export default defineComponent({
 
     return {
       title: "Friend Requests",
-      name: mainStore.user.first_name,
+      // name: mainStore.user.first_name,
       pendingRequests,
       acceptedRequests,
       isDeleteModalVisible,
