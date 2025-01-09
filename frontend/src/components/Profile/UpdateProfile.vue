@@ -38,16 +38,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { useMainStore } from "../../data/data";
 
 export default defineComponent({
   setup() {
     const mainStore = useMainStore();
-    const dob = ref(mainStore.user?.dob || "");
-    const first_name = ref(mainStore.user?.first_name || "");
-    const last_name = ref(mainStore.user?.last_name || "");
-    const email = ref(mainStore.user?.email || "");
+    const dob = ref("");
+    const first_name = ref("");
+    const last_name = ref("");
+    const email = ref("");
+    const userId = mainStore.userId;
+
+    onMounted(async () => {
+      await mainStore.fetchData();
+      if (mainStore.user) {
+        dob.value = mainStore.user?.dob || "";
+        first_name.value = mainStore.user?.first_name || "";
+        last_name.value = mainStore.user?.last_name || "";
+        email.value = mainStore.user?.email || "";
+      }
+    });
 
     const updateUserProfile = async () => {
       // Your update logic here
