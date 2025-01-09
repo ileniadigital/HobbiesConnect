@@ -22,6 +22,7 @@
                     </div>
                 </div>
             </form>
+            <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
         </div>
     </div>
 </template>
@@ -35,6 +36,7 @@ export default defineComponent({
         const mainStore = useMainStore();
         const currentPassword = ref("");
         const newPassword = ref("");
+        const errorMessage = ref("");
 
         const updatePassword = async () => {
             try {
@@ -56,9 +58,10 @@ export default defineComponent({
 
                 const data = await response.json();
                 console.log("Password updated:", data);
-                alert("Password updated successfully");
-            } catch (error) {
+                errorMessage.value = "";
+            } catch (error: any) {
                 console.error('There was a problem with the fetch operation:', error);
+                errorMessage.value = error.message;
             }
         };
 
@@ -66,6 +69,7 @@ export default defineComponent({
             currentPassword,
             newPassword,
             updatePassword,
+            errorMessage
         };
     },
 });
@@ -76,7 +80,9 @@ export default defineComponent({
     margin-bottom: 1rem;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:hover:active {
     background-color: #FCE26D;
     border: none;
     color: black;
