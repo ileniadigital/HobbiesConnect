@@ -1,135 +1,154 @@
 <template>
-    <div class="main">
-        <button class="btn btn-primary updatepassword" v-if="!showForm" @click="toggleForm">Update Password</button>
+    <div>
+        <button class="btn btn-primary updatepassword" @click="openModal">Update Password</button>
 
-        <div v-else>
-            <form @submit.prevent="updatePassword" class="d-flex flex-column">
+        <!-- Modal -->
+        <div v-if="visible" class="modal fade show" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Password</h5>
+                <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form @submit.prevent="updatePassword" class="d-flex flex-column">
                 <div class="d-flex flex-column align-items-end">
                     <div>
-                        <label for="currentPassword">Current Password:</label>
-                        <input type="password" id="currentPassword" v-model="currentPassword" required>
+                    <label for="currentPassword">Current Password:</label>
+                    <input type="password" id="currentPassword" v-model="currentPassword" required>
                     </div>
                     <div>
-                        <label for="newPassword">New Password:</label>
-                        <input type="password" id="newPassword" v-model="newPassword" required>
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" id="newPassword" v-model="newPassword" required>
                     </div>
                     <div>
-                        <label for="confirmNewPassword">Confirm New Password:</label>
-                        <input type="password" id="confirmNewPassword" v-model="confirmNewPassword" required>
+                    <label for="confirmNewPassword">Confirm New Password:</label>
+                    <input type="password" id="confirmNewPassword" v-model="confirmNewPassword" required>
                     </div>
                 </div>
                 <div class="formaction d-inline-flex gap-1 d-flex justify-content-center">
                     <button class="btn confirm p-2" type="submit">Confirm</button>
-                    <button class="btn cancel p-2" type="button" @click="cancelUpdate">Cancel</button>
+                    <button class="btn cancel p-2" type="button" @click="closeModal">Cancel</button>
                 </div>
                 <div v-if="message" class="alert alert-danger mt-2">{{ message }}</div>
-            </form>
+                </form>
+            </div>
+            </div>
+        </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from "vue";
+import { useMainStore } from "../../data/data";
 
 export default defineComponent({
-    data() {
-        return {
-            showForm: false,
-            currentPassword: '',
-            newPassword: '',
-            confirmNewPassword: '',
-            message: ''
+    setup() {
+        const mainStore = useMainStore();
+        const visible = ref(false);
+        const currentPassword = ref("");
+        const newPassword = ref("");
+        const confirmNewPassword = ref("");
+        const message = ref<string | null>(null);
+        const userId = mainStore.userId;
+
+        const openModal = () => {
+            visible.value = true;
         };
-    },
-    methods: {
-        toggleForm() {
-            this.showForm = !this.showForm;
-        },
-        async updatePassword() {
-            if (this.newPassword !== this.confirmNewPassword) {
-                this.message = 'New passwords do not match';
+
+        const closeModal = () => {
+            visible.value = false;
+            message.value = null;
+            currentPassword.value = "";
+            newPassword.value = "";
+            confirmNewPassword.value = "";
+        };
+
+        const updatePassword = async () => {
+            if (newPassword.value !== confirmNewPassword.value) {
+                message.value = "New passwords do not match.";
                 return;
             }
-
+            console.log(`http://127.0.0.1:8000/api/user/update_password/${userId}/`);
+            console.log("Current Password:", currentPassword.value);
+            console.log("New Password:", newPassword.value);
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/update_password/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        current_password: this.currentPassword,
-                        new_password: this.newPassword
-                    })
+                const response = await fetch(`http://127.0.0.1:8000/api/user/update_password/${userId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    current_password: currentPassword.value,
+                    new_password: newPassword.value,
+                }),
                 });
-
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    this.message = errorData.message || 'Failed to update password';
-                    return;
+                const errorData = await response.json();
+                message.value = errorData.message || 'Failed to update password';
+                return;
                 }
-
-                alert('Password updated successfully');
-                this.resetForm();
+                message.value = "Password updated successfully!";
+                closeModal();
             } catch (error) {
-                this.message = 'An error occurred while updating the password';
-                console.error('There was a problem with the fetch operation:', error);
+                if (error instanceof Error) {
+                console.error("Error updating profile:", error.message);
+                message.value = error.message;
+                } else {
+                console.error("Error updating profile:", String(error));
+                message.value = String(error);
+                }
             }
-        },
-        cancelUpdate() {
-            this.resetForm();
-            this.showForm = false;
-        },
-        resetForm() {
-            this.currentPassword = '';
-            this.newPassword = '';
-            this.confirmNewPassword = '';
-            this.message = '';
-            this.showForm = false;
-        }
-    }
+        };
+
+        return {
+            visible,
+            currentPassword,
+            newPassword,
+            confirmNewPassword,
+            message,
+            openModal,
+            closeModal,
+            updatePassword,
+        };
+    },
 });
 </script>
 
 <style scoped>
-.btn,
-.btn:active,
-.btn:hover {
-    padding: 0.5rem 1rem;
+.modal-content {
+padding: 1.25rem;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active {
     background-color: #FCE26D;
     border: none;
     color: black;
 }
 
-.btn:hover {
+.btn-primary:hover,
+.btn-primary:active {
     font-weight: bold;
 }
 
-.btn.cancel {
-    background-color: #ca3f3f;
-    color: white;
-}
-
-.btn.confirm {
-    background-color: #1e823a;
-    color: white;
-}
-
-.formaction {
+.formaction{
     margin-top: 1rem;
 }
 
-form>div {
-    float: right;
+.confirm{
+    background-color: #2c8713;
+    color: black;
 }
 
-form {
-    margin-top: 1rem;
-    border: 1px solid grey;
-    border-radius: 0.5rem;
-    border-color: grey;
-    padding: 1rem;
-    width: fit-content;
-    height: fit-content;
+.cancel{
+    background-color: #ff0000;
+    color: black;
+}
+.confirm:hover, .cancel:hover{
+    border-color: black;
+    font-weight: bold;
 }
 </style>

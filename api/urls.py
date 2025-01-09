@@ -31,6 +31,8 @@ urlpatterns = [
     path('user/', get_all_users, name='get_all_users'),
     path('user/<int:user_id>/', get_user_by_id, name='get_user_by_id'),
     path('user/update/<int:user_id>/', update_user_profile, name='update_user'),
+    path('user/update_password/<int:user_id>/', update_user_password, name='update_user_password'),
+    path('user/get_user_id', get_user_id, name='get_user_id'),
     # Hobby paths
     path('hobbies/', get_hobby, name='get_hobby'),
     path('hobbies/add/', add_hobby, name='add_hobby'),
