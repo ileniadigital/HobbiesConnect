@@ -5,10 +5,11 @@
     </div>
     <!-- Hobbies list -->
     <ul class="list-group">
-        <li class="list-group-item" v-for="uHobby in userHobbies" :key="uHobby.hobby_id">
+        <li class="list-group-item" v-for="uHobby in userHobbies" :key="uHobby.hobby.id">
             <div class="d-flex justify-content-between">
-                {{ uHobby.hobby }}
-                <button class="btn btn-danger btn-sm" @click="showDeleteHobbyModal(uHobby.hobby_id)">Delete</button>
+                {{ uHobby.hobby.name }}
+                <button class="btn btn-danger btn-sm"
+                    @click="showDeleteHobbyModal(userId, uHobby.hobby.id)">Delete</button>
             </div>
         </li>
         <li v-if="userHobbies.length === 0" class="list-group-item">No hobbies found.</li>
@@ -26,18 +27,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useMainStore } from "../../data/data";
 import AddHobby from "./AddHobby.vue";
 import DeleteHobby from "./DeleteHobby.vue";
-
-interface UserHobby {
-    hobby_id: number;
-    hobby: string;
-    description: string;
-}
-
-interface Hobby {
-    id: number;
-    name: string;
-    description: string;
-}
+import { UserHobby } from "../../utils/interfaces";
 
 export default defineComponent({
     components: {
@@ -47,53 +37,48 @@ export default defineComponent({
     setup() {
         const mainStore = useMainStore();
         const userHobbies = ref<UserHobby[]>([]);
-        const hobbies = ref<Hobby[]>([]);
         const isAddHobbyModalVisible = ref(false);
         const isDeleteHobbyModalVisible = ref(false);
         const selectedHobbyId = ref<number | null>(null);
         const userId = ref(mainStore.userId);
 
-        // Fetch user hobbies
         const fetchUserHobbies = async () => {
             await mainStore.fetchData();
-            userHobbies.value = mainStore.userHobbies as UserHobby[];
-            hobbies.value = mainStore.hobbies as Hobby[];
-            console.log('Hobbies in list:', hobbies.value);
+            userHobbies.value = mainStore.userHobbies;
         };
-        onMounted(fetchUserHobbies);
 
         // Filter hobbies to existing ones from master list the user does not have
         const filteredHobbies = () => {
-            const userHobbyIds = userHobbies.value.map(uHobby => uHobby.hobby_id);
-            return hobbies.value.filter(hobby => !userHobbyIds.includes(hobby.id));
+            const userHobbyIds = userHobbies.value.map(uHobby => uHobby.hobby.id);
+            return mainStore.hobbies.filter(hobby => !userHobbyIds.includes(hobby.id));
         };
 
-        // Show Add Hobby Modal
         const showAddHobbyModal = () => {
             isAddHobbyModalVisible.value = true;
-            console.log('Add Hobby Modal is visible:', isAddHobbyModalVisible.value);
         };
 
-        // Show Delete Hobby Modal
-        const showDeleteHobbyModal = (hobbyId: number) => {
+        const showDeleteHobbyModal = (userHobbyId: number, hobbyId: number) => {
+            userId.value = userHobbyId;
             selectedHobbyId.value = hobbyId;
             isDeleteHobbyModalVisible.value = true;
-            console.log('Delete Hobby Modal is visible:', isDeleteHobbyModalVisible.value);
+            console.log("Selected hobby id:", selectedHobbyId.value);
+            console.log("User id:", userId.value);
         };
+
+        onMounted(fetchUserHobbies);
 
         return {
             userHobbies,
-            hobbies,
             isAddHobbyModalVisible,
             isDeleteHobbyModalVisible,
             selectedHobbyId,
+            userId,
+            fetchUserHobbies,
             showAddHobbyModal,
             showDeleteHobbyModal,
-            fetchUserHobbies,
-            userId,
             filteredHobbies,
         };
-    }
+    },
 });
 </script>
 
