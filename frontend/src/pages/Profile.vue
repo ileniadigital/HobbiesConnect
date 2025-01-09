@@ -7,7 +7,7 @@
     <!-- Profile Form -->
     <div class="row">
       <!-- <div class="col-md-12"> -->
-        <UpdateProfile />
+      <UpdateProfile />
       <!-- </div> -->
     </div>
     <!-- Update Password -->
