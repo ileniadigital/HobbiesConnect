@@ -1,6 +1,6 @@
 <template>
     <div class="h3">
-        Hi, {{ name }}
+        {{ title }}
     </div>
     <!-- Add a filter -->
     <Filter @filter-age="filterFriendsByAge" />
@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import { useMainStore } from "../data/data";
 import Filter from "../components/Filter.vue";
 import Friend from "../components/Friend.vue";
 import Pagination from "../components/Pagination.vue";
@@ -26,11 +27,13 @@ export default defineComponent({
 
     },
     setup() {
+        const mainStore = useMainStore();
         const currentPage = ref(1);
         const itemsPerPage = ref(10);
         const ageFrom = ref(0);
         const ageTo = ref(Infinity);
 
+        // CHANGE THIS TO GET IT FROM MAIN STORE
         const friends = ref([
             { name: "Alice", age: 25, hobbies: ["reading", "hiking"] },
             { name: "Bob", age: 30, hobbies: ["swimming", "biking"] },
@@ -85,7 +88,8 @@ export default defineComponent({
         };
 
         return {
-            name: "Ilenia", // Change this to dynamic data
+            title: "Find Friends",
+            // name: mainStore.user.first_name,
             currentPage,
             itemsPerPage,
             ageFrom,
