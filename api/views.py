@@ -77,6 +77,7 @@ def signup(request):
         form = UserForm()
     
     return render(request, 'signup.html', {'form': form})
+
 def login_view(request):
     '''
     View for user to log in
