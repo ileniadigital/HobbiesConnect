@@ -88,7 +88,6 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error(`Error updating profile: ${response.statusText}`);
         }
-        alert("Profile updated successfully!");
       } catch (error) {
         console.error("Error updating profile:", error);
       }
