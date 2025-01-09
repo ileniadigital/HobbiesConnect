@@ -14,7 +14,6 @@
     <div class="updatepassword">
       <UpdatePassword />
     </div>
-
     <!-- List of Hobbies -->
     <div class="hobbylist">
       <HobbyList />
@@ -45,6 +44,10 @@ export default defineComponent({
 
 
 <style scoped>
+.updatepassword {
+  margin: 2rem 0 2rem 0;
+}
+
 .hobbylist {
   margin: 2rem 0 2rem 0;
 }

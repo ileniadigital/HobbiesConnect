@@ -384,9 +384,13 @@ def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
         try:
             user = User.objects.get(id=user_id)
             data = json.loads(request.body)
-            if not user.check_password(data['current_password']):
+            current_password = data.get('current_password')
+            new_password = data.get('new_password')
+
+            if not user.check_password(current_password):
                 return JsonResponse({'error': 'Current password is incorrect'}, status=400)
-            user.set_password(data['new_password'])
+
+            user.set_password(new_password)
             user.save()
             return JsonResponse({'message': 'Password updated successfully'})
         except User.DoesNotExist:
@@ -394,7 +398,6 @@ def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
-            logger.error(f"Error updating password: {str(e)}")
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
