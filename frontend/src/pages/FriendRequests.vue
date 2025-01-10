@@ -74,7 +74,16 @@ export default defineComponent({
 
     return {
       title: "Friend Requests",
-    }
+      // name: mainStore.user?.first_name,
+      pendingRequests,
+      acceptedRequests,
+      isDeleteModalVisible,
+      selectedFriendId,
+      selectedStatus,
+      userId,
+      openDeleteModal,
+      fetchFriends,
+    };
   }
 });
 </script>

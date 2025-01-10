@@ -2,7 +2,7 @@
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title">{{ name }} {{ age }}</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">{{ hobbies.join(', ') }}</h6>
+            <!-- <h6 class="card-subtitle mb-2 text-body-secondary">{{ hobbies.join(', ') }}</h6> -->
         </div>
         <AddFriend />
     </div>
@@ -22,10 +22,11 @@ export default defineComponent({
             type: String,
             required: true
         },
-        hobbies: {
-            type: Array as PropType<string[]>,
-            required: true
-        },
+        // hobbies: {
+        //     type: Array as PropType<string[]>,
+        //     required: true,
+        //     default: () => []
+        // },
         age: {
             type: Number,
             required: true

@@ -8,10 +8,11 @@ export const useMainStore = defineStore('main', {
         userId: 4,
         hobbies: [] as Hobbies[],
         userHobbies: [] as UserHobby[],
-        friends: [] as Friendship[], 
+        friends: [] as Friendship[],
+        isAuthenticated: false 
     }),
     actions: {
-        async checkAuthentication() {
+        async checkAuthentication() : Promise<boolean> {
             try {
                 const response = await fetch(`${BASE_URL}/authenticated/`);
                 const data = await response.json();

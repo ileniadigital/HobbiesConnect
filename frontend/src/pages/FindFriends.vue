@@ -1,111 +1,115 @@
 <template>
-    <div class="h3">
-        {{ title }}
-    </div>
-    <!-- Add a filter -->
-    <Filter @filter-age="filterFriendsByAge" />
-    <!-- Friends List -->
-    <div v-if="paginatedFriends.length > 0">
-        <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.name">
-            <Friend :name="friend.name" :hobbies="friend.hobbies" :age="friend.age" />
+    <div>
+        <div class="h3">{{ title }}</div>
+        <!-- Add a filter -->
+        <Filter @filter-age="filterFriendsByAge" />
+        <!-- Friends List -->
+        <div v-if="paginatedFriends.length > 0">
+            <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.id">
+                <Friend :name="friend.first_name + ' ' + friend.last_name" :age="friend.age || 0" />
+                <p>Common Hobbies: {{ friend.common_hobbies_count }}</p>
+            </div>
         </div>
+        <div v-else class="alert alert-info mt-3">
+            No similar friends available
+        </div>
+        <!-- Pagination -->
+        <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="changePage" />
     </div>
-    <div v-else class="alert alert-info mt-3">
-        No similar friends available
-    </div>
-    <!-- Pagination -->
-    <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="changePage" />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useMainStore } from "../data/data";
 import Filter from "../components/Filter.vue";
 import Friend from "../components/Friend.vue";
 import Pagination from "../components/Pagination.vue";
+import { User } from "../utils/interfaces";
 
 export default defineComponent({
     components: {
         Filter,
         Friend,
         Pagination,
-
     },
     setup() {
         const mainStore = useMainStore();
-        const currentPage = ref(1);
-        const itemsPerPage = ref(10);
-        const ageFrom = ref(0);
-        const ageTo = ref(Infinity);
+        const similarUsers = ref<User[]>([]);
+        const filteredFriends = ref<User[]>([]);
+        const paginatedFriends = ref<User[]>([]);
+        const errorMessage = ref<string>('');
+        const currentPage = ref<number>(1);
+        const itemsPerPage = ref<number>(10);
+        const ageFrom = ref<number>(0);
+        const ageTo = ref<number>(Infinity);
 
-        // CHANGE THIS TO GET IT FROM MAIN STORE
-        const friends = ref([
-            { name: "Alice", age: 25, hobbies: ["reading", "hiking"] },
-            { name: "Bob", age: 30, hobbies: ["swimming", "biking"] },
-            { name: "Charlie", age: 35, hobbies: ["cooking", "painting"] },
-            { name: "David", age: 40, hobbies: ["gardening", "fishing"] },
-            { name: "Eve", age: 22, hobbies: ["dancing", "singing"] },
-            { name: "Frank", age: 28, hobbies: ["running", "gaming"] },
-            { name: "Grace", age: 32, hobbies: ["writing", "traveling"] },
-            { name: "Hank", age: 27, hobbies: ["photography", "skiing"] },
-            { name: "Ivy", age: 24, hobbies: ["knitting", "yoga"] },
-            { name: "Jack", age: 29, hobbies: ["surfing", "climbing"] },
-            { name: "Karen", age: 31, hobbies: ["drawing", "sculpting"] },
-            { name: "Leo", age: 26, hobbies: ["fishing", "hiking"] },
-            { name: "Mona", age: 33, hobbies: ["baking", "gardening"] },
-            { name: "Nate", age: 34, hobbies: ["cycling", "swimming"] },
-            { name: "Olivia", age: 23, hobbies: ["reading", "writing"] },
-            { name: "Paul", age: 36, hobbies: ["gaming", "coding"] },
-            { name: "Quinn", age: 37, hobbies: ["painting", "dancing"] },
-            { name: "Rachel", age: 38, hobbies: ["singing", "acting"] },
-            { name: "Steve", age: 39, hobbies: ["cooking", "biking"] },
-            { name: "Tina", age: 40, hobbies: ["yoga", "meditation"] },
-            { name: "Uma", age: 41, hobbies: ["hiking", "camping"] },
-            { name: "Victor", age: 42, hobbies: ["running", "swimming"] },
-            { name: "Wendy", age: 43, hobbies: ["gardening", "knitting"] },
-            { name: "Xander", age: 44, hobbies: ["climbing", "surfing"] },
-            { name: "Yara", age: 45, hobbies: ["painting", "drawing"] },
-            { name: "Zane", age: 46, hobbies: ["gaming", "coding"] }
-        ]);
-        const filteredFriends = computed(() => {
-            return friends.value.filter(friend => friend.age >= ageFrom.value && friend.age <= ageTo.value);
-        });
+        const fetchSimilarUsers = async () => {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/similar-users/${mainStore.userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch similar users');
+                }
+                const data = await response.json();
+                similarUsers.value = data.users;
+                filterFriendsByAge(); // Initial filter
+            } catch (error) {
+                console.error('Error fetching similar users:', error);
+                errorMessage.value = 'Error fetching similar users';
+            }
+        };
 
-        const paginatedFriends = computed(() => {
+        const filterFriendsByAge = (ageFrom = 0, ageTo = 100) => {
+            filteredFriends.value = similarUsers.value.filter(friend => {
+                const age = calculateAge(friend.dob);
+                friend.age = age; // Ensure age is set
+                return age >= ageFrom && age <= ageTo;
+            });
+            currentPage.value = 1; // Reset to first page after filtering
+            paginateFriends();
+        };
+
+        const calculateAge = (dob?: string): number => {
+            if (!dob) return 0;
+            const birthDate = new Date(dob);
+            const ageDifMs = Date.now() - birthDate.getTime();
+            const ageDate = new Date(ageDifMs);
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        };
+
+        const paginateFriends = () => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
             const end = start + itemsPerPage.value;
-            return filteredFriends.value.slice(start, end);
-        });
+            paginatedFriends.value = filteredFriends.value.slice(start, end);
+        };
+
+        const changePage = (page: number) => {
+            if (page > 0 && page <= totalPages.value) {
+                currentPage.value = page;
+                paginateFriends();
+            }
+        };
 
         const totalPages = computed(() => {
             return Math.ceil(filteredFriends.value.length / itemsPerPage.value);
         });
 
-        const changePage = (page: number) => {
-            if (page > 0 && page <= totalPages.value) {
-                currentPage.value = page;
-            }
-        };
-
-        const filterFriendsByAge = (ageFromValue: number, ageToValue: number) => {
-            ageFrom.value = ageFromValue;
-            ageTo.value = ageToValue;
-        };
+        onMounted(fetchSimilarUsers);
 
         return {
             title: "Find Friends",
-            // name: mainStore.user.first_name,
+            similarUsers,
+            errorMessage,
             currentPage,
             itemsPerPage,
             ageFrom,
             ageTo,
-            friends,
+            filteredFriends,
             paginatedFriends,
             totalPages,
             changePage,
-            filterFriendsByAge
+            filterFriendsByAge,
         };
-    }
+    },
 });
 </script>
 

@@ -26,7 +26,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('authenticated/', authenticated_view, name='authenticated'),
     path('logout/', views.logout_view, name='logout'),
-    path('similar-users/', build_max_heap, name='similar_users'),
+    path('similar-users/<int:user_id>', build_max_heap, name='similar_users'),
     # User paths
     path('user/', get_all_users, name='get_all_users'),
     path('user/<int:user_id>/', get_user_by_id, name='get_user_by_id'),

@@ -14,16 +14,17 @@ from django.views.decorators.http import require_http_methods
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
-def build_max_heap(request):
+def build_max_heap(request, user_id: int) -> JsonResponse:
     '''
     View to get users with the most similar hobbies using a max heap.
     returns paginated results.
     '''
     # checks if user is logged in 
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'error': 'User not authenticated'}, status=401)
 
-    user = request.user
+    # user = request.user
+    user = User.objects.get(id=user_id)
     max_heap = []
 
     #get all users except the current one
@@ -39,13 +40,18 @@ def build_max_heap(request):
     while max_heap:
         common_hobbies_count, other_user_id = heapq.heappop(max_heap)
         other_user = User.objects.get(id=other_user_id)
+        hobbies = [user_hobby.hobby for user_hobby in UserHobby.objects.filter(user=other_user)]
+        # age = other_user.calculate_age()
         sorted_users.append({
             'id': other_user.id,
             'email': other_user.email,
             'first_name': other_user.first_name,
             'last_name': other_user.last_name,
+            'hobbies': [{'id': hobby.id, 'name': hobby.name, 'description': hobby.description} for hobby in hobbies],
+            'age': 30,
             'common_hobbies_count': -common_hobbies_count
         })
+
 
     #paginate results limited to 10 users
     paginator = Paginator(sorted_users, 10)
