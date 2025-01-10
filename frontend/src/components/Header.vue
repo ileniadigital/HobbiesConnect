@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import axios from 'axios';
 
 export default defineComponent({
   name: 'Header',
@@ -44,24 +43,33 @@ export default defineComponent({
     };
   },
   created() {
-    axios
-      .get('/api/authenticated')
-      .then(response => {
-        this.isAuthenticated = response.data.isAuthenticated;
-        this.userEmail = response.data.email;
-      })
-      .catch(() => {
-        this.isAuthenticated = false;
-        this.userEmail = null;
-      });
+    const xhttp = new XMLHttpRequest();
+    xhttp.open('GET', '/api/authenticated', true);
+    xhttp.onreadystatechange = () => {
+      if (xhttp.readyState === 4) {
+        if (xhttp.status === 200) {
+          const response = JSON.parse(xhttp.responseText);
+          this.isAuthenticated = response.isAuthenticated;
+          this.userEmail = response.email;
+        } else {
+          this.isAuthenticated = false;
+          this.userEmail = null;
+        }
+      }
+    };
+    xhttp.send();
   },
   methods: {
     logout() {
-        axios.post('/api/logout')
-            .then(() => {
-                this.isAuthenticated = false;
-                window.location.href = 'http://127.0.0.1:8000/login';  // Redirect to Django login page
-            });
+      const xhttp = new XMLHttpRequest();
+      xhttp.open('POST', '/api/logout', true);
+      xhttp.onreadystatechange = () => {
+        if (xhttp.readyState === 4 && xhttp.status === 200) {
+          this.isAuthenticated = false;
+          window.location.href = 'http://127.0.0.1:8000/login'; 
+        }
+      };
+      xhttp.send();
     }
   }
 });
