@@ -42,4 +42,32 @@
     </footer>
     
 </body>
-</html>
+<script>
+    const formDataObject = {}
+    document.getElementById("login-button").addEventListener("click", function (event) {
+        event.preventDefault();
+        const formData = new FormData(document.getElementById("login-form"));
+        formData.forEach((value, key) => {
+            formDataObject[key] = value;
+        });
+        fetch('/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(formDataObject),
+        }).then(response => {
+            console.log(response)
+            return response.json()
+        })
+            .then(data => {
+                console.log("BYE")
+                console.log(data)
+            })
+            .catch(error => {
+                console.error('Login failed', error);
+            });
+    });
+    console.log("HELLO")
+</script>

@@ -2,17 +2,18 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from api.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from django.forms import CharField, DateField, DateInput, EmailField, PasswordInput, TextInput
 
 class UserForm(UserCreationForm):
     '''
     Custom form for user registration (sign up).
     '''
-    email = forms.EmailField(max_length=150)
-    first_name = forms.CharField(max_length=150)
-    last_name = forms.CharField(max_length=150)
-    dob = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        label="Date of Birth",
+    email = EmailField(max_length=150)
+    first_name = CharField(max_length=150)
+    last_name = CharField(max_length=150)
+    dob = DateField(
+        widget = DateInput(attrs={'type': 'date'}),
+        label = "Date of Birth",
     )
 
     class Meta:
@@ -24,6 +25,4 @@ class UserAuthenticationForm(AuthenticationForm):
     '''
     Custom form for user login.
     '''
-    username = forms.EmailField(label="Email", max_length=150)
-
-
+    username = EmailField(label="Email", max_length=150)

@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import axios from 'axios';
 
 export default defineComponent({
   name: 'Header',
@@ -42,28 +41,44 @@ export default defineComponent({
       isAuthenticated: false,
       userEmail: null
     };
-  },
-  created() {
-    axios
-      .get('/api/authenticated')
-      .then(response => {
-        this.isAuthenticated = response.data.isAuthenticated;
-        this.userEmail = response.data.email;
-      })
-      .catch(() => {
+},
+created() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/authenticated', true);
+    xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            if (xhr.getResponseHeader('Content-Type')?.includes('application/json')) {
+                const response = JSON.parse(xhr.responseText);
+                this.isAuthenticated = response.isAuthenticated;
+                this.userEmail = response.email;
+            } else {
+                this.isAuthenticated = false;
+                this.userEmail = null;
+            }
+        } else {
+            this.isAuthenticated = false;
+            this.userEmail = null;
+        }
+    };
+    xhr.onerror = () => {
         this.isAuthenticated = false;
         this.userEmail = null;
-      });
-  },
-  methods: {
+    };
+    xhr.send();
+},
+methods: {
     logout() {
-        axios.post('/api/logout')
-            .then(() => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/logout', true);
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
                 this.isAuthenticated = false;
                 window.location.href = 'http://127.0.0.1:8000/login';  // Redirect to Django login page
-            });
+            }
+        };
+        xhr.send();
     }
-  }
+}
 });
 </script>
 

@@ -1,15 +1,23 @@
 import heapq
 import json
-from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator
-from .models import User
-from .forms import UserForm, UserAuthenticationForm
-from api.models import Hobbies, UserHobby, PageView, User, Friendship
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from django.shortcuts import get_object_or_404
+from django.core.handlers.wsgi import WSGIRequest
+from django.db.models import QuerySet
+from django.contrib.auth.models import auth, AbstractBaseUser
+from rest_framework import status, mixins
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.decorators import action
+from typing import Union
+from .models import User, Hobbies, UserHobby, Friendship
+from .forms import UserForm, UserAuthenticationForm
+import datetime
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -78,17 +86,40 @@ def signup(request):
     
     return render(request, 'signup.html', {'form': form})
 
-def login_view(request):
+# def login_view(request):
+#     '''
+#     View for user to log in
+#     '''
+#     if request.method == 'POST':
+#         form = UserAuthenticationForm(request, data=request.POST)
+#         if form.is_valid():
+#             user = form.get_user()
+#             login(request, user)
+#             return redirect('http://localhost:5173/') # same as signup
+#             #return redirect('main_spa')  # Redirect to a home page or another page
+#     else:
+#         form = UserAuthenticationForm()
+    
+#     return render(request, 'login.html', {'form': form})
+
+def login_view(request: WSGIRequest) -> Union[HttpResponseRedirect, HttpResponse]:
     '''
     View for user to log in
     '''
     if request.method == 'POST':
         form = UserAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('http://localhost:5173/') # same as signup
-            #return redirect('main_spa')  # Redirect to a home page or another page
+            username: str = request.POST.get('username')
+            password: str = request.POST.get('password')
+            authenticated_user: AbstractBaseUser = authenticate(request, username=username, password=password)
+
+            if authenticated_user is not None:
+                auth.login(request, authenticated_user)
+                response: HttpResponseRedirect = HttpResponseRedirect('http://localhost:5173/')
+                response.set_cookie('user_id', str(authenticated_user.id))
+                response.set_cookie('isAuthenticated', True)
+
+                return response
     else:
         form = UserAuthenticationForm()
     
@@ -101,12 +132,29 @@ def logout_view(request):
     logout(request)
     return redirect('login') 
 
-def authenticated_view(request):
-    '''
-    View to check if user is authenticated
-    '''
-    return JsonResponse({'isAuthenticated': request.user.is_authenticated})
+def authenticated_view(request: HttpRequest) -> JsonResponse:
+    """
+    Checks if the user is authenticated
+    """
+    return JsonResponse({'isAuthenticated': True})
 
+# def authenticated_view(request):
+#     '''
+#     View to check if user is authenticated
+#     '''
+#     print(f"{request.user.is_authenticated} ")
+#     if request.user.is_authenticated:
+#         user_data = {
+#             'id': request.user.id,
+#             'username': request.user.username,
+#             'email': request.user.email,
+#             'first_name': request.user.first_name,
+#             'last_name': request.user.last_name,
+#         }
+#         return JsonResponse({'isAuthenticated': True, 'user': user_data})
+#     else:
+#         print(f"User: {request.user.username}, Email: {request.user.email}")
+#         return JsonResponse({'isAuthenticated': False})
 
 
 def get_all_users(request: HttpRequest) -> JsonResponse:
@@ -356,3 +404,21 @@ def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
             return JsonResponse({'error': 'User not found'}, status=404)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+class UserViewSet(mixins.CreateModelMixin, GenericViewSet):
+    """
+    User viewset
+    """
+    parser_classes = [UserForm]
+    queryset: QuerySet = User.objects.all()
+    
+    @action(detail=False)
+    def current(self, request: HttpRequest, *args, **kwarg) -> Response:
+        """
+        Returns the current user based on the requester's cookies
+        """
+        cookie: str = request.COOKIES.get('user_id')
+        serialiser = self.get_serializer(User.objects.get(id=cookie), many=False)
+
+        return Response(serialiser.data)

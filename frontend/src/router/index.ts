@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // 1. Define route components.
 // These can be imported from other files
+import {authGuard} from "./authGuard.ts";
 import Profile from '../pages/Profile.vue';
 import FindFriends from '../pages/FindFriends.vue';
 import FriendRequests from '../pages/FriendRequests.vue';
@@ -21,5 +22,15 @@ const router = createRouter({
         { path: '/friendrequests/', name: 'Friend Requests', component: FriendRequests}
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.redirect) {
+        window.location.replace(to.meta.redirect as string);
+        return;
+    }
+    else {
+        authGuard(to, from, next);
+    }
+});
 
 export default router
