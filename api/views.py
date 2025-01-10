@@ -7,6 +7,9 @@ from django.core.paginator import Paginator
 from .models import User
 from .forms import UserForm, UserAuthenticationForm
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_http_methods
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -74,6 +77,7 @@ def signup(request):
         form = UserForm()
     
     return render(request, 'signup.html', {'form': form})
+
 def login_view(request):
     '''
     View for user to log in
@@ -124,6 +128,23 @@ def get_all_users(request: HttpRequest) -> JsonResponse:
     return JsonResponse(user_data, safe=False)
 
 def get_user_by_id(request: HttpRequest, user_id: int) -> JsonResponse:
+    '''
+    Get user by id
+    '''
+    try:
+        user = User.objects.get(id=user_id)
+        user_data = {
+            'id': user.id,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'dob': user.dob,
+        }
+        return JsonResponse(user_data)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+    
+def get_user_id(request: HttpRequest, user_id: int) -> JsonResponse:
     '''
     Get user by id
     '''
@@ -194,12 +215,40 @@ def delete_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
         'message': 'Hobby deleted successfully'
     })
 
+@csrf_exempt
+def add_hobby_and_user_hobby(request: HttpRequest) -> JsonResponse:
+    '''
+    Add a new hobby for a user and to the overall hobbies list
+    '''
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        hobby_name = data.get('name')
+        hobby_description = data.get('description')
 
-def page_view(request: HttpRequest) -> JsonResponse:
-    page_view = PageView.objects.first()
-    page_view.count += 1
-    page_view.save()
-    return JsonResponse({'count': page_view.count})
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+
+        hobby = Hobbies.objects.create(
+            name=hobby_name,
+            description=hobby_description
+        )
+
+        UserHobby.objects.create(
+            user=user,
+            hobby=hobby
+        )
+
+        return JsonResponse({
+            'user_id': user.id,
+            'hobby_id': hobby.id,
+            'name': hobby.name,
+            'description': hobby.description
+        })
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 def get_all_user_hobbies(request: HttpRequest) -> JsonResponse:
@@ -217,24 +266,24 @@ def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
         user = User.objects.get(id=user_id)
         user_hobbies = UserHobby.objects.filter(user=user)
         hobbies = [user_hobby.hobby for user_hobby in user_hobbies]
-        hobbies_data = [{'user id': user_id, 'user': user.first_name,'hobby id': hobby.id,'hobby': hobby.name, 'description': hobby.description} for hobby in hobbies]
+        hobbies_data = [{'user_id': user_id, 'user': user.first_name,'hobby_id': hobby.id,'hobby': hobby.name, 'description': hobby.description} for hobby in hobbies]
         return JsonResponse(hobbies_data, safe=False)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
+@csrf_exempt
 def add_user_hobby(request: HttpRequest) -> JsonResponse:
-    '''
-    Add user hobby
-    '''
-    data = json.loads(request.body)
-    user_hobby = UserHobby.objects.create(
-        user_id=data['user_id'],
-        hobby_id=data['hobby_id']
-    )
-    return JsonResponse({
-        'user_id': user_hobby.user_id,
-        'hobby_id': user_hobby.hobby_id
-    })
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        hobby_id = data.get('hobby_id')
+
+        user = get_object_or_404(User, id=user_id)
+        hobby = get_object_or_404(Hobbies, id=hobby_id)
+        UserHobby.objects.create(user=user, hobby=hobby)
+
+        return JsonResponse({'message': 'Existing hobby added successfully'}, status=201)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def update_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
     '''
@@ -250,15 +299,18 @@ def update_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
         'hobby_id': user_hobby.hobby_id
     })
 
-def delete_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
-    '''
-    Delete user hobby
-    '''
-    user_hobby = UserHobby.objects.get(id=user_hobby_id)
-    user_hobby.delete()
-    return JsonResponse({
-        'message': 'User hobby deleted successfully'
-    })
+@csrf_exempt
+def delete_user_hobby(request: HttpRequest) -> JsonResponse:
+    if request.method == 'DELETE':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        hobby_id = data.get('hobby_id')
+
+        user_hobby = get_object_or_404(UserHobby, user_id=user_id, hobby_id=hobby_id)
+        user_hobby.delete()
+
+        return JsonResponse({'message': 'User hobby deleted successfully'}, status=200)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 def get_all_friendships(request: HttpRequest) -> JsonResponse:
@@ -289,3 +341,79 @@ def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
         return JsonResponse(friendships_data, safe=False)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
+    
+@csrf_exempt
+def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
+    """
+    Update user profile by ID
+    """
+    if request.method == 'PUT':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body)
+
+            # Validate fields
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            dob = data.get('dob')
+
+            if not first_name or not last_name or not email or not dob:
+                return JsonResponse({'error': 'All fields are required and cannot be empty'}, status=400)
+            
+            # Update user fields
+            user.first_name = data.get('first_name', user.first_name)
+            user.last_name = data.get('last_name', user.last_name)
+            user.email = data.get('email', user.email)
+            user.dob = data.get('dob', user.dob)
+
+            user.save()
+            return JsonResponse({
+                'message': 'Profile updated successfully',
+                'user': {
+                    'id': user.id,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'email': user.email,
+                    'dob': user.dob
+                }
+            })
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
+    """
+    Update user password
+    """
+    if request.method == 'PUT':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body)
+            current_password = data.get('current_password')
+            new_password = data.get('new_password')
+
+            if not user.check_password(current_password):
+                return JsonResponse({'error': 'Current password is incorrect'}, status=400)
+
+            if not new_password:
+                return JsonResponse({'error': 'New password cannot be empty'}, status=400)
+
+            user.set_password(new_password)
+            user.save()
+            return JsonResponse({'message': 'Password updated successfully'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)

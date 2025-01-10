@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div class="h1">
+    <div class="h3">
       {{ title }}
     </div>
     <hr />
+    <!-- <div class="h3">Hi, {{ name }}</div> -->
 
     <div class="row">
       <!-- Pending Requests -->
@@ -35,26 +36,55 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { useMainStore } from "../data/data";
+import Request from "../components/FriendRequests/Request.vue";
+import DeleteRequest from "../components/FriendRequests/DeleteRequest.vue";
+import { Friendship } from "../utils/interfaces";
 
 export default defineComponent({
   components: {
+    Request,
+    DeleteRequest,
   },
-  data() {
+  setup() {
+    const mainStore = useMainStore();
+    const friends = ref<Friendship[]>([]);
+    const pendingRequests = ref<Friendship[]>([]);
+    const acceptedRequests = ref<Friendship[]>([]);
+    const isDeleteModalVisible = ref(false);
+    const selectedFriendId = ref<number>(-1);
+    const selectedStatus = ref<string>("none");
+    const userId = ref(mainStore.userId);
+
+    const fetchFriends = async () => {
+      await mainStore.fetchData();
+      friends.value = mainStore.friends;
+      pendingRequests.value = friends.value.filter(friend => !friend.accepted && friend.status === "PENDING");
+      acceptedRequests.value = friends.value.filter(friend => friend.accepted || friend.status === "ACCEPTED");
+    };
+
+    const openDeleteModal = (friendId: number, status: string) => {
+      selectedFriendId.value = friendId;
+      selectedStatus.value = status;
+      isDeleteModalVisible.value = true;
+    };
+
+    onMounted(fetchFriends);
+
     return {
       title: "Friend Requests",
-      name: mainStore.user.first_name,
-      pendingRequests,
-      acceptedRequests,
-      isDeleteModalVisible,
-      selectedFriendId,
-      selectedStatus,
-      userId,
-      openDeleteModal,
-      fetchFriends,
-    };
+    }
   }
-})
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+.row {
+  margin-top: 2rem;
+}
+
+.list-unstyled {
+  padding: 0;
+}
+</style>

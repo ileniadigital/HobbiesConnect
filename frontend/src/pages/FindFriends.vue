@@ -1,12 +1,17 @@
 <template>
     <div class="h3">
-        Hi, {{ name }}
+        {{ title }}
     </div>
     <!-- Add a filter -->
     <Filter @filter-age="filterFriendsByAge" />
     <!-- Friends List -->
-    <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.name">
-        <Friend :name="friend.name" :hobbies="friend.hobbies" :age="friend.age" />
+    <div v-if="paginatedFriends.length > 0">
+        <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.name">
+            <Friend :name="friend.name" :hobbies="friend.hobbies" :age="friend.age" />
+        </div>
+    </div>
+    <div v-else class="alert alert-info mt-3">
+        No similar friends available
     </div>
     <!-- Pagination -->
     <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="changePage" />
@@ -14,6 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import { useMainStore } from "../data/data";
 import Filter from "../components/Filter.vue";
 import Friend from "../components/Friend.vue";
 import Pagination from "../components/Pagination.vue";
@@ -26,11 +32,13 @@ export default defineComponent({
 
     },
     setup() {
+        const mainStore = useMainStore();
         const currentPage = ref(1);
         const itemsPerPage = ref(10);
         const ageFrom = ref(0);
         const ageTo = ref(Infinity);
 
+        // CHANGE THIS TO GET IT FROM MAIN STORE
         const friends = ref([
             { name: "Alice", age: 25, hobbies: ["reading", "hiking"] },
             { name: "Bob", age: 30, hobbies: ["swimming", "biking"] },
@@ -85,7 +93,8 @@ export default defineComponent({
         };
 
         return {
-            name: "Ilenia", // Change this to dynamic data
+            title: "Find Friends",
+            // name: mainStore.user.first_name,
             currentPage,
             itemsPerPage,
             ageFrom,
