@@ -11,29 +11,46 @@
         <!-- Filter confirm button-->
         <button class="btn btn-primary" @click="filter">Filter</button>
     </div>
+    <div v-if="errorMessage" class="alert alert-danger mt-2">{{ errorMessage }}</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+
 export default defineComponent({
-    data() {
-        return {
-            ageFrom: '',
-            ageTo: ''
-        };
-    },
-    methods: {
-        filter() {
-            if (this.ageFrom === '' || this.ageTo === '') {
-                alert('Please fill in both age fields.');
+    setup(_, { emit }) {
+        const ageFrom = ref('');
+        const ageTo = ref('');
+        const errorMessage = ref('');
+
+        const filter = () => {
+            // error messages
+            if (ageFrom.value === '' || ageTo.value === '') {
+                errorMessage.value = 'Please fill in both age fields.';
                 return;
             }
-            console.log('Age from:', this.ageFrom);
-            console.log('Age to:', this.ageTo);
-            this.$emit('filter-age', this.ageFrom, this.ageTo);
-        }
-    }
-})
+            if (isNaN(Number(ageFrom.value)) || isNaN(Number(ageTo.value))) {
+                errorMessage.value = 'Please enter valid numbers.';
+                return;
+            }
+            if (Number(ageFrom.value) > Number(ageTo.value)) {
+                errorMessage.value = 'Age from must be less than age to.';
+                return;
+            }
+            errorMessage.value = ''; // Clear any previous error message
+            console.log('Age from:', ageFrom.value);
+            console.log('Age to:', ageTo.value);
+            emit('filter-age', ageFrom.value, ageTo.value);
+        };
+
+        return {
+            ageFrom,
+            ageTo,
+            errorMessage,
+            filter,
+        };
+    },
+});
 </script>
 
 <style scoped>

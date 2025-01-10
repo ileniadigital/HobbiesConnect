@@ -5,15 +5,15 @@
 - the username and passwords of at least 5 of the test users
 
 # Group 7 
-- Sai Sandeep Vemula (220224206)
-- Ilenia Maietta (220322742)
-- Amy Anigboro (220476137)
-- Mariam Thabti (2103028471)
+- Sai Sandeep Vemula (220224206): Friendship model and views, log in and authentication, Friends Request and Find Friends Back-end
+- Ilenia Maietta (220322742): UserHobby model and views, Hobby List front and back-end, Find Friends and Friends Request Front-End
+- Amy Anigboro (220476137): Hobby model and views, Update Profile and Password, Error messages
+- Mariam Thabti (2103028471): User model and views, log in, sign up and authentication, maximum heap for hobbies
 
 # URL of Deployed Application
 
 # Admin User Log In Details
-- Username: admin
+- Username: admin@email.com
 - Password: admin
 
 # Login details for Test Users
