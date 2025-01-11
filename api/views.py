@@ -47,11 +47,11 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
             'email': other_user.email,
             'first_name': other_user.first_name,
             'last_name': other_user.last_name,
-            'hobbies': [{'id': hobby.id, 'name': hobby.name, 'description': hobby.description} for hobby in hobbies],
+            'hobbies': [{'id': hobby.id, 'name': hobby.name} for hobby in hobbies],
             'age': 30,
             'common_hobbies_count': -common_hobbies_count
         })
-
+        print(sorted_users)
 
     #paginate results limited to 10 users
     paginator = Paginator(sorted_users, 10)

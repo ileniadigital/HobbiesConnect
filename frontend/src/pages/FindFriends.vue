@@ -6,8 +6,8 @@
         <!-- Friends List -->
         <div v-if="paginatedFriends.length > 0">
             <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.id">
-                <Friend :name="friend.first_name + ' ' + friend.last_name" :age="friend.age || 0" />
-                <p>Common Hobbies: {{ friend.common_hobbies_count }}</p>
+                <Friend :name="friend.first_name + ' ' + friend.last_name" :age="friend.age"
+                    :hobbies="friend.hobbies" />
             </div>
         </div>
         <div v-else class="alert alert-info mt-3">
@@ -51,6 +51,7 @@ export default defineComponent({
                 }
                 const data = await response.json();
                 similarUsers.value = data.users;
+                console.log('Similar users:', similarUsers.value);
                 filterFriendsByAge(); // Initial filter
             } catch (error) {
                 console.error('Error fetching similar users:', error);
@@ -59,22 +60,21 @@ export default defineComponent({
         };
 
         const filterFriendsByAge = (ageFrom = 0, ageTo = 100) => {
-            filteredFriends.value = similarUsers.value.filter(friend => {
-                const age = calculateAge(friend.dob);
-                friend.age = age; // Ensure age is set
-                return age >= ageFrom && age <= ageTo;
-            });
+            // filteredFriends.value = similarUsers.value.filter(friend => {
+            //     return friend.age >= ageFrom && friend.age <= ageTo;
+            // });
+            filteredFriends.value = similarUsers.value;
             currentPage.value = 1; // Reset to first page after filtering
             paginateFriends();
         };
 
-        const calculateAge = (dob?: string): number => {
-            if (!dob) return 0;
-            const birthDate = new Date(dob);
-            const ageDifMs = Date.now() - birthDate.getTime();
-            const ageDate = new Date(ageDifMs);
-            return Math.abs(ageDate.getUTCFullYear() - 1970);
-        };
+        // const calculateAge = (dob?: string): number => {
+        //     if (!dob) return 0;
+        //     const birthDate = new Date(dob);
+        //     const ageDifMs = Date.now() - birthDate.getTime();
+        //     const ageDate = new Date(ageDifMs);
+        //     return Math.abs(ageDate.getUTCFullYear() - 1970);
+        // };
 
         const paginateFriends = () => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
