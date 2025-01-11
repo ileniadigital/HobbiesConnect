@@ -41,42 +41,35 @@ export default defineComponent({
       isAuthenticated: false,
       userEmail: null
     };
-},
-created() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/authenticated', true);
-    xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            if (xhr.getResponseHeader('Content-Type')?.includes('application/json')) {
-                const response = JSON.parse(xhr.responseText);
-                this.isAuthenticated = response.isAuthenticated;
-                this.userEmail = response.email;
-            } else {
-                this.isAuthenticated = false;
-                this.userEmail = null;
-            }
+  },
+  created() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.open('GET', '/api/authenticated', true);
+    xhttp.onreadystatechange = () => {
+      if (xhttp.readyState === 4) {
+        if (xhttp.status === 200) {
+          const response = JSON.parse(xhttp.responseText);
+          this.isAuthenticated = response.isAuthenticated;
+          this.userEmail = response.email;
         } else {
-            this.isAuthenticated = false;
-            this.userEmail = null;
+          this.isAuthenticated = false;
+          this.userEmail = null;
         }
+      }
     };
-    xhr.onerror = () => {
-        this.isAuthenticated = false;
-        this.userEmail = null;
-    };
-    xhr.send();
-},
-methods: {
+    xhttp.send();
+  },
+  methods: {
     logout() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/logout', true);
-        xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                this.isAuthenticated = false;
-                window.location.href = 'http://127.0.0.1:8000/login';  // Redirect to Django login page
-            }
-        };
-        xhr.send();
+      const xhttp = new XMLHttpRequest();
+      xhttp.open('POST', '/api/logout', true);
+      xhttp.onreadystatechange = () => {
+        if (xhttp.readyState === 4 && xhttp.status === 200) {
+          this.isAuthenticated = false;
+          window.location.href = 'http://127.0.0.1:8000/login'; 
+        }
+      };
+      xhttp.send();
     }
 }
 });
