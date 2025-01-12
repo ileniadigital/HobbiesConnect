@@ -220,7 +220,84 @@ def get_user_id(request: HttpRequest, user_id: int) -> JsonResponse:
         return JsonResponse(user_data)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
+    
+@csrf_exempt
+@require_http_methods(["PUT"])
+def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
+    """
+    Update user password
+    """
+    if request.method == 'PUT':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body)
+            current_password = data.get('current_password')
+            new_password = data.get('new_password')
 
+            if not user.check_password(current_password):
+                return JsonResponse({'error': 'Current password is incorrect'}, status=400)
+
+            if not new_password:
+                return JsonResponse({'error': 'New password cannot be empty'}, status=400)
+
+            user.set_password(new_password)
+            user.save()
+            return JsonResponse({'message': 'Password updated successfully'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
+@csrf_exempt
+def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
+    """
+    Update user profile by ID
+    """
+    if request.method == 'PUT':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body)
+
+            # Validate fields
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            dob = data.get('dob')
+
+            if not first_name or not last_name or not email or not dob:
+                return JsonResponse({'error': 'All fields are required and cannot be empty'}, status=400)
+            
+            # Update user fields
+            user.first_name = data.get('first_name', user.first_name)
+            user.last_name = data.get('last_name', user.last_name)
+            user.email = data.get('email', user.email)
+            user.dob = data.get('dob', user.dob)
+
+            user.save()
+            return JsonResponse({
+                'message': 'Profile updated successfully',
+                'user': {
+                    'id': user.id,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'email': user.email,
+                    'dob': user.dob
+                }
+            })
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
+    
 def get_hobby(request: HttpRequest) -> JsonResponse:
     '''
     Get hobby
@@ -401,79 +478,3 @@ def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
         return JsonResponse(friendships_data, safe=False)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
-    
-@csrf_exempt
-def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
-    """
-    Update user profile by ID
-    """
-    if request.method == 'PUT':
-        try:
-            user = User.objects.get(id=user_id)
-            data = json.loads(request.body)
-
-            # Validate fields
-            first_name = data.get('first_name')
-            last_name = data.get('last_name')
-            email = data.get('email')
-            dob = data.get('dob')
-
-            if not first_name or not last_name or not email or not dob:
-                return JsonResponse({'error': 'All fields are required and cannot be empty'}, status=400)
-            
-            # Update user fields
-            user.first_name = data.get('first_name', user.first_name)
-            user.last_name = data.get('last_name', user.last_name)
-            user.email = data.get('email', user.email)
-            user.dob = data.get('dob', user.dob)
-
-            user.save()
-            return JsonResponse({
-                'message': 'Profile updated successfully',
-                'user': {
-                    'id': user.id,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'email': user.email,
-                    'dob': user.dob
-                }
-            })
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'User not found'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-@csrf_exempt
-@require_http_methods(["PUT"])
-def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
-    """
-    Update user password
-    """
-    if request.method == 'PUT':
-        try:
-            user = User.objects.get(id=user_id)
-            data = json.loads(request.body)
-            current_password = data.get('current_password')
-            new_password = data.get('new_password')
-
-            if not user.check_password(current_password):
-                return JsonResponse({'error': 'Current password is incorrect'}, status=400)
-
-            if not new_password:
-                return JsonResponse({'error': 'New password cannot be empty'}, status=400)
-
-            user.set_password(new_password)
-            user.save()
-            return JsonResponse({'message': 'Password updated successfully'})
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'User not found'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)

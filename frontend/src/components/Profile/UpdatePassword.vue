@@ -23,6 +23,7 @@
                 </div>
             </form>
             <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+            <div v-if="confirmationMessage" class="alert alert-success mt-3">{{ confirmationMessage }}</div>
         </div>
     </div>
 </template>
@@ -37,6 +38,7 @@ export default defineComponent({
         const currentPassword = ref("");
         const newPassword = ref("");
         const errorMessage = ref("");
+        const confirmationMessage = ref("");
 
         const updatePassword = async () => {
             try {
@@ -54,6 +56,8 @@ export default defineComponent({
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.error || 'Failed to update password');
+                } else {
+                    confirmationMessage.value = "Password updated successfully";
                 }
 
                 const data = await response.json();
@@ -62,6 +66,7 @@ export default defineComponent({
             } catch (error: any) {
                 console.error('There was a problem with the fetch operation:', error);
                 errorMessage.value = error.message;
+                confirmationMessage.value = "";
             }
         };
 
@@ -69,7 +74,8 @@ export default defineComponent({
             currentPassword,
             newPassword,
             updatePassword,
-            errorMessage
+            errorMessage,
+            confirmationMessage
         };
     },
 });
