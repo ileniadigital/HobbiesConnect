@@ -2,11 +2,11 @@
     <div>
         <div class="h3">{{ title }}</div>
         <!-- Add a filter -->
-        <Filter @filter-age="filterFriendsByAge" />
+        <Filter @filter="fetchSimilarUsers"/>
         <!-- Friends List -->
         <div v-if="paginatedFriends.length > 0">
             <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.id">
-                <Friend :name="friend.first_name + ' ' + friend.last_name" :age="friend.age"
+                <Friend :name="friend.first_name + ' ' + friend.last_name" :age="friend.age ?? 0"
                     :hobbies="friend.hobbies" />
             </div>
         </div>
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useMainStore } from "../data/data";
 import Filter from "../components/Filter.vue";
 import Friend from "../components/Friend.vue";
@@ -41,40 +41,22 @@ export default defineComponent({
         const currentPage = ref<number>(1);
         const itemsPerPage = ref<number>(10);
         const ageFrom = ref<number>(0);
-        const ageTo = ref<number>(Infinity);
+        const ageTo = ref<number>(999);
 
-        const fetchSimilarUsers = async () => {
+        const fetchSimilarUsers = async (filter: { ageFrom: number, ageTo: number }) => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/similar-users/${mainStore.userId}`);
+                const response = await fetch(`http://127.0.0.1:8000/api/similar-users/${mainStore.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch similar users');
                 }
                 const data = await response.json();
                 similarUsers.value = data.users;
                 console.log('Similar users:', similarUsers.value);
-                filterFriendsByAge(); // Initial filter
             } catch (error) {
                 console.error('Error fetching similar users:', error);
                 errorMessage.value = 'Error fetching similar users';
             }
         };
-
-        const filterFriendsByAge = (ageFrom = 0, ageTo = 100) => {
-            // filteredFriends.value = similarUsers.value.filter(friend => {
-            //     return friend.age >= ageFrom && friend.age <= ageTo;
-            // });
-            filteredFriends.value = similarUsers.value;
-            currentPage.value = 1; // Reset to first page after filtering
-            paginateFriends();
-        };
-
-        // const calculateAge = (dob?: string): number => {
-        //     if (!dob) return 0;
-        //     const birthDate = new Date(dob);
-        //     const ageDifMs = Date.now() - birthDate.getTime();
-        //     const ageDate = new Date(ageDifMs);
-        //     return Math.abs(ageDate.getUTCFullYear() - 1970);
-        // };
 
         const paginateFriends = () => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -93,7 +75,13 @@ export default defineComponent({
             return Math.ceil(filteredFriends.value.length / itemsPerPage.value);
         });
 
-        onMounted(fetchSimilarUsers);
+        onMounted(() => {
+            fetchSimilarUsers({ ageFrom: ageFrom.value, ageTo: ageTo.value });
+        });
+
+        watch(similarUsers, () => {
+            paginateFriends();
+        });
 
         return {
             title: "Find Friends",
@@ -107,7 +95,7 @@ export default defineComponent({
             paginatedFriends,
             totalPages,
             changePage,
-            filterFriendsByAge,
+            fetchSimilarUsers,
         };
     },
 });

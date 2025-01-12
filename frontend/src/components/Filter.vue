@@ -4,9 +4,9 @@
         <!-- Input age ranges -->
         <div class="form-group d-flex flex-row align-items-center gap-2">
             <label for="ageFrom">From:</label>
-            <input type="text" id="ageFrom" class="form-control" v-model="ageFrom" placeholder="Age from">
+            <input type="number" id="ageFrom" class="form-control" v-model="ageFrom" placeholder="Age from">
             <label for="ageTo">To:</label>
-            <input type="text" id="ageTo" class="form-control" v-model="ageTo" placeholder="Age to">
+            <input type="number" id="ageTo" class="form-control" v-model="ageTo" placeholder="Age to">
         </div>
         <!-- Filter confirm button-->
         <button class="btn btn-primary" @click="filter">Filter</button>
@@ -18,15 +18,16 @@
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
+    emits: ['filter'],
     setup(_, { emit }) {
-        const ageFrom = ref('');
-        const ageTo = ref('');
+        const ageFrom = ref<number>(0);
+        const ageTo = ref<number>(999);
         const errorMessage = ref('');
 
         const filter = () => {
             // error messages
-            if (ageFrom.value === '' || ageTo.value === '') {
-                errorMessage.value = 'Please fill in both age fields.';
+            if (isNaN(ageFrom.value) || isNaN(ageTo.value)) {
+                errorMessage.value = 'Please fill in both age fields with valid numbers.';
                 return;
             }
             if (isNaN(Number(ageFrom.value)) || isNaN(Number(ageTo.value))) {
@@ -40,7 +41,7 @@ export default defineComponent({
             errorMessage.value = ''; // Clear any previous error message
             console.log('Age from:', ageFrom.value);
             console.log('Age to:', ageTo.value);
-            emit('filter-age', ageFrom.value, ageTo.value);
+            emit('filter', {ageFrom: ageFrom.value, ageTo: ageTo.value});
         };
 
         return {

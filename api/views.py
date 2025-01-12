@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from .models import User
-from .utils import calculate_age
+from .utils import calculate_age, filter_users_by_age
 from .forms import UserForm, UserAuthenticationForm
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
 from django.views.decorators.csrf import csrf_exempt
@@ -15,6 +15,57 @@ from django.views.decorators.http import require_http_methods
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
+# def build_max_heap(request, user_id: int) -> JsonResponse:
+#     '''
+#     View to get users with the most similar hobbies using a max heap.
+#     returns paginated results.
+#     '''
+#     # checks if user is logged in 
+#     # if not request.user.is_authenticated:
+#     #     return JsonResponse({'error': 'User not authenticated'}, status=401)
+
+#     # user = request.user
+#     user = User.objects.get(id=user_id)
+#     max_heap = []
+
+#     #get all users except the current one
+#     other_users = User.objects.exclude(id=user.id)
+
+#     for other_user in other_users:
+#         common_hobbies_count = User.count_common_hobbies(user, other_user)
+#         if common_hobbies_count > 0:
+#             heapq.heappush(max_heap, (-common_hobbies_count, other_user.id))
+
+#     #convert heap to a list
+#     sorted_users = []
+#     while max_heap:
+#         common_hobbies_count, other_user_id = heapq.heappop(max_heap)
+#         other_user = User.objects.get(id=other_user_id)
+#         hobbies = [user_hobby.hobby for user_hobby in UserHobby.objects.filter(user=other_user)]
+#         # age = other_user.calculate_age()
+#         sorted_users.append({
+#             'id': other_user.id,
+#             'email': other_user.email,
+#             'first_name': other_user.first_name,
+#             'last_name': other_user.last_name,
+#             'hobbies': [{'id': hobby.id, 'name': hobby.name} for hobby in hobbies],
+#             'age': calculate_age(other_user.dob),
+#             'common_hobbies_count': -common_hobbies_count
+#         })
+#         print(sorted_users)
+
+#     #paginate results limited to 10 users
+#     paginator = Paginator(sorted_users, 10)
+#     page_number = request.GET.get('page', 1)
+#     page = paginator.get_page(page_number)
+
+#     return JsonResponse({
+#         'users': list(page.object_list),
+#         'has_next': page.has_next(),
+#         'has_previous': page.has_previous(),
+#         'page_number': page.number,
+#         'total_pages': paginator.num_pages
+#     })
 def build_max_heap(request, user_id: int) -> JsonResponse:
     '''
     View to get users with the most similar hobbies using a max heap.
@@ -28,21 +79,27 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
     user = User.objects.get(id=user_id)
     max_heap = []
 
-    #get all users except the current one
+    # Get age_from and age_to from request parameters, default to 1 and infinity
+    age_from = int(request.GET.get('age_from', 1))
+    age_to = int(request.GET.get('age_to', 999))
+
+    # Get all users except the current one
     other_users = User.objects.exclude(id=user.id)
+
+    # Filter users by age group
+    other_users = filter_users_by_age(other_users, age_from, age_to)
 
     for other_user in other_users:
         common_hobbies_count = User.count_common_hobbies(user, other_user)
         if common_hobbies_count > 0:
             heapq.heappush(max_heap, (-common_hobbies_count, other_user.id))
 
-    #convert heap to a list
+    # Convert heap to a list
     sorted_users = []
     while max_heap:
         common_hobbies_count, other_user_id = heapq.heappop(max_heap)
         other_user = User.objects.get(id=other_user_id)
         hobbies = [user_hobby.hobby for user_hobby in UserHobby.objects.filter(user=other_user)]
-        # age = other_user.calculate_age()
         sorted_users.append({
             'id': other_user.id,
             'email': other_user.email,
@@ -52,9 +109,8 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
             'age': calculate_age(other_user.dob),
             'common_hobbies_count': -common_hobbies_count
         })
-        print(sorted_users)
 
-    #paginate results limited to 10 users
+    # Paginate results limited to 10 users
     paginator = Paginator(sorted_users, 10)
     page_number = request.GET.get('page', 1)
     page = paginator.get_page(page_number)
@@ -66,7 +122,6 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
         'page_number': page.number,
         'total_pages': paginator.num_pages
     })
-
 
 def signup(request):
     '''
@@ -113,7 +168,6 @@ def authenticated_view(request):
     View to check if user is authenticated
     '''
     return JsonResponse({'isAuthenticated': request.user.is_authenticated})
-
 
 
 def get_all_users(request: HttpRequest) -> JsonResponse:
