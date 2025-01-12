@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from .models import User
+from .utils import calculate_age
 from .forms import UserForm, UserAuthenticationForm
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
 from django.views.decorators.csrf import csrf_exempt
@@ -48,7 +49,7 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
             'first_name': other_user.first_name,
             'last_name': other_user.last_name,
             'hobbies': [{'id': hobby.id, 'name': hobby.name} for hobby in hobbies],
-            'age': 30,
+            'age': calculate_age(other_user.dob),
             'common_hobbies_count': -common_hobbies_count
         })
         print(sorted_users)
@@ -128,8 +129,7 @@ def get_all_users(request: HttpRequest) -> JsonResponse:
             'first_name': user.first_name,
             'last_name': user.last_name,
             'dob': user.dob,
-            'is_staff': user.is_staff,
-            'is_active': user.is_active,
+            'age': calculate_age(user.dob),
         })
     return JsonResponse(user_data, safe=False)
 
