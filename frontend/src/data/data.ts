@@ -5,7 +5,7 @@ const BASE_URL = "http://127.0.0.1:8000/api";
 export const useMainStore = defineStore('main', {
     state: () => ({
         user: null as User | null, 
-        userId: 4,
+        userId: 5,
         hobbies: [] as Hobbies[],
         userHobbies: [] as UserHobby[],
         friends: [] as Friendship[],
@@ -60,7 +60,7 @@ export const useMainStore = defineStore('main', {
                 console.log("Hobbies user data", this.userHobbies);
 
                 // Fetch friends data
-                const friendshipResponse = await fetch(`${BASE_URL}/user/${this.userId}/friendships/`);
+                const friendshipResponse = await fetch(`${BASE_URL}/user/${this.userId}/friendship/`);
                 if (!friendshipResponse.ok) {
                     throw new Error('Failed to fetch friends data');
                 }

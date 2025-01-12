@@ -478,3 +478,66 @@ def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
         return JsonResponse(friendships_data, safe=False)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
+
+@csrf_exempt
+def create_friendship(request):
+    '''
+    Create a new friendship instance when someone sends a friend request.
+    '''
+    if request.method == 'POST':
+        try:
+            print(request.body)
+            data = json.loads(request.body)
+            user_id = data.get('user_id')
+            friend_id = data.get('friend_id')
+
+            if not user_id or not friend_id:
+                return JsonResponse({'error': 'Missing user_id or friend_id'}, status=400)
+
+            user = get_object_or_404(User, id=user_id)
+            friend = get_object_or_404(User, id=friend_id)
+
+            friendship, created = Friendship.objects.get_or_create(user=user, friend=friend)
+            if created:
+                return JsonResponse({'message': 'Friend request sent successfully'}, status=201)
+            else:
+                return JsonResponse({'message': 'Friend request already exists'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def update_friendship_status(request):
+    '''
+    Update friendship status when someone accepts or rejects a friend request.
+    '''
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        friendship_id = data.get('friendship_id')
+        status = data.get('status')
+
+        friendship = get_object_or_404(Friendship, id=friendship_id)
+        if status in [Friendship.FriendshipStatus.ACCEPTED, Friendship.FriendshipStatus.REJECTED]:
+            friendship.status = status
+            friendship.accepted = (status == Friendship.FriendshipStatus.ACCEPTED)
+            friendship.save()
+            return JsonResponse({'message': 'Friendship status updated successfully'}, status=200)
+        else:
+            return JsonResponse({'error': 'Invalid status value'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def delete_friendship(request):
+    '''
+    Delete a friendship instance when someone removes a friend.
+    '''
+    if request.method == 'DELETE':
+        data = json.loads(request.body)
+        friendship_id = data.get('friendship_id')
+
+        friendship = get_object_or_404(Friendship, id=friendship_id)
+        friendship.delete()
+        return JsonResponse({'message': 'Friendship deleted successfully'}, status=200)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

@@ -4,7 +4,7 @@
             <h5 class="card-title">{{ name }} {{ age }}</h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">{{ hobbies.map(hobby => hobby.name).join(', ') }}</h6>
         </div>
-        <AddFriend />
+        <AddFriend :userId="userId" :friendId="friendId" @add-friend="handleAddFriend"/>
     </div>
 </template>
 
@@ -19,6 +19,14 @@ export default defineComponent({
         AddFriend
     },
     props: {
+        userId: {
+            type: Number,
+            required: true
+        },
+        friendId: {
+            type: Number,
+            required: true
+        },
         name: {
             type: String,
             required: true
@@ -32,6 +40,12 @@ export default defineComponent({
             type: Number,
             required: true
         }
+    },
+    methods: {
+        handleAddFriend(payload: { userId: number, friendId: number }) {
+            console.log('Adding friend in Friend Card:');
+            this.$emit('add-friend', payload);
+        }
     }
-})
+});
 </script>

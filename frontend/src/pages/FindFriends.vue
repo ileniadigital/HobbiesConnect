@@ -6,8 +6,8 @@
         <!-- Friends List -->
         <div v-if="paginatedFriends.length > 0">
             <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.id">
-                <Friend :name="friend.first_name + ' ' + friend.last_name" :age="friend.age ?? 0"
-                    :hobbies="friend.hobbies" />
+                <Friend :userId="mainStore.userId" :friendId="friend.id" :name="friend.first_name + ' ' + friend.last_name" :age="friend.age ?? 0"
+                    :hobbies="friend.hobbies" @add-friend="handleAddFriend" />
             </div>
         </div>
         <div v-else class="alert alert-info mt-3">
@@ -58,6 +58,28 @@ export default defineComponent({
             }
         };
 
+        const handleAddFriend = async ({ userId, friendId }: { userId: number, friendId: number }) => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/friendship/create/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_id: userId, friend_id: friendId })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to add friend');
+                }
+                console.log('Friend added:', data);
+                alert('Friend request sent successfully!');
+            } catch (error) {
+                console.error('Error adding friend:', (error as any).message);
+                const errorMessage = (error as Error).message;
+                alert(`Error adding friend: ${errorMessage}`);
+            }
+        };
+
         const paginateFriends = () => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
             const end = start + itemsPerPage.value;
@@ -95,6 +117,8 @@ export default defineComponent({
             totalPages,
             changePage,
             fetchSimilarUsers,
+            handleAddFriend,
+            mainStore,
         };
     },
 });
