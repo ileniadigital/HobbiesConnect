@@ -2,7 +2,7 @@
     <div>
         <div class="h3">{{ title }}</div>
         <!-- Add a filter -->
-        <Filter @filter="fetchSimilarUsers"/>
+        <Filter @filter="fetchSimilarUsers" />
         <!-- Friends List -->
         <div v-if="paginatedFriends.length > 0">
             <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.id">
@@ -35,7 +35,6 @@ export default defineComponent({
     setup() {
         const mainStore = useMainStore();
         const similarUsers = ref<User[]>([]);
-        const filteredFriends = ref<User[]>([]);
         const paginatedFriends = ref<User[]>([]);
         const errorMessage = ref<string>('');
         const currentPage = ref<number>(1);
@@ -51,6 +50,7 @@ export default defineComponent({
                 }
                 const data = await response.json();
                 similarUsers.value = data.users;
+                paginateFriends();
                 console.log('Similar users:', similarUsers.value);
             } catch (error) {
                 console.error('Error fetching similar users:', error);
@@ -61,7 +61,7 @@ export default defineComponent({
         const paginateFriends = () => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
             const end = start + itemsPerPage.value;
-            paginatedFriends.value = filteredFriends.value.slice(start, end);
+            paginatedFriends.value = similarUsers.value.slice(start, end);
         };
 
         const changePage = (page: number) => {
@@ -72,7 +72,7 @@ export default defineComponent({
         };
 
         const totalPages = computed(() => {
-            return Math.ceil(filteredFriends.value.length / itemsPerPage.value);
+            return Math.ceil(similarUsers.value.length / itemsPerPage.value);
         });
 
         onMounted(() => {
@@ -91,7 +91,6 @@ export default defineComponent({
             itemsPerPage,
             ageFrom,
             ageTo,
-            filteredFriends,
             paginatedFriends,
             totalPages,
             changePage,
