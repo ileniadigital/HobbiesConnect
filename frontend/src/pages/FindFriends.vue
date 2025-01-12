@@ -21,9 +21,9 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useMainStore } from "../data/data";
-import Filter from "../components/Filter.vue";
-import Friend from "../components/Friend.vue";
-import Pagination from "../components/Pagination.vue";
+import Filter from "../components/FindFriends/Filter.vue";
+import Friend from "../components/FindFriends/Friend.vue";
+import Pagination from "../components/FindFriends/Pagination.vue";
 import { User } from "../utils/interfaces";
 
 export default defineComponent({

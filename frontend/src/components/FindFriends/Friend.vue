@@ -10,8 +10,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import AddFriend from "../components/AddFriend.vue";
-import { Hobbies } from "../utils/interfaces";
+import AddFriend from "./AddFriend.vue";
+import { Hobbies } from "../../utils/interfaces";
 
 export default defineComponent({
     name: "Friend",
