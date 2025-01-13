@@ -118,7 +118,7 @@ def login_view(request):
             login(request, user)
             logger.info(f"User {user.username} logged in successfully.")
             response = redirect('http://localhost:5173/')
-            response['X-CSRFToken'] = get_token(request)
+            # response['X-CSRFToken'] = get_token(request)
             return response  # Redirect to the main page
         else:
             logger.warning("Invalid login attempt.")
@@ -176,10 +176,10 @@ def authenticated_view(request):
     '''
     View to check if user is authenticated
     '''
-    print(f"User: {request.user.email}")
+    print(f"User requested")
     try:
         if request.user.is_authenticated:
-            response_data = {'isAuthenticated': True, 'user': request.user.email}
+            response_data = {'isAuthenticated': True, 'user': request.user}
             print(response_data)
             return JsonResponse(response_data)
         else:

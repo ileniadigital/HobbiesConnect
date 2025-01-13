@@ -1,7 +1,8 @@
 <template>
-    <Header></Header>
-    <main class="container pt-4">
-        <!-- <div>
+    <div id="app">
+        <Header></Header>
+        <main class="container pt-4">
+            <!-- <div>
             <router-link
                 class=""
                 :to="{name: 'Main Page'}"
@@ -16,9 +17,10 @@
                 Profile
             </router-link>
         </div> -->
-        <RouterView class="flex-shrink-0" />
-    </main>
-    <Footer></Footer>
+            <RouterView class="flex-shrink-0" />
+        </main>
+        <Footer></Footer>
+    </div>
 </template>
 
 <script lang="ts">
@@ -40,11 +42,12 @@ export default defineComponent({
         onMounted(async () => {
             const isAuthenticated = await authStore.isAuthenticated;
             console.log(isAuthenticated);
-            if (!isAuthenticated) {
-                window.alert("You are not authenticated. Please log in.");
-                window.location.href = ('http://127.0.0.1:8000/login');
-            } else {
+            if (isAuthenticated) {
                 mainStore.fetchData();
+                //     window.location.href = ('http://127.0.0.1:8000/login');
+            } else {
+                window.alert("You are not authenticated. Please log in.");
+                // window.location.href = ('http://127.0.0.1:8000/login');
             }
         });
 
