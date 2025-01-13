@@ -44,24 +44,8 @@ export default defineComponent({
             console.log(isAuthenticated);
             if (isAuthenticated) {
                 mainStore.fetchData();
-                //     window.location.href = ('http://127.0.0.1:8000/login');
-            } else {
-                window.alert("You are not authenticated. Please log in.");
-                // window.location.href = ('http://127.0.0.1:8000/login');
             }
         });
-
-        // onMounted(async () => {
-        //     // Delay authentication check slightly to ensure cookies are set
-        //     setTimeout(async () => {
-        //         await authStore.checkAuthentication();
-        //         const isAuthenticated = authStore.get_authenticated;
-        //         console.log(isAuthenticated);
-        //         if (!isAuthenticated) {
-        //             window.location.href = ('http://127.0.0.1:8000/login');
-        //         }
-        //     }, 100);
-        // });
 
         return {
             user: mainStore.user,

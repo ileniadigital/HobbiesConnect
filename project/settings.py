@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/stable/ref/settings/
 """
 
 from . import database
+from corsheaders.defaults import default_headers
 import os
 
 from pathlib import Path
@@ -62,26 +63,60 @@ ROOT_URLCONF = 'project.urls'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
     "http://localhost:8000",
-    "http://127.0.0.1:8000",
 ]
 
 # new code
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
     "http://localhost:8000",
-    "http://127.0.0.1:8000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-SESSION_COOKIE_SAMESITE = None
-SESSION_COOKIE_HTTPONLY = False
+CORS_ALLOWED_HEADERS = list(default_headers) + [
+    'Content-Type',
+    'X-CSRFToken',
+    'authorization',
+    'accept',
+    'origin',
+    'user-agent',
+    'dnt',
+    'cache-control',
+    'x-requested-with',
+    'content-type',
+    'content-length',
+    'accept-encoding',
+    'accept-language',
+    'x-csrftoken',
+    'cookie',
+    'x-sessionid',
+    'X-SessionId',
+    'X-XSRF-Token',
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+
+CORS_EXPOSE_HEADERS = [
+    'Content-Type',
+    'X-CSRFToken',    
+]
+
+CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SAMESITE = "LAX"
 CSRF_COOKIE_HTTPONLY = False
 CSRF_SECURE = False
 CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_NAME = "sessionid"
+SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = True
 
 TEMPLATES = [
     {
@@ -156,4 +191,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-INTERNAL_IPS = ['127.0.0.1']
+INTERNAL_IPS = ['localhost']

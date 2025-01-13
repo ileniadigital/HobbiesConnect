@@ -24,7 +24,7 @@
                 </ul>
                 <!-- Login/logout button depending -->
                 <button v-if="isAuthenticated" class="btn" @click="logout">Logout</button>
-                <a v-else class="btn" href="http://127.0.0.1:8000/login">Login</a>
+                <a v-else class="btn" href="http://localhost:8000/login">Login</a>
             </div>
         </div>
     </nav>
@@ -66,7 +66,7 @@ import { defineComponent } from 'vue';
 //       xhttp.onreadystatechange = () => {
 //         if (xhttp.readyState === 4 && xhttp.status === 200) {
 //           this.isAuthenticated = false;
-//           window.location.href = 'http://127.0.0.1:8000/login'; 
+//           window.location.href = 'http://localhost:8000/login'; 
 //         }
 //       };
 //       xhttp.send();
@@ -90,7 +90,7 @@ export default defineComponent({
     const logout = async () => {
       try {
         console.log('Logging out');
-        const response = await fetch('http://127.0.0.1:8000/api/logout/', {
+        const response = await fetch('http://localhost:8000/api/logout/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default defineComponent({
         });
         if (response.ok) {
           authStore.isAuthenticated = false;
-          window.location.href = 'http://127.0.0.1:8000/login';
+          window.location.href = 'http://localhost:8000/login';
         } else {
           console.error('Logout failed');
         }

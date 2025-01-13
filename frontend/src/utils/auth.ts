@@ -19,6 +19,7 @@ export const useAuthStore = defineStore('auth', {
         ?.split('=')[1];
       console.log('Session ID:', sessionId);
       
+      alert('Calling fetch');
       const response = await fetch('http://localhost:8000/api/authenticated/', {
         credentials: 'include',
       });
@@ -28,14 +29,14 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = data.isAuthenticated;
 
       if (this.isAuthenticated) {
-        alert('You are logged in!');
+        alert('You are logged in! Data will be fetched.');
         this.user = data.user;
         this.userid = data.user.id;
       } else { //logging out 
-        alert('You are logged out!');
+        window.alert("You are not authenticated. Please log in.");
         this.user = null;
         this.userid = null;
-        window.location.href = ('http://127.0.0.1:8000/login');
+        window.location.href = ('http://localhost:8000/login');
       }
       console.log('Is authenticated:', this.isAuthenticated);
       return this.isAuthenticated;

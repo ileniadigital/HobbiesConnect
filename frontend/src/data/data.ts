@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { User, Hobbies, UserHobby, Friendship } from '../utils/interfaces';
 
-const BASE_URL = 'http://127.0.0.1:8000';
+const BASE_URL = 'http://localhost:8000';
 
 export const useMainStore = defineStore('main', {
     state: () => ({

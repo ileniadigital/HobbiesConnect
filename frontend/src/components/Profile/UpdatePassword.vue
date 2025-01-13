@@ -40,7 +40,7 @@ export default defineComponent({
 
         const updatePassword = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/user/update_password/${mainStore.userId}/`, {
+                const response = await fetch(`http://localhost:8000/user/update_password/${mainStore.userId}/`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

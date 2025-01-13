@@ -64,7 +64,7 @@
     </nav>
     <h2>Login</h2>
     <div class="container">
-        <form method="POST" action="{% url 'login' %}">
+        <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary submit" id="login-button">Login</button>

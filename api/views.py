@@ -19,11 +19,7 @@ from rest_framework.decorators import action
 from typing import Union
 from .models import User, Hobbies, UserHobby, Friendship
 from .forms import UserForm, UserAuthenticationForm
-import logging
 from django.middleware.csrf import get_token
-
-logger = logging.getLogger(__name__)
-
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -116,18 +112,14 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            logger.info(f"User {user.username} logged in successfully.")
-            response = redirect('http://localhost:5173/')
-            # response['X-CSRFToken'] = get_token(request)
-            return response  # Redirect to the main page
+            return redirect('http://localhost:5173/') 
         else:
-            logger.warning("Invalid login attempt.")
-            logger.warning(form.errors)
+            return redirect('/')
     else:
         form = UserAuthenticationForm()
     
-    logger.info("Rendering login form.")
     return render(request, 'login.html', {'form': form})
+
 
 # def login_view(request: WSGIRequest) -> Union[HttpResponseRedirect, HttpResponse]:
 #     '''
@@ -172,23 +164,40 @@ def logout_view(request):
 #     else:
 #         return JsonResponse({'isAuthenticated': False}, status=401)
 
+# def authenticated_view(request):
+#     '''
+#     View to check if user is authenticated
+#     '''
+#     print(f"User requested")
+#     try:
+#         if request.user.is_authenticated:
+#             response_data = {'isAuthenticated': True, 'user': request.user}
+#             print(response_data)
+#             return JsonResponse(response_data)
+#         else:
+#             response_data = {'isAuthenticated': False}
+#             print(response_data)
+#             return JsonResponse(response_data, status=401)
+#     except Exception as e:
+#         print("error" + str(e))
+#         return JsonResponse({'error': str(e)}, status=400)
+
 def authenticated_view(request):
     '''
     View to check if user is authenticated
     '''
-    print(f"User requested")
-    try:
-        if request.user.is_authenticated:
-            response_data = {'isAuthenticated': True, 'user': request.user}
-            print(response_data)
-            return JsonResponse(response_data)
-        else:
-            response_data = {'isAuthenticated': False}
-            print(response_data)
-            return JsonResponse(response_data, status=401)
-    except Exception as e:
-        print("error" + str(e))
-        return JsonResponse({'error': str(e)}, status=400)
+    response_data = {
+        "isAuthenticated": request.user.is_authenticated,
+        "user": {
+            "id": request.user.id if request.user.is_authenticated else None,
+            # "username": request.user.username if request.user.is_authenticated else None,
+            "email": request.user.email if request.user.is_authenticated else None,
+        } if request.user.is_authenticated else None,
+    }
+
+    print(f"Response Data: {response_data}")
+    return JsonResponse(response_data)
+
 
 def get_all_users(request: HttpRequest) -> JsonResponse:
     '''
