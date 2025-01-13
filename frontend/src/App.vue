@@ -25,6 +25,7 @@
 import { defineComponent, onMounted } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { useMainStore } from "./data/data";
+import { useAuthStore } from "./utils/auth";
 
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
@@ -33,10 +34,12 @@ export default defineComponent({
     components: { RouterView, Header, Footer },
     setup() {
         const mainStore = useMainStore();
+        const authStore = useAuthStore();
         const router = useRouter();
 
         onMounted(async () => {
-            const isAuthenticated = await mainStore.checkAuthentication();
+            await authStore.isAuthenticated;
+            const isAuthenticated = authStore.isAuthenticated;
             if (!isAuthenticated) {
                 window.alert("You are not authenticated. Please log in.");
                 window.location.href = ('http://127.0.0.1:8000/login');

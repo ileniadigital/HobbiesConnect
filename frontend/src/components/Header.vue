@@ -25,53 +25,94 @@
                 <!-- Login/logout button depending -->
                 <button v-if="isAuthenticated" class="btn" @click="logout">Logout</button>
                 <a v-else class="btn" href="http://127.0.0.1:8000/login">Login</a>
-
             </div>
         </div>
     </nav>
 </template>
 
+<!-- <script lang="ts">
+import { defineComponent } from 'vue'; 
+
+//???????????????????????????????????????????????????
+// export default defineComponent({
+//   name: 'Header',
+//   data() {
+//     return {
+//       isAuthenticated: false,
+//       userEmail: null
+//     };
+//   },
+  // created() {
+  //   const xhttp = new XMLHttpRequest();
+  //   xhttp.open('GET', '/api/authenticated', true);
+  //   xhttp.onreadystatechange = () => {
+  //     if (xhttp.readyState === 4) {
+  //       if (xhttp.status === 200) {
+  //         const response = JSON.parse(xhttp.responseText);
+  //         this.isAuthenticated = response.isAuthenticated;
+  //         this.userEmail = response.email;
+  //       } else {
+  //         this.isAuthenticated = false;
+  //         this.userEmail = null;
+  //       }
+  //     }
+  //   };
+  //   xhttp.send();
+  // },
+//   methods: {
+//     logout() {
+//       const xhttp = new XMLHttpRequest();
+//       xhttp.open('POST', '/api/logout', true);
+//       xhttp.onreadystatechange = () => {
+//         if (xhttp.readyState === 4 && xhttp.status === 200) {
+//           this.isAuthenticated = false;
+//           window.location.href = 'http://127.0.0.1:8000/login'; 
+//         }
+//       };
+//       xhttp.send();
+//     }
+// }
+// });
+// </script>
+
+--->
+
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useAuthStore } from '../utils/auth';
+import { getCsrfToken } from '../utils/csrf';
 
 export default defineComponent({
   name: 'Header',
-  data() {
-    return {
-      isAuthenticated: false,
-      userEmail: null
-    };
-  },
-  created() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.open('GET', '/api/authenticated', true);
-    xhttp.onreadystatechange = () => {
-      if (xhttp.readyState === 4) {
-        if (xhttp.status === 200) {
-          const response = JSON.parse(xhttp.responseText);
-          this.isAuthenticated = response.isAuthenticated;
-          this.userEmail = response.email;
+  setup() {
+    const authStore = useAuthStore();
+
+    const logout = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/logout/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken() || '',
+          },
+          credentials: 'include',
+        });
+        if (response.ok) {
+          authStore.isAuthenticated = false;
+          window.location.href = 'http://127.0.0.1:8000/login';
         } else {
-          this.isAuthenticated = false;
-          this.userEmail = null;
+          console.error('Logout failed');
         }
+      } catch (error) {
+        console.error('Error during logout:', error);
       }
     };
-    xhttp.send();
+
+    return {
+      isAuthenticated: authStore.isAuthenticated,
+      logout,
+    };
   },
-  methods: {
-    logout() {
-      const xhttp = new XMLHttpRequest();
-      xhttp.open('POST', '/api/logout', true);
-      xhttp.onreadystatechange = () => {
-        if (xhttp.readyState === 4 && xhttp.status === 200) {
-          this.isAuthenticated = false;
-          window.location.href = 'http://127.0.0.1:8000/login'; 
-        }
-      };
-      xhttp.send();
-    }
-}
 });
 </script>
 

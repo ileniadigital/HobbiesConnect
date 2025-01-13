@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { User, Hobbies, UserHobby, Friendship } from '../utils/interfaces';
-import Cookies from 'js-cookie';
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
@@ -11,22 +10,8 @@ export const useMainStore = defineStore('main', {
         hobbies: [] as Hobbies[],
         userHobbies: [] as UserHobby[],
         friends: [] as Friendship[], 
-        isAuthenticated: false
     }),
     actions: {
-        async checkAuthentication() {
-            try {
-                const response = await fetch(`${BASE_URL}/authenticated/`, { credentials: 'include' });
-                const data = await response.json();
-                this.isAuthenticated = data.isAuthenticated;
-                console.log("Is authenticated", this.isAuthenticated);
-                this.userId = Cookies.get('user_id') || null;
-                return this.isAuthenticated;
-            } catch (error) {
-                console.error("Error checking authentication", error);
-                return false;
-            }
-        },
         async fetchData() {
             try {
                 // Fetch user data
@@ -60,7 +45,7 @@ export const useMainStore = defineStore('main', {
                 console.log("Hobbies user data", this.userHobbies);
 
                 // Fetch friends data
-                const friendshipResponse = await fetch(`${BASE_URL}/user/${this.userId}/friendships/`);
+                const friendshipResponse = await fetch(`${BASE_URL}/user/${this.userId}/friendships/`, { credentials: 'include' });
                 if (!friendshipResponse.ok) {
                     throw new Error('Failed to fetch friends data');
                 }

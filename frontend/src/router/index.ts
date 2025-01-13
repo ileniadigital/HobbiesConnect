@@ -1,19 +1,10 @@
-// Example of how to use Vue Router
-
 import { createRouter, createWebHistory } from 'vue-router'
-
-// 1. Define route components.
-// These can be imported from other files
-import {authGuard} from "./authGuard.ts";
 import Profile from '../pages/Profile.vue';
 import FindFriends from '../pages/FindFriends.vue';
 import FriendRequests from '../pages/FriendRequests.vue';
 
 let base = (import.meta.env.MODE == 'development') ? import.meta.env.BASE_URL : ''
 
-// 2. Define some routes
-// Each route should map to a component.
-// We'll talk about nested routes later.
 const router = createRouter({
     history: createWebHistory(base),
     routes: [
@@ -22,15 +13,5 @@ const router = createRouter({
         { path: '/friendrequests/', name: 'Friend Requests', component: FriendRequests}
     ]
 })
-
-router.beforeEach((to, from, next) => {
-    if (to.meta.redirect) {
-        window.location.replace(to.meta.redirect as string);
-        return;
-    }
-    else {
-        authGuard(to, from, next);
-    }
-});
 
 export default router
