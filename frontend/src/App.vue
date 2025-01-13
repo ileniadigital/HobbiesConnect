@@ -38,8 +38,8 @@ export default defineComponent({
         const router = useRouter();
 
         onMounted(async () => {
-            await authStore.isAuthenticated;
-            const isAuthenticated = authStore.isAuthenticated;
+            const isAuthenticated = await authStore.isAuthenticated;
+            console.log(isAuthenticated);
             if (!isAuthenticated) {
                 window.alert("You are not authenticated. Please log in.");
                 window.location.href = ('http://127.0.0.1:8000/login');
@@ -47,6 +47,19 @@ export default defineComponent({
                 mainStore.fetchData();
             }
         });
+
+        // onMounted(async () => {
+        //     // Delay authentication check slightly to ensure cookies are set
+        //     setTimeout(async () => {
+        //         await authStore.checkAuthentication();
+        //         const isAuthenticated = authStore.get_authenticated;
+        //         console.log(isAuthenticated);
+        //         if (!isAuthenticated) {
+        //             window.location.href = ('http://127.0.0.1:8000/login');
+        //         }
+        //     }, 100);
+        // });
+
         return {
             user: mainStore.user,
             hobbies: mainStore.hobbies,

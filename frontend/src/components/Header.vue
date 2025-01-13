@@ -89,6 +89,7 @@ export default defineComponent({
 
     const logout = async () => {
       try {
+        console.log('Logging out');
         const response = await fetch('http://127.0.0.1:8000/api/logout/', {
           method: 'POST',
           headers: {

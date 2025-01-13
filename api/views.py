@@ -20,6 +20,7 @@ from typing import Union
 from .models import User, Hobbies, UserHobby, Friendship
 from .forms import UserForm, UserAuthenticationForm
 import logging
+from django.middleware.csrf import get_token
 
 logger = logging.getLogger(__name__)
 
@@ -116,7 +117,9 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             logger.info(f"User {user.username} logged in successfully.")
-            return redirect('http://localhost:5173/')  # Redirect to the main page
+            response = redirect('http://localhost:5173/')
+            response['X-CSRFToken'] = get_token(request)
+            return response  # Redirect to the main page
         else:
             logger.warning("Invalid login attempt.")
             logger.warning(form.errors)
