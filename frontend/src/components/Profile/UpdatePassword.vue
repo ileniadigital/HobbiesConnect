@@ -59,6 +59,10 @@ export default defineComponent({
                 const data = await response.json();
                 console.log("Password updated:", data);
                 errorMessage.value = "";
+
+                // Clear the form
+                currentPassword.value = "";
+                newPassword.value = "";
             } catch (error: any) {
                 console.error('There was a problem with the fetch operation:', error);
                 errorMessage.value = error.message;

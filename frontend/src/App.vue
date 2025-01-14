@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { RouterView, useRouter } from "vue-router";
+import { RouterView } from "vue-router";
 import { useMainStore } from "./data/data";
 import { useAuthStore } from "./utils/auth";
 
@@ -37,7 +37,7 @@ export default defineComponent({
     setup() {
         const mainStore = useMainStore();
         const authStore = useAuthStore();
-        const router = useRouter();
+        // const router = useRouter();
 
         onMounted(async () => {
             const isAuthenticated = await authStore.checkAuthentication();
