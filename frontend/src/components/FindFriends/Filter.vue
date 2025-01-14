@@ -22,9 +22,9 @@ export default defineComponent({
     setup(_, { emit }) {
         const ageFrom = ref<number>(0);
         const ageTo = ref<number>(999);
-        const errorMessage = ref('');
+        const errorMessage = ref<string>('');
 
-        const filter = () => {
+        const filter = (): void => {
             // error messages
             if (isNaN(ageFrom.value) || isNaN(ageTo.value)) {
                 errorMessage.value = 'Please fill in both age fields with valid numbers.';
@@ -41,7 +41,7 @@ export default defineComponent({
             errorMessage.value = ''; // Clear any previous error message
             console.log('Age from:', ageFrom.value);
             console.log('Age to:', ageTo.value);
-            emit('filter', {ageFrom: ageFrom.value, ageTo: ageTo.value});
+            emit('filter', { ageFrom: ageFrom.value, ageTo: ageTo.value });
         };
 
         return {

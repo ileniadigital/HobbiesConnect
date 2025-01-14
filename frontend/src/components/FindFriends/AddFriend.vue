@@ -18,19 +18,19 @@ export default defineComponent({
         }
     },
     setup(props, { emit }) {
-        const isRequestSent = ref(false);
+        const isRequestSent = ref<boolean>(false);
 
-        const addFriend = () => {
+        const addFriend = (): void => {
             console.log('Add friend:', props.userId, props.friendId);
             isRequestSent.value = true;
             emit('add-friend', { userId: props.userId, friendId: props.friendId });
         };
 
-        const buttonClass = computed(() => {
+        const buttonClass = computed<string>(() => {
             return isRequestSent.value ? 'btn btn-success' : 'btn btn-primary';
         });
 
-        const buttonText = computed(() => {
+        const buttonText = computed<string>(() => {
             return isRequestSent.value ? 'Friend Request Sent' : 'Send Friend Request';
         });
 

@@ -24,8 +24,9 @@ def filter_users_by_non_friends(users: List['User'], user_id: int) -> List['User
     '''
     Filter similar users by those who are not pending or accepted friends
     '''
-    # Get the user's friends
     user = User.objects.get(id=user_id)
+    # Get friends
     friends = Friendship.objects.filter(user=user).values_list('friend', flat=True)
     friends = friends.union(Friendship.objects.filter(friend=user).values_list('user', flat=True))
+    
     return [user for user in users if user.id not in friends]

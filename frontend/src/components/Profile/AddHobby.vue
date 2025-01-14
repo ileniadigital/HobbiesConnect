@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, PropType } from "vue";
 import { getCsrfToken } from "../../utils/csrf";
 
 interface Hobby {
@@ -70,16 +70,17 @@ export default defineComponent({
             required: true
         },
         hobbies: {
-            type: Array as () => Hobby[],
-            required: true
+            type: Array as PropType<Hobby[]>,
+            required: true,
+            default: () => []
         }
     },
     emits: ["close", "hobby-added"],
     setup(props, { emit }) {
-        const hobby = ref("");
-        const description = ref("");
+        const hobby = ref<string>("");
+        const description = ref<string>("");
         const selectedHobbyId = ref<number | null>(null);
-        console.log("Hobbies in AddHobby:", props.hobbies);
+        // console.log("Hobbies in AddHobby:", props.hobbies);
 
         watch(
             () => props.visible,
@@ -93,11 +94,11 @@ export default defineComponent({
             }
         );
 
-        const close = () => {
+        const close = (): void => {
             emit("close");
         };
 
-        const addHobby = async () => {
+        const addHobby = async (): Promise<void> => {
             try {
                 const response = await fetch('http://localhost:8000/api/hobbies/add_user_hobby/', {
                     credentials: 'include',
@@ -115,8 +116,8 @@ export default defineComponent({
                 if (!response.ok) {
                     throw new Error('Something went wrong');
                 }
-                const data = await response.json();
-                console.log("Hobby added:", data);
+                // const data = await response.json();
+                // console.log("Hobby added:", data);
                 emit("hobby-added");
                 close();
             } catch (error) {
@@ -124,12 +125,12 @@ export default defineComponent({
             }
         };
 
-        const addExistingHobby = async () => {
+        const addExistingHobby = async (): Promise<void> => {
             if (selectedHobbyId.value === null) {
                 return;
             }
-            console.log("User ID:", props.userId);
-            console.log("Selected Hobby ID:", selectedHobbyId.value);
+            // console.log("User ID:", props.userId);
+            // console.log("Selected Hobby ID:", selectedHobbyId.value);
             try {
                 const response = await fetch('http://localhost:8000/api/user_hobbies/add/', {
                     credentials: 'include',
@@ -146,8 +147,8 @@ export default defineComponent({
                 if (!response.ok) {
                     throw new Error('Something went wrong');
                 }
-                const data = await response.json();
-                console.log("Existing hobby added:", data);
+                // const data = await response.json();
+                // console.log("Existing hobby added:", data);
                 emit("hobby-added");
                 close();
             } catch (error) {

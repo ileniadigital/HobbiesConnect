@@ -44,10 +44,9 @@ export default defineComponent({
         const ageTo = ref<number>(999);
 
         // Fetch similar users based on age filter
-        const fetchSimilarUsers = async (filter: { ageFrom: number, ageTo: number }) => {
-
+        const fetchSimilarUsers = async (filter: { ageFrom: number, ageTo: number }): Promise<void> => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/similar-users/${mainStore.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`);
+                const response = await fetch(`http://localhost:8000/api/similar-users/${mainStore.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch similar users');
                 }
@@ -61,9 +60,9 @@ export default defineComponent({
             }
         };
 
-        const handleAddFriend = async ({ userId, friendId }: { userId: number, friendId: number }) => {
+        const handleAddFriend = async ({ userId, friendId }: { userId: number, friendId: number }): Promise<void> => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/friendship/create/', {
+                const response = await fetch('http://localhost:8000/api/friendship/create/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -83,20 +82,20 @@ export default defineComponent({
             }
         };
 
-        const paginateFriends = () => {
+        const paginateFriends = (): void => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
             const end = start + itemsPerPage.value;
             paginatedFriends.value = similarUsers.value.slice(start, end);
         };
 
-        const changePage = (page: number) => {
+        const changePage = (page: number): void => {
             if (page > 0 && page <= totalPages.value) {
                 currentPage.value = page;
                 paginateFriends();
             }
         };
 
-        const totalPages = computed(() => {
+        const totalPages = computed<number>(() => {
             return Math.ceil(similarUsers.value.length / itemsPerPage.value);
         });
 
@@ -105,7 +104,7 @@ export default defineComponent({
             await fetchSimilarUsers({ ageFrom: ageFrom.value, ageTo: ageTo.value });
         });
 
-        watch(similarUsers, () => {
+        watch(similarUsers, (): void => {
             paginateFriends();
         });
 

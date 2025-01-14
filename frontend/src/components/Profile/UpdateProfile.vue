@@ -45,15 +45,15 @@ import { useMainStore } from "../../data/data";
 export default defineComponent({
   setup() {
     const mainStore = useMainStore();
-    const title = ref("Profile");
-    const first_name = ref("");
-    const last_name = ref("");
-    const email = ref("");
-    const dob = ref("");
-    const userId = ref(1); // temporary
-    const errorMessage = ref("");
+    const title = ref<string>("Profile");
+    const first_name = ref<string>("");
+    const last_name = ref<string>("");
+    const email = ref<string>("");
+    const dob = ref<string>("");
+    const userId = ref<number>(1); // temporary
+    const errorMessage = ref<string>("");
 
-    onMounted(async () => {
+    onMounted(async (): Promise<void> => {
       await mainStore.fetchData();
       if (mainStore.user) {
         first_name.value = mainStore.user.first_name || "No name";
@@ -64,7 +64,7 @@ export default defineComponent({
       }
     });
 
-    const updateUserProfile = async () => {
+    const updateUserProfile = async (): Promise<void> => {
       try {
         const apiURL = `http://localhost:8000/api/user/update/${mainStore.userId}/`;
         console.log("Updating profile with URL:", apiURL);

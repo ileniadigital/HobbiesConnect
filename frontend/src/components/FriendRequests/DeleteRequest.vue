@@ -43,10 +43,10 @@ export default defineComponent({
     },
     emits: ["close", "request-deleted"],
     methods: {
-        close() {
+        close(): void {
             this.$emit("close");
         },
-        async confirmDelete() {
+        async confirmDelete(): Promise<void> {
             try {
                 const response = await fetch('http://localhost:8000/api/friendships/delete/', {
                     method: 'DELETE',

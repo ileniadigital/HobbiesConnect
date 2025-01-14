@@ -42,9 +42,9 @@ export default defineComponent({
         close() {
             this.$emit("close");
         },
-        async confirmDelete() {
-            console.log("User id in delete:", this.userId);
-            console.log("Hobby id in delete:", this.hobbyId);
+        async confirmDelete(): Promise<void> {
+            // console.log("User id in delete:", this.userId);
+            // console.log("Hobby id in delete:", this.hobbyId);
             try {
                 const response = await fetch('http://localhost:8000/api/user_hobbies/delete/', {
                     credentials: 'include',
@@ -61,8 +61,8 @@ export default defineComponent({
                 if (!response.ok) {
                     throw new Error('Something went wrong');
                 }
-                const data = await response.json();
-                console.log("Hobby deleted:", data);
+                // const data = await response.json();
+                // console.log("Hobby deleted:", data);
                 this.$emit('hobby-deleted');
                 this.close();
             } catch (error) {

@@ -52,10 +52,10 @@ export default defineComponent({
     const friends = ref<Friendship[]>([]);
     const pendingRequests = ref<Friendship[]>([]);
     const acceptedRequests = ref<Friendship[]>([]);
-    const isDeleteModalVisible = ref(false);
+    const isDeleteModalVisible = ref<boolean>(false);
     const selectedFriendId = ref<number>(-1);
     const selectedStatus = ref<string>("none");
-    const userId = ref(mainStore.userId ?? 0);
+    const userId = ref<number>(mainStore.userId ?? 0);
 
     // Fetch friends
     const fetchFriends = async (): Promise<void> => {

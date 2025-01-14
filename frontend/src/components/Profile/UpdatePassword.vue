@@ -35,12 +35,12 @@ import { useMainStore } from "../../data/data";
 export default defineComponent({
     setup() {
         const mainStore = useMainStore();
-        const currentPassword = ref("");
-        const newPassword = ref("");
-        const errorMessage = ref("");
-        const confirmationMessage = ref("");
+        const currentPassword = ref<string>("");
+        const newPassword = ref<string>("");
+        const errorMessage = ref<string>("");
+        const confirmationMessage = ref<string>("");
 
-        const updatePassword = async () => {
+        const updatePassword = async (): Promise<void> => {
             try {
                 const response = await fetch(`http://localhost:8000/user/update_password/${mainStore.userId}/`, {
                     method: 'PUT',
@@ -60,8 +60,8 @@ export default defineComponent({
                     confirmationMessage.value = "Password updated successfully";
                 }
 
-                const data = await response.json();
-                console.log("Password updated:", data);
+                // const data = await response.json();
+                // console.log("Password updated:", data);
                 errorMessage.value = "";
 
                 // Clear the form

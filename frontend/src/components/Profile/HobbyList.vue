@@ -27,7 +27,7 @@ import { defineComponent, ref, onMounted, watch } from "vue";
 import { useMainStore } from "../../data/data";
 import AddHobby from "./AddHobby.vue";
 import DeleteHobby from "./DeleteHobby.vue";
-import { UserHobby } from "../../utils/interfaces";
+import { UserHobby, Hobbies } from "../../utils/interfaces";
 
 export default defineComponent({
     components: {
@@ -37,10 +37,10 @@ export default defineComponent({
     setup() {
         const mainStore = useMainStore();
         const userHobbies = ref<UserHobby[]>([]);
-        const isAddHobbyModalVisible = ref(false);
-        const isDeleteHobbyModalVisible = ref(false);
+        const isAddHobbyModalVisible = ref<boolean>(false);
+        const isDeleteHobbyModalVisible = ref<boolean>(false);
         const selectedHobbyId = ref<number | null>(null);
-        const userId = ref(mainStore.get_user_id ?? 0);
+        const userId = ref<number>(mainStore.get_user_id ?? 0);
 
         const fetchUserHobbies = async () => {
             await mainStore.fetchData();
@@ -49,7 +49,7 @@ export default defineComponent({
 
         watch(
             () => mainStore.get_user_id,
-            async (newUserId) => {
+            async (newUserId: number | null) => {
                 if (newUserId) {
                     userId.value = newUserId;
                     await fetchUserHobbies();
@@ -63,7 +63,7 @@ export default defineComponent({
         });
 
         // Filter hobbies to existing ones from master list the user does not have
-        const filteredHobbies = () => {
+        const filteredHobbies = (): Hobbies[] => {
             const userHobbyIds = userHobbies.value.map(uHobby => uHobby.hobby.id);
             return mainStore.hobbies.filter(hobby => !userHobbyIds.includes(hobby.id));
         };
