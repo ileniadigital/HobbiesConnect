@@ -373,7 +373,6 @@ def delete_hobby(request: HttpRequest, hobby_id: int) -> JsonResponse:
         'message': 'Hobby deleted successfully'
     })
 
-@csrf_exempt
 def add_hobby_and_user_hobby(request: HttpRequest) -> JsonResponse:
     '''
     Add a new hobby for a user and to the overall hobbies list
@@ -429,7 +428,7 @@ def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
-@csrf_exempt
+
 def add_user_hobby(request: HttpRequest) -> JsonResponse:
     if request.method == 'POST':
         data = json.loads(request.body)

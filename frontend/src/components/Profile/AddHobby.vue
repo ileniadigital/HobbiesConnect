@@ -51,6 +51,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from "vue";
+import { getCsrfToken } from "../../utils/csrf";
 
 interface Hobby {
     id: number;
@@ -99,9 +100,11 @@ export default defineComponent({
         const addHobby = async () => {
             try {
                 const response = await fetch('http://localhost:8000/api/hobbies/add_user_hobby/', {
+                    credentials: 'include',
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
                     },
                     body: JSON.stringify({
                         user_id: props.userId,
@@ -129,9 +132,11 @@ export default defineComponent({
             console.log("Selected Hobby ID:", selectedHobbyId.value);
             try {
                 const response = await fetch('http://localhost:8000/api/user_hobbies/add/', {
+                    credentials: 'include',
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
                     },
                     body: JSON.stringify({
                         user_id: props.userId,
