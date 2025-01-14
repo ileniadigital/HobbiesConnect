@@ -41,6 +41,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useMainStore } from "../../data/data";
+import { getCsrfToken } from "../../utils/csrf";
 
 export default defineComponent({
   setup() {
@@ -66,8 +67,6 @@ export default defineComponent({
 
     const updateUserProfile = async (): Promise<void> => {
       try {
-        const apiURL = `http://localhost:8000/api/user/update/${mainStore.userId}/`;
-        // console.log("Updating profile with URL:", apiURL);
         const updated = JSON.stringify({
           first_name: first_name.value,
           last_name: last_name.value,
@@ -75,10 +74,12 @@ export default defineComponent({
           dob: dob.value,
         });
         // console.log("Sending updated data:", updated);
-        const response = await fetch(apiURL, {
+        const response = await fetch(`http://localhost:8000/api/user/update/${mainStore.userId}/`, {
+          credentials: "include",
           method: "PUT",
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
+            "X-CSRFToken": getCsrfToken() || "",
           },
           body: updated,
         });

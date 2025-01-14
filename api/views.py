@@ -225,7 +225,6 @@ def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
     
-@csrf_exempt
 def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
     """
     Update user profile by ID
