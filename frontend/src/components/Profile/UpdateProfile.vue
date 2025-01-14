@@ -67,14 +67,14 @@ export default defineComponent({
     const updateUserProfile = async (): Promise<void> => {
       try {
         const apiURL = `http://localhost:8000/api/user/update/${mainStore.userId}/`;
-        console.log("Updating profile with URL:", apiURL);
+        // console.log("Updating profile with URL:", apiURL);
         const updated = JSON.stringify({
           first_name: first_name.value,
           last_name: last_name.value,
           email: email.value,
           dob: dob.value,
         });
-        console.log("Sending updated data:", updated);
+        // console.log("Sending updated data:", updated);
         const response = await fetch(apiURL, {
           method: "PUT",
           headers: {
@@ -87,7 +87,6 @@ export default defineComponent({
           throw new Error(errorData.error || `Error updating profile: ${response.statusText}`);
         }
         errorMessage.value = ''; // Clear any previous error messages
-        // Handle successful profile update
 
       } catch (error) {
         console.error("Error updating profile:", error);

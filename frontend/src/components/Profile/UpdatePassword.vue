@@ -18,6 +18,9 @@
                         </div>
                     </div>
                     <div class="form-group col-md-12 mt-4">
+                        <small class="form-text text-muted d-block mb-2">
+                            You will be logged out after your password is updated successfully
+                        </small>
                         <button type="submit" class="btn btn-primary">Update Password</button>
                     </div>
                 </div>
@@ -31,10 +34,13 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useMainStore } from "../../data/data";
+import { useAuthStore } from "../../utils/auth";
+import { getCsrfToken } from "../../utils/csrf";
 
 export default defineComponent({
     setup() {
         const mainStore = useMainStore();
+        const authStore = useAuthStore();
         const currentPassword = ref<string>("");
         const newPassword = ref<string>("");
         const errorMessage = ref<string>("");
@@ -43,9 +49,11 @@ export default defineComponent({
         const updatePassword = async (): Promise<void> => {
             try {
                 const response = await fetch(`http://localhost:8000/user/update_password/${mainStore.userId}/`, {
+                    credentials: 'include',
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
                     },
                     body: JSON.stringify({
                         current_password: currentPassword.value,
@@ -67,6 +75,8 @@ export default defineComponent({
                 // Clear the form
                 currentPassword.value = "";
                 newPassword.value = "";
+
+                await authStore.checkAuthentication();
             } catch (error: any) {
                 console.error('There was a problem with the fetch operation:', error);
                 errorMessage.value = error.message;

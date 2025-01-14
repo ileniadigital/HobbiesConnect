@@ -4,13 +4,13 @@ from urllib import response
 from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.core.paginator import Paginator
 from .models import User
 from .utils import calculate_age, filter_users_by_age, filter_users_by_non_friends
 from .forms import UserForm, UserAuthenticationForm
-from api.models import Hobbies, UserHobby, PageView, User, Friendship
-from django.views.decorators.csrf import csrf_exempt
+from api.models import Hobbies, UserHobby, User, Friendship
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.forms.models import model_to_dict
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
@@ -47,15 +47,10 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
 
     # Get all users except the current one
     other_users = User.objects.exclude(id=user.id)
-    print("Other Users: ", other_users)
 
     # Filter users by age group and those who are not friends already
     other_users = filter_users_by_age(other_users, age_from, age_to)
-    print("By age filters: ", other_users)
-    
-    #FILTER FRIENDS
     other_users= filter_users_by_non_friends(other_users, user_id)
-    print("By non friends: ", other_users)
 
     for other_user in other_users:
         common_hobbies_count = User.count_common_hobbies(user, other_user)
@@ -196,8 +191,8 @@ def get_user_id(request: HttpRequest, user_id: int) -> JsonResponse:
         return JsonResponse(user_data)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
-    
-@csrf_exempt
+
+@ensure_csrf_cookie  
 @require_http_methods(["PUT"])
 def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
     """
@@ -218,6 +213,8 @@ def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
 
             user.set_password(new_password)
             user.save()
+            # Authenticate user again
+            update_session_auth_hash(request, user)
             return JsonResponse({'message': 'Password updated successfully'})
         except User.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
