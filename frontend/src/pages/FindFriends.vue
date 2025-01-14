@@ -74,11 +74,11 @@ export default defineComponent({
                     throw new Error(data.message || 'Failed to add friend');
                 }
                 console.log('Friend added:', data);
-                alert('Friend request sent successfully!');
+                // alert('Friend request sent successfully!');
             } catch (error) {
                 console.error('Error adding friend:', (error as any).message);
-                const errorMessage = (error as Error).message;
-                alert(`Error adding friend: ${errorMessage}`);
+                // const errorMessage = (error as Error).message;
+                // alert(`Error adding friend: ${errorMessage}`);
             }
         };
 
