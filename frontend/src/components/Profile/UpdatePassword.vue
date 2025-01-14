@@ -18,9 +18,6 @@
                         </div>
                     </div>
                     <div class="form-group col-md-12 mt-4">
-                        <small class="form-text text-muted d-block mb-2">
-                            You will be logged out after your password is updated successfully
-                        </small>
                         <button type="submit" class="btn btn-primary">Update Password</button>
                     </div>
                 </div>

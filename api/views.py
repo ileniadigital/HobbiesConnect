@@ -1,29 +1,18 @@
 import heapq
 import json
-from urllib import response
-from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.core.paginator import Paginator
 from .models import User
 from .utils import calculate_age, filter_users_by_age, filter_users_by_non_friends
 from .forms import UserForm, UserAuthenticationForm
 from api.models import Hobbies, UserHobby, User, Friendship
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.forms.models import model_to_dict
-from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import QuerySet
-from django.contrib.auth.models import auth, AbstractBaseUser
-from rest_framework import status, mixins
-from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.decorators import action
-from typing import Union
 from .models import User, Hobbies, UserHobby, Friendship
 from .forms import UserForm, UserAuthenticationForm
-from django.middleware.csrf import get_token
+from django.contrib.auth.decorators import login_required
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -33,11 +22,6 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
     View to get users with the most similar hobbies using a max heap.
     returns paginated results.
     '''
-    # checks if user is logged in 
-    # if not request.user.is_authenticated:
-    #     return JsonResponse({'error': 'User not authenticated'}, status=401)
-
-    # user = request.user
     user = User.objects.get(id=user_id)
     max_heap = []
 
@@ -136,8 +120,7 @@ def authenticated_view(request):
             "email": request.user.email if request.user.is_authenticated else None,
         } if request.user.is_authenticated else None,
     }
-
-    print(f"Response Data: {response_data}")
+    # print(f"Response Data: {response_data}")
     return JsonResponse(response_data)
 
 
@@ -194,6 +177,7 @@ def get_user_id(request: HttpRequest, user_id: int) -> JsonResponse:
 
 @ensure_csrf_cookie  
 @require_http_methods(["PUT"])
+@login_required
 def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
     """
     Update user password
@@ -225,6 +209,9 @@ def update_user_password(request: HttpRequest, user_id: int) -> JsonResponse:
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
     
+@ensure_csrf_cookie
+@require_http_methods(["PUT"])
+@login_required
 def update_user_profile(request: HttpRequest, user_id: int) -> JsonResponse:
     """
     Update user profile by ID
