@@ -1,7 +1,8 @@
 <template>
-    <Header></Header>
-    <main class="container pt-4">
-        <!-- <div>
+    <div id="app">
+        <Header></Header>
+        <main class="container pt-4">
+            <!-- <div>
             <router-link
                 class=""
                 :to="{name: 'Main Page'}"
@@ -16,15 +17,17 @@
                 Profile
             </router-link>
         </div> -->
-        <RouterView class="flex-shrink-0" />
-    </main>
-    <Footer></Footer>
+            <RouterView class="flex-shrink-0" />
+        </main>
+        <Footer></Footer>
+    </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { useMainStore } from "./data/data";
+import { useAuthStore } from "./utils/auth";
 
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
@@ -33,10 +36,17 @@ export default defineComponent({
     components: { RouterView, Header, Footer },
     setup() {
         const mainStore = useMainStore();
+        const authStore = useAuthStore();
+        // const router = useRouter();
 
-        onMounted(() => {
-            mainStore.fetchData();
+        onMounted(async () => {
+            const isAuthenticated = await authStore.checkAuthentication();
+            console.log(isAuthenticated);
+            if (isAuthenticated) {
+                mainStore.fetchData();
+            }
         });
+
         return {
             user: mainStore.user,
             hobbies: mainStore.hobbies,

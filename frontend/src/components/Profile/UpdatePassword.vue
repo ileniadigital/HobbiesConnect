@@ -40,7 +40,7 @@ export default defineComponent({
 
         const updatePassword = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/user/update_password/${mainStore.userId}/`, {
+                const response = await fetch(`http://localhost:8000/user/update_password/${mainStore.userId}/`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -59,6 +59,10 @@ export default defineComponent({
                 const data = await response.json();
                 console.log("Password updated:", data);
                 errorMessage.value = "";
+
+                // Clear the form
+                currentPassword.value = "";
+                newPassword.value = "";
             } catch (error: any) {
                 console.error('There was a problem with the fetch operation:', error);
                 errorMessage.value = error.message;

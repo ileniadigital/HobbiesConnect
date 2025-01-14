@@ -98,7 +98,7 @@ export default defineComponent({
 
         const addHobby = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/hobbies/add_user_hobby/', {
+                const response = await fetch('http://localhost:8000/api/hobbies/add_user_hobby/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ export default defineComponent({
             console.log("User ID:", props.userId);
             console.log("Selected Hobby ID:", selectedHobbyId.value);
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/user_hobbies/add/', {
+                const response = await fetch('http://localhost:8000/api/user_hobbies/add/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

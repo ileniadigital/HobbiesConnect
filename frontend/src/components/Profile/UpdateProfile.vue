@@ -66,7 +66,7 @@ export default defineComponent({
 
     const updateUserProfile = async () => {
       try {
-        const apiURL = `http://127.0.0.1:8000/api/user/update/${mainStore.userId}/`;
+        const apiURL = `http://localhost:8000/api/user/update/${mainStore.userId}/`;
         console.log("Updating profile with URL:", apiURL);
         const updated = JSON.stringify({
           first_name: first_name.value,
