@@ -43,7 +43,7 @@ export default defineComponent({
         },
         async confirmDelete() {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/user_hobbies/delete/', {
+                const response = await fetch('http://localhost:8000/api/user_hobbies/delete/', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

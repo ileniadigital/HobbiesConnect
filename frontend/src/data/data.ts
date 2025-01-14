@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
-import {User, Hobbies, UserHobby, Friendship} from '../utils/interfaces';
+import { User, Hobbies, UserHobby, Friendship } from '../utils/interfaces';
+import { useAuthStore } from '../utils/auth';
 
-const BASE_URL = "http://127.0.0.1:8000/api";
+const BASE_URL = 'http://localhost:8000';
+
 export const useMainStore = defineStore('main', {
     state: () => ({
         user: null as User | null, 
-        userId: 5,
+        userId: null as number | null,
         hobbies: [] as Hobbies[],
         userHobbies: [] as UserHobby[],
         friends: [] as Friendship[],
@@ -26,7 +28,13 @@ export const useMainStore = defineStore('main', {
         async fetchData() {
             try {
                 // Fetch user data
-                const userResponse = await fetch(`${BASE_URL}/user/${this.userId}/`);
+                const authStore = useAuthStore();
+                const isAuthenticated = await authStore.checkAuthentication();
+                if (!isAuthenticated) {
+                    throw new Error('User is not authenticated');
+                }
+                this.userId = authStore.get_user_id;
+                const userResponse = await fetch(`${BASE_URL}/user/${this.userId}/`, { credentials: 'include' });
                 if (!userResponse.ok) {
                     throw new Error('Failed to fetch user data');
                 }
@@ -34,16 +42,12 @@ export const useMainStore = defineStore('main', {
                 this.userId = this.user.id;
                 console.log("User data", this.user);
 
-                // Fetch hobbies data
-                const hobbiesResponse = await fetch(`${BASE_URL}/hobbies/`);
-                if (!hobbiesResponse.ok) {
-                    throw new Error('Failed to fetch hobbies data');
-                }
-                this.hobbies = await hobbiesResponse.json() as Hobbies[];
+                const hobbiesResponse = await fetch(`${BASE_URL}/api/hobbies/`, { credentials: 'include' });
+                this.hobbies = await hobbiesResponse.json();
                 console.log("Hobbies data", this.hobbies);
 
                 // Fetch user hobbies data
-                const userHobbiesResponse = await fetch(`${BASE_URL}/user/${this.userId}/hobbies/`);
+                const userHobbiesResponse = await fetch(`${BASE_URL}/user/${this.userId}/hobbies/`, { credentials: 'include' });
                 if (!userHobbiesResponse.ok) {
                     throw new Error('Failed to fetch user hobbies data');
                 }
@@ -60,7 +64,7 @@ export const useMainStore = defineStore('main', {
                 console.log("Hobbies user data", this.userHobbies);
 
                 // Fetch friends data
-                const friendshipResponse = await fetch(`${BASE_URL}/user/${this.userId}/friendship/`);
+                const friendshipResponse = await fetch(`${BASE_URL}/user/${this.userId}/friendships/`, { credentials: 'include' });
                 if (!friendshipResponse.ok) {
                     throw new Error('Failed to fetch friends data');
                 }

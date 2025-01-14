@@ -1,16 +1,29 @@
 import heapq
 import json
-from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+from urllib import response
+from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth import login, logout, authenticate
 from django.core.paginator import Paginator
 from .models import User
 from .utils import calculate_age, filter_users_by_age
 from .forms import UserForm, UserAuthenticationForm
 from api.models import Hobbies, UserHobby, PageView, User, Friendship
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from django.views.decorators.http import require_http_methods
+from django.forms.models import model_to_dict
+from django.core.handlers.wsgi import WSGIRequest
+from django.db.models import QuerySet
+from django.contrib.auth.models import auth, AbstractBaseUser
+from rest_framework import status, mixins
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.decorators import action
+from typing import Union
+from .models import User, Hobbies, UserHobby, Friendship
+from .forms import UserForm, UserAuthenticationForm
+from django.middleware.csrf import get_token
 
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
@@ -133,8 +146,7 @@ def signup(request):
             #save the new user
             user = form.save()
             login(request, user) 
-            return redirect('http://localhost:5173/')  # redirect to vue page, need to sort out the logic of this as it is hardcoded
-            #return redirect('main_spa')  # Redirect to a home page
+            return redirect('http://localhost:5173/')
     else:
         form = UserForm()
     
@@ -149,8 +161,9 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('http://localhost:5173/') # same as signup
-            #return redirect('main_spa')  # Redirect to a home page or another page
+            return redirect('http://localhost:5173/') 
+        else:
+            return redirect('/')
     else:
         form = UserAuthenticationForm()
     
@@ -167,7 +180,17 @@ def authenticated_view(request):
     '''
     View to check if user is authenticated
     '''
-    return JsonResponse({'isAuthenticated': request.user.is_authenticated})
+    response_data = {
+        "isAuthenticated": request.user.is_authenticated,
+        "user": {
+            "id": request.user.id if request.user.is_authenticated else None,
+            # "username": request.user.username if request.user.is_authenticated else None,
+            "email": request.user.email if request.user.is_authenticated else None,
+        } if request.user.is_authenticated else None,
+    }
+
+    print(f"Response Data: {response_data}")
+    return JsonResponse(response_data)
 
 
 def get_all_users(request: HttpRequest) -> JsonResponse:
@@ -514,30 +537,26 @@ def update_friendship_status(request):
     Update friendship status when someone accepts or rejects a friend request.
     '''
     if request.method == 'PUT':
-        data = json.loads(request.body)
-        friendship_id = data.get('friendship_id')
-        status = data.get('status')
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body)
+            current_password = data.get('current_password')
+            new_password = data.get('new_password')
 
-        friendship = get_object_or_404(Friendship, id=friendship_id)
-        if status in [Friendship.FriendshipStatus.ACCEPTED, Friendship.FriendshipStatus.REJECTED]:
-            friendship.status = status
-            friendship.accepted = (status == Friendship.FriendshipStatus.ACCEPTED)
-            friendship.save()
-            return JsonResponse({'message': 'Friendship status updated successfully'}, status=200)
-        else:
-            return JsonResponse({'error': 'Invalid status value'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+            if not user.check_password(current_password):
+                return JsonResponse({'error': 'Current password is incorrect'}, status=400)
 
-@csrf_exempt
-def delete_friendship(request):
-    '''
-    Delete a friendship instance when someone removes a friend.
-    '''
-    if request.method == 'DELETE':
-        data = json.loads(request.body)
-        friendship_id = data.get('friendship_id')
+            if not new_password:
+                return JsonResponse({'error': 'New password cannot be empty'}, status=400)
 
-        friendship = get_object_or_404(Friendship, id=friendship_id)
-        friendship.delete()
-        return JsonResponse({'message': 'Friendship deleted successfully'}, status=200)
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+            user.set_password(new_password)
+            user.save()
+            return JsonResponse({'message': 'Password updated successfully'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)

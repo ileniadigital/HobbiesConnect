@@ -23,77 +23,59 @@
         </ul>
         <!-- Login/logout button depending -->
         <button v-if="isAuthenticated" class="btn" @click="logout">Logout</button>
-        <a v-else class="btn" href="http://127.0.0.1:8000/login">Login</a>
-
+        <button v-else class="btn" @click="redirectToLogin">Login</button>
       </div>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref } from 'vue';
+import { useAuthStore } from '../utils/auth';
+import { getCsrfToken } from '../utils/csrf';
 
 export default defineComponent({
-  name: "Header",
+  name: 'Header',
   setup() {
-    const isAuthenticated = ref(false);
-    const userEmail = ref<string | null>(null);
+    const authStore = useAuthStore();
 
-    const checkAuthentication = async () => {
-      try {
-        const response = await fetch('/api/authenticated', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          isAuthenticated.value = data.isAuthenticated;
-          userEmail.value = data.email;
-        } else {
-          isAuthenticated.value = false;
-          userEmail.value = null;
-        }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-        isAuthenticated.value = false;
-        userEmail.value = null;
-      }
+    const redirectToLogin = () => {
+      authStore.checkAuthentication();
     };
-
     const logout = async () => {
       try {
-        const response = await fetch('/api/logout', {
+        console.log('Logging out');
+        const response = await fetch('http://localhost:8000/api/logout/', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken() || '',
+          },
+          credentials: 'include',
         });
-
         if (response.ok) {
-          isAuthenticated.value = false;
-          userEmail.value = null;
+          redirectToLogin();
         } else {
-          console.error('Failed to log out');
+          console.error('Logout failed');
         }
       } catch (error) {
-        console.error('Error logging out:', error);
+        console.error('Error during logout:', error);
       }
     };
 
 
-    onMounted(() => {
-      checkAuthentication();
+    const isAuthenticated = ref(false);
+
+    authStore.checkAuthentication().then((result) => {
+      isAuthenticated.value = result;
     });
 
     return {
       isAuthenticated,
-      userEmail,
-      logout
+      logout,
+      redirectToLogin,
     };
-  }
+  },
 });
 </script>
 

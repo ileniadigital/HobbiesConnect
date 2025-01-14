@@ -1,22 +1,32 @@
 # TO-ADD on ReadMe
+
 - List of group members with a short description (one sentence) of what each member was assigned to do, and what they actually did in terms of contributing to the final deliverable (we can use tasks assignment in github)
 - the URL of your deployed application
 - the username and password for the admin user
 - the username and passwords of at least 5 of the test users
 
-# Group 7 
-- Sai Sandeep Vemula (220224206): Friendship model and views, log in and authentication, Friends Request and Find Friends Back-end
-- Ilenia Maietta (220322742): UserHobby model and views, Hobby List front and back-end, Find Friends and Friends Request Front-End
-- Amy Anigboro (220476137): Hobby model and views, Update Profile and Password, Error messages
-- Mariam Thabti (2103028471): User model and views, log in, sign up and authentication, maximum heap for hobbies
+# Group 7
+
+| Member                         | Assigned                                                                                 | Finished tasks                                                                                       |
+| ------------------------------ | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Sai Sandeep Vemula (220224206) | Friendship models and views and front end, Friend Requests page (back end and front end) | Friendship model and views, log in and authentication, Friends Request and Find Friends Back-end     |
+| Ilenia Maietta (220322742)     | UserHobby model and views, Hobby list (front end and back end)                           | UserHobby model and views, Hobby List front and back-end, Find Friends and Friends Request Front-End |
+| Amy Anigboro (220476137)       | Hobby model and views, Update Profile and Password (front end and back end)              | Hobby model and views, Update Profile and Password, Front End Error messages                         |
+| Mariam Thabti (2103028471)     | User model and views, authentication and heap for hobbies                                | User model and views, log in, sign up and authentication, maximum heap for hobbies                   |
 
 # URL of Deployed Application
 
 # Admin User Log In Details
+
 - Username: admin@email.com
 - Password: admin
 
 # Login details for Test Users
+
+- User: Ilenia, username:ec22792@qmul.ac.uk, password: helloworld123
+- User: Sandeep, username:ec, password: helloworld123
+- User: Mariam, username:ec, password: helloworld123
+- User: Amy, username:, password: helloworld123
 
 # Template for ECS639U Group Coursework
 
@@ -32,33 +42,33 @@ To run this project in your development machine, follow these steps:
 
 3. Install Pyhton dependencies (main folder):
 
-    ```console
-    $ pip install -r requirements.txt
-    ```
+   ```console
+   $ pip install -r requirements.txt
+   ```
 
 4. Create a development database:
 
-    ```console
-    $ python manage.py migrate
-    ```
+   ```console
+   $ python manage.py migrate
+   ```
 
 5. Install JavaScript dependencies (from 'frontend' folder):
 
-    ```console
-    $ npm install
-    ```
+   ```console
+   $ npm install
+   ```
 
 6. If everything is alright, you should be able to start the Django development server from the main folder:
 
-    ```console
-    $ python manage.py runserver
-    ```
+   ```console
+   $ python manage.py runserver
+   ```
 
 7. and the Vue server from the 'frontend' sub-folder:
 
-    ```console
-    $ npm run dev
-    ```
+   ```console
+   $ npm run dev
+   ```
 
 8. Open your browser and go to http://localhost:5173, you will be greeted with a template page.
 
@@ -68,9 +78,9 @@ Once your project is ready to be deployed you will need to 'build' the Vue app a
 
 1. The build command in package.json and the vite.config.ts files have already been modified so that when running 'npm run build' the generated JavaScript and CSS files will be placed in the mainapp static folder, and the index.html file will be placed in the templates folder:
 
-    ```console
-    $ npm run build
-    ```
+   ```console
+   $ npm run build
+   ```
 
 2. You should then follow the instruction on QM+ on how to deploy your app on EECS's OpenShift live server.
 
