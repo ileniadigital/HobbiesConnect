@@ -81,27 +81,11 @@ def signup(request):
             #save the new user
             user = form.save()
             login(request, user) 
-            return redirect('http://localhost:5173/')  # redirect to vue page, need to sort out the logic of this as it is hardcoded
-            #return redirect('main_spa')  # Redirect to a home page
+            return redirect('http://localhost:5173/')
     else:
         form = UserForm()
     
     return render(request, 'signup.html', {'form': form})
-
-# def login_view(request):
-#     '''
-#     View for user to log in
-#     '''
-#     if request.method == 'POST':
-#         form = UserAuthenticationForm(request, data=request.POST)
-#         if form.is_valid():
-#             user = form.get_user()
-#             login(request, user)
-#             return redirect('http://localhost:5173/') # same as signup
-#     else:
-#         form = UserAuthenticationForm()
-    
-#     return render(request, 'login.html', {'form': form})
 
 def login_view(request):
     '''
@@ -120,67 +104,12 @@ def login_view(request):
     
     return render(request, 'login.html', {'form': form})
 
-
-# def login_view(request: WSGIRequest) -> Union[HttpResponseRedirect, HttpResponse]:
-#     '''
-#     View for user to log in
-#     '''
-#     if request.method == 'POST':
-#         form = UserAuthenticationForm(request, data=request.POST)
-#         if form.is_valid():
-#             username: str = request.POST.get('username')
-#             password: str = request.POST.get('password')
-#             authenticated_user: AbstractBaseUser = authenticate(request, username=username, password=password)
-
-#             if authenticated_user is not None:
-#                 auth.login(request, authenticated_user)
-#                 response: HttpResponseRedirect = HttpResponseRedirect('http://localhost:5173/')
-                
-#                 #remove for production
-#                 response.set_cookie('user_id', str(authenticated_user.id))
-#                 response.set_cookie('isAuthenticated', True)
-#                 #remove for production
-                
-#                 return response
-#     else:
-#         form = UserAuthenticationForm()
-    
-#     return render(request, 'login.html', {'form': form})
-
 def logout_view(request):
     '''
     View for user to log out
     '''
     logout(request)
     return redirect('login') 
-
-# def authenticated_view(request):
-#     '''
-#     View to check if user is authenticated
-#     '''
-#     print(f"User: {request.user.username}, user: {request.user}")
-#     if request.user.is_authenticated:
-#         return JsonResponse({'isAuthenticated': True, 'user': request.user.username})
-#     else:
-#         return JsonResponse({'isAuthenticated': False}, status=401)
-
-# def authenticated_view(request):
-#     '''
-#     View to check if user is authenticated
-#     '''
-#     print(f"User requested")
-#     try:
-#         if request.user.is_authenticated:
-#             response_data = {'isAuthenticated': True, 'user': request.user}
-#             print(response_data)
-#             return JsonResponse(response_data)
-#         else:
-#             response_data = {'isAuthenticated': False}
-#             print(response_data)
-#             return JsonResponse(response_data, status=401)
-#     except Exception as e:
-#         print("error" + str(e))
-#         return JsonResponse({'error': str(e)}, status=400)
 
 def authenticated_view(request):
     '''
