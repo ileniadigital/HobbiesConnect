@@ -1,41 +1,9 @@
-<!-- <template>
-    <button class="btn btn-primary" @click="addFriend">Add Friend</button>
-</template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-    name: "AddFriend",
-    methods: {
-        addFriend() {
-            alert('Friend added!');
-        }
-    }
-})
-</script>
-
-<style scoped>
-.btn-primary,
-.btn-primary:hover {
-    background-color: #fce26d;
-    color: black;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-}
-
-.btn-primary:hover {
-    font-weight: bold;
-}
-</style> -->
-
 <template>
-    <button class="btn btn-primary" @click="addFriend">Add Friend</button>
+    <button :class="buttonClass" @click="addFriend">{{ buttonText }}</button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed } from "vue";
 
 export default defineComponent({
     name: "AddFriend",
@@ -49,11 +17,29 @@ export default defineComponent({
             required: true
         }
     },
-    methods: {
-        addFriend() {
-            console.log('Add friend:', this.userId, this.friendId);
-            this.$emit('add-friend', { userId: this.userId, friendId: this.friendId });
-        }
+    setup(props, { emit }) {
+        const isRequestSent = ref(false);
+
+        const addFriend = () => {
+            console.log('Add friend:', props.userId, props.friendId);
+            isRequestSent.value = true;
+            emit('add-friend', { userId: props.userId, friendId: props.friendId });
+        };
+
+        const buttonClass = computed(() => {
+            return isRequestSent.value ? 'btn btn-success' : 'btn btn-primary';
+        });
+
+        const buttonText = computed(() => {
+            return isRequestSent.value ? 'Friend Request Sent' : 'Send Friend Request';
+        });
+
+        return {
+            isRequestSent,
+            addFriend,
+            buttonClass,
+            buttonText
+        };
     }
 });
 </script>
@@ -69,7 +55,16 @@ export default defineComponent({
     cursor: pointer;
 }
 
-.btn-primary:hover {
+.btn-success,
+.btn-success:hover {
+    background-color: #8DE2CD;
+    color: black;
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.btn-primary:hover,
+.btn-success:hover {
     font-weight: bold;
 }
 </style>
