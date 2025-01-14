@@ -14,17 +14,6 @@ export const useMainStore = defineStore('main', {
         isAuthenticated: false 
     }),
     actions: {
-        async checkAuthentication() : Promise<boolean> {
-            try {
-                const response = await fetch(`${BASE_URL}/authenticated/`);
-                const data = await response.json();
-                this.isAuthenticated = data.isAuthenticated;
-                return this.isAuthenticated;
-            } catch (error) {
-                console.error("Error checking authentication", error);
-                return false;
-            }
-        },
         async fetchData() {
             try {
                 // Fetch user data
@@ -34,6 +23,7 @@ export const useMainStore = defineStore('main', {
                     throw new Error('User is not authenticated');
                 }
                 this.userId = authStore.get_user_id;
+                console.log("User ID", this.userId);
                 const userResponse = await fetch(`${BASE_URL}/user/${this.userId}/`, { credentials: 'include' });
                 if (!userResponse.ok) {
                     throw new Error('Failed to fetch user data');
@@ -74,5 +64,13 @@ export const useMainStore = defineStore('main', {
                 console.error("Can't fetch initial data", error);
             }
         }
-    }
+    },
+    getters: {
+        get_user_id(): number | null {
+          return this.userId;
+        },
+        get_user(): User | null {
+          return this.user;
+        },
+      },
 });

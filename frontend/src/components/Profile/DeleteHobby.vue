@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import { getCsrfToken } from '../../utils/csrf';
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -42,11 +43,15 @@ export default defineComponent({
             this.$emit("close");
         },
         async confirmDelete() {
+            console.log("User id in delete:", this.userId);
+            console.log("Hobby id in delete:", this.hobbyId);
             try {
                 const response = await fetch('http://localhost:8000/api/user_hobbies/delete/', {
+                    credentials: 'include',
                     method: 'DELETE',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
                     },
                     body: JSON.stringify({
                         user_id: this.userId,

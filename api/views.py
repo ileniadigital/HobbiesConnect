@@ -162,8 +162,6 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             return redirect('http://localhost:5173/') 
-        else:
-            return redirect('/')
     else:
         form = UserAuthenticationForm()
     
@@ -459,7 +457,6 @@ def update_user_hobby(request: HttpRequest, user_hobby_id: int) -> JsonResponse:
         'hobby_id': user_hobby.hobby_id
     })
 
-@csrf_exempt
 def delete_user_hobby(request: HttpRequest) -> JsonResponse:
     if request.method == 'DELETE':
         data = json.loads(request.body)

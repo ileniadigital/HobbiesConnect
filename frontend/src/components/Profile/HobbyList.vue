@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, watch } from "vue";
 import { useMainStore } from "../../data/data";
 import AddHobby from "./AddHobby.vue";
 import DeleteHobby from "./DeleteHobby.vue";
@@ -40,12 +40,27 @@ export default defineComponent({
         const isAddHobbyModalVisible = ref(false);
         const isDeleteHobbyModalVisible = ref(false);
         const selectedHobbyId = ref<number | null>(null);
-        const userId = ref(mainStore.userId);
+        const userId = ref(mainStore.get_user_id ?? 0);
 
         const fetchUserHobbies = async () => {
             await mainStore.fetchData();
             userHobbies.value = mainStore.userHobbies;
         };
+
+        watch(
+            () => mainStore.get_user_id,
+            async (newUserId) => {
+                if (newUserId) {
+                    userId.value = newUserId;
+                    await fetchUserHobbies();
+                }
+            },
+            { immediate: true }
+        );
+
+        onMounted(async () => {
+            await mainStore.fetchData();
+        });
 
         // Filter hobbies to existing ones from master list the user does not have
         const filteredHobbies = () => {
@@ -61,8 +76,9 @@ export default defineComponent({
             userId.value = userHobbyId;
             selectedHobbyId.value = hobbyId;
             isDeleteHobbyModalVisible.value = true;
+            // this.userId = mainStore.get_user_id;
             console.log("Selected hobby id:", selectedHobbyId.value);
-            console.log("User id:", userId.value);
+            console.log("User id in hobby list:", userId.value);
         };
 
         onMounted(fetchUserHobbies);

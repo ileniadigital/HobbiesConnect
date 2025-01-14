@@ -38,9 +38,6 @@ export const useAuthStore = defineStore('auth', {
     get_user_id(): number | null {
       return this.user ? this.user.id : null;
     },
-    get_user(): User | null {
-      return this.user;
-    },
     get_authenticated(): boolean {
       return this.isAuthenticated;
     },
