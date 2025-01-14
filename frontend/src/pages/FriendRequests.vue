@@ -11,7 +11,7 @@
       <div class="col-md-6">
         <h2>Pending Requests</h2>
         <ul class="list-unstyled">
-          <li v-for="request in pendingRequests" :key="request.id">
+          <li v-for="request in pendingRequests" :key="request.id" class="mb-3">
             <Request :name="request.friend" :status="request.status" :createdAt="request.created_at"
               @delete-request="openDeleteModal(request.id, request.status)" />
           </li>
@@ -21,7 +21,7 @@
       <div class="col-md-6">
         <h2>My Friends</h2>
         <ul class="list-unstyled">
-          <li v-for="friend in acceptedRequests" :key="friend.id">
+          <li v-for="friend in acceptedRequests" :key="friend.id" class="mb-3">
             <Request :name="friend.friend" :status="friend.status" :createdAt="friend.created_at"
               @delete-request="openDeleteModal(friend.id, friend.status)" />
           </li>
@@ -55,16 +55,18 @@ export default defineComponent({
     const isDeleteModalVisible = ref(false);
     const selectedFriendId = ref<number>(-1);
     const selectedStatus = ref<string>("none");
-    const userId = ref(mainStore.userId);
+    const userId = ref(mainStore.userId ?? 0);
 
-    const fetchFriends = async () => {
+    // Fetch friends
+    const fetchFriends = async (): Promise<void> => {
       await mainStore.fetchData();
       friends.value = mainStore.friends;
       pendingRequests.value = friends.value.filter(friend => !friend.accepted && friend.status === "PENDING");
       acceptedRequests.value = friends.value.filter(friend => friend.accepted || friend.status === "ACCEPTED");
     };
 
-    const openDeleteModal = (friendId: number, status: string) => {
+    // Open delete modal
+    const openDeleteModal = (friendId: number, status: string): void => {
       selectedFriendId.value = friendId;
       selectedStatus.value = status;
       isDeleteModalVisible.value = true;
@@ -74,7 +76,6 @@ export default defineComponent({
 
     return {
       title: "Friend Requests",
-      // name: mainStore.user?.first_name,
       pendingRequests,
       acceptedRequests,
       isDeleteModalVisible,
