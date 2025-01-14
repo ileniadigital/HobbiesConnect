@@ -34,6 +34,7 @@
         </div>
       </form>
       <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+      <div v-if="confirmationMessage" class="alert alert-success mt-3">{{ confirmationMessage }}</div>
     </div>
   </div>
 </template>
@@ -53,6 +54,7 @@ export default defineComponent({
     const dob = ref<string>("");
     const userId = ref<number>(1); // temporary
     const errorMessage = ref<string>("");
+    const confirmationMessage = ref<string>("");
 
     onMounted(async (): Promise<void> => {
       await mainStore.fetchData();
@@ -87,12 +89,14 @@ export default defineComponent({
           const errorData = await response.json();
           throw new Error(errorData.error || `Error updating profile: ${response.statusText}`);
         }
-        errorMessage.value = ''; // Clear any previous error messages
+        confirmationMessage.value = "Profile updated successfully";
+        errorMessage.value = ""; // Clear any previous error messages
 
       } catch (error) {
         console.error("Error updating profile:", error);
         if (error instanceof Error) {
           errorMessage.value = error.message;
+          confirmationMessage.value = "";
         } else {
           errorMessage.value = String(error);
         }
@@ -108,6 +112,7 @@ export default defineComponent({
       userId,
       mainStore,
       errorMessage,
+      confirmationMessage,
       updateUserProfile,
     };
   },
