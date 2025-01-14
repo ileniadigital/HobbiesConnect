@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 import { User, Hobbies, UserHobby, Friendship } from '../utils/interfaces';
+import { useAuthStore } from '../utils/auth';
 
 const BASE_URL = 'http://localhost:8000';
 
 export const useMainStore = defineStore('main', {
     state: () => ({
         user: null as User | null, 
-        userId: 4,
+        userId: null as number | null,
         hobbies: [] as Hobbies[],
         userHobbies: [] as UserHobby[],
         friends: [] as Friendship[], 
@@ -15,6 +16,12 @@ export const useMainStore = defineStore('main', {
         async fetchData() {
             try {
                 // Fetch user data
+                const authStore = useAuthStore();
+                const isAuthenticated = await authStore.checkAuthentication();
+                if (!isAuthenticated) {
+                    throw new Error('User is not authenticated');
+                }
+                this.userId = authStore.get_user_id;
                 const userResponse = await fetch(`${BASE_URL}/user/${this.userId}/`, { credentials: 'include' });
                 if (!userResponse.ok) {
                     throw new Error('Failed to fetch user data');

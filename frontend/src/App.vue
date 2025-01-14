@@ -40,7 +40,7 @@ export default defineComponent({
         const router = useRouter();
 
         onMounted(async () => {
-            const isAuthenticated = await authStore.isAuthenticated;
+            const isAuthenticated = await authStore.checkAuthentication();
             console.log(isAuthenticated);
             if (isAuthenticated) {
                 mainStore.fetchData();

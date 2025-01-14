@@ -10,7 +10,6 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async checkAuthentication(): Promise<boolean> {
       try {      
-      alert('Calling fetch');
       const response = await fetch('http://localhost:8000/api/authenticated/', {
         credentials: 'include',
       });
@@ -20,11 +19,9 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = data.isAuthenticated;
 
       if (this.isAuthenticated) {
-        // alert('You are logged in! Data will be fetched.');
         this.user = data.user;
         this.userid = data.user.id;
       } else { //logging out 
-        // window.alert("You are not authenticated. Please log in.");
         this.user = null;
         this.userid = null;
         window.location.href = ('http://localhost:8000/login');
