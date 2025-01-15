@@ -23,10 +23,32 @@
 
 # Login details for Test Users
 
-- User: Ilenia, username:ec22792@qmul.ac.uk, password: helloworld123
-- User: Sandeep, username:ec, password: helloworld123
-- User: Mariam, username:ec, password: helloworld123
-- User: Amy, username:, password: helloworld123
+1. User: **Ilenia**, username: `ec22792@qmul.ac.uk`, password: `helloworld123`
+2. User: **Sandeep**, username: `ec22898@qmul.ac.uk`, password: `helloworld123`
+3. User: **Mariam**, username: `ec22860@qmul.ac.uk`, password: `helloworld123`
+4. User: **Amy**, username: `ec22496@qmul.ac.uk`, password: `helloworld123`
+5. User: **Konrad**, username: `Konrad@gmail.com`, password: `helloworld123`
+6. User: **Gabrielle**, username: `Gabrielle@gmail.com`, password: `helloworld123`
+7. User: **Taylor**, username: `Taylor@gmail.com`, password: `helloworld123`
+8. User: **Rahul**, username: `Rahul@gmail.com`, password: `helloworld123`
+9. User: **Abdullah**, username: `Abdullah@gmail.com`, password: `helloworld123`
+10. User: **Nora**, username: `Nora@gmail.com`, password: `helloworld123`
+11. User: **Charles**, username: `CharlesLeclerc@gmail.com`, password: `helloworld123`
+12. User: **LewisHamilton**, username: `LewisHamilton@gmail.com`, password: `helloworld123`
+13. User: **OscarPiastri**, username: `OscarPiastri@gmail.com`, password: `helloworld123`
+14. User: **FernandoAlonso**, username: `FernandoAlonso@gmail.com`, password: `helloworld123`
+15. User: **LandoNorris**, username: `LandoNorris@gmail.com`, password: `helloworld123`
+16. User: **Nico Hulkenberg**, username: `NicoHulk@gmail.com`, password: `helloworld123`
+17. User: **Alexander Albon**, username: `AlexAlbon@gmail.com`, password: `helloworld123`
+18. User: **Pierre Gasly**, username: `PierreGasly@gmail.com`, password: `helloworld123`
+19. User: **Carlos**, username: `Chilli@gmail.com`, password: `helloworld123`
+20. User: **Oliver**, username: `Ollie@gmail.com`, password: `helloworld123`
+21. User: **Yuki**, username: `YukiTsu@gmail.com`, password: `helloworld123`
+22. User: **Lance**, username: `LanceStrolled@gmail.com`, password: `helloworld123`
+23. User: **Max**, username: `SuperMax@gmail.com`, password: `helloworld123`
+24. User: **Liam**, username: `LiamLawson@gmail.com`, password: `helloworld123`
+25. User: **George**, username: `GeorgeRussell@gmail.com`, password: `helloworld123`
+
 
 # Template for ECS639U Group Coursework
 
