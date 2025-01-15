@@ -92,8 +92,8 @@ def signup(request: HttpRequest) -> HttpResponse:
             #save the new user
             user = form.save()
             login(request, user) 
-            return redirect('http://localhost:5173/')
-            # return redirect('/')
+            # return redirect('http://localhost:5173/')
+            return redirect('/')
     else:
         form = UserForm()
     
@@ -108,8 +108,8 @@ def login_view(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('http://localhost:5173/')
-            # return redirect('/') 
+            # return redirect('http://localhost:5173/')
+            return redirect('/') 
     else:
         form = UserAuthenticationForm()
     
