@@ -3,8 +3,6 @@ import { User, Hobbies, UserHobby, Friendship } from '../utils/interfaces';
 import { useAuthStore } from '../utils/auth';
 import { getCsrfToken } from '../utils/csrf';
 
-const BASE_URL = 'http://localhost:8000';
-
 export const useMainStore = defineStore('main', {
     state: () => ({
         user: null as User | null,
@@ -39,7 +37,7 @@ export const useMainStore = defineStore('main', {
         // Fetch user data
         async fetchUser(): Promise<void> {
             try {
-                const userResponse: Response = await fetch(`${BASE_URL}/user/${this.userId}/`, { credentials: 'include' });
+                const userResponse: Response = await fetch(`/user/${this.userId}/`, { credentials: 'include' });
                 if (!userResponse.ok) {
                     throw new Error('Failed to fetch user data');
                 }
@@ -52,7 +50,7 @@ export const useMainStore = defineStore('main', {
         // Fetch similar users based on age filter
         async fetchSimilarUsers(filter: { ageFrom: number, ageTo: number }): Promise<void> {
             try {
-                const response = await fetch(`${BASE_URL}/api/similar-users/${this.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`, { credentials: 'include' });
+                const response = await fetch(`/api/similar-users/${this.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`, { credentials: 'include' });
                 if (!response.ok) {
                     throw new Error('Failed to fetch similar users');
                 }
@@ -66,7 +64,7 @@ export const useMainStore = defineStore('main', {
         // Fetch hobbies data
         async fetchHobbies(): Promise<void> {
             try {
-                const hobbiesResponse: Response = await fetch(`${BASE_URL}/api/hobbies/`, { credentials: 'include' });
+                const hobbiesResponse: Response = await fetch(`/api/hobbies/`, { credentials: 'include' });
                 if (!hobbiesResponse.ok) {
                     throw new Error('Failed to fetch hobbies data');
                 }
@@ -79,7 +77,7 @@ export const useMainStore = defineStore('main', {
         // Fetch user hobbies data
         async fetchUserHobbies(): Promise<void> {
             try {
-                const userHobbiesResponse: Response = await fetch(`${BASE_URL}/user/${this.userId}/hobbies/`, { credentials: 'include' });
+                const userHobbiesResponse: Response = await fetch(`/user/${this.userId}/hobbies/`, { credentials: 'include' });
                 if (!userHobbiesResponse.ok) {
                     throw new Error('Failed to fetch user hobbies data');
                 }
@@ -100,7 +98,7 @@ export const useMainStore = defineStore('main', {
         // Fetch friends data
         async fetchFriends(): Promise<void> {
             try {
-                const friendshipResponse: Response = await fetch(`${BASE_URL}/user/${this.userId}/friendships/`, { credentials: 'include' });
+                const friendshipResponse: Response = await fetch(`/user/${this.userId}/friendships/`, { credentials: 'include' });
                 if (!friendshipResponse.ok) {
                     throw new Error('Failed to fetch friends data');
                 }
@@ -116,7 +114,7 @@ export const useMainStore = defineStore('main', {
         // Add friend
         async handleAddFriend(userId: number, friendId: number): Promise<void> {
             try {
-                const response = await fetch(`${BASE_URL}/api/friendship/create/`, {
+                const response = await fetch(`/api/friendship/create/`, {
                     credentials: 'include',
                     method: 'POST',
                     headers: {
@@ -140,7 +138,7 @@ export const useMainStore = defineStore('main', {
         // Accept friend request
         async acceptFriendRequest(friendshipId: number): Promise<void> {
             try {
-                const response = await fetch(`${BASE_URL}/friendship/accept/${friendshipId}/`, {
+                const response = await fetch(`/friendship/accept/${friendshipId}/`, {
                     method: 'PUT',
                     credentials: 'include',
                     headers: {
@@ -159,7 +157,7 @@ export const useMainStore = defineStore('main', {
         // Delete friend request or unfriend
         async deleteFriendship(friendshipId: number): Promise<void> {
             try {
-                const response = await fetch(`${BASE_URL}/friendship/delete/${friendshipId}/`, {
+                const response = await fetch(`/friendship/delete/${friendshipId}/`, {
                     method: 'DELETE',
                     credentials: 'include',
                     headers: {

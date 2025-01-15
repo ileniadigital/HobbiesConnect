@@ -100,7 +100,7 @@ export default defineComponent({
 
         const addHobby = async (): Promise<void> => {
             try {
-                const response = await fetch('http://localhost:8000/api/hobbies/add_user_hobby/', {
+                const response = await fetch('/api/hobbies/add_user_hobby/', {
                     credentials: 'include',
                     method: 'POST',
                     headers: {
@@ -132,7 +132,7 @@ export default defineComponent({
             // console.log("User ID:", props.userId);
             // console.log("Selected Hobby ID:", selectedHobbyId.value);
             try {
-                const response = await fetch('http://localhost:8000/api/user_hobbies/add/', {
+                const response = await fetch('/api/user_hobbies/add/', {
                     credentials: 'include',
                     method: 'POST',
                     headers: {

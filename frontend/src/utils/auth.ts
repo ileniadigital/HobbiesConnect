@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async checkAuthentication(): Promise<boolean> {
       try {      
-      const response = await fetch('http://localhost:8000/api/authenticated/', {
+      const response = await fetch('/api/authenticated/', {
         credentials: 'include',
       });
 
@@ -24,7 +24,7 @@ export const useAuthStore = defineStore('auth', {
       } else { //logging out 
         this.user = null;
         this.userid = null;
-        window.location.href = ('http://localhost:8000/login');
+        window.location.href = ('/login');
       }
       // console.log('Is authenticated:', this.isAuthenticated);
       return this.isAuthenticated;

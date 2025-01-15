@@ -46,7 +46,7 @@ export default defineComponent({
             // console.log("User id in delete:", this.userId);
             // console.log("Hobby id in delete:", this.hobbyId);
             try {
-                const response = await fetch('http://localhost:8000/api/user_hobbies/delete/', {
+                const response = await fetch('/api/user_hobbies/delete/', {
                     credentials: 'include',
                     method: 'DELETE',
                     headers: {
