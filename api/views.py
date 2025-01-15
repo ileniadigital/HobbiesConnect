@@ -29,7 +29,7 @@ from django.contrib.auth.decorators import login_required
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
-def build_max_heap(request, user_id: int) -> JsonResponse:
+def build_max_heap(request: HttpRequest, user_id: int) -> JsonResponse:
     '''
     View to get users with the most similar hobbies using a max heap.
     returns paginated results.
@@ -37,7 +37,7 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
     user = User.objects.get(id=user_id)
     max_heap = []
 
-    # Get age_from and age_to from request parameters, default to 1 and infinity
+    # Get age_from and age_to from request parameters
     age_from = int(request.GET.get('age_from', 1))
     age_to = int(request.GET.get('age_to', 999))
 
@@ -82,7 +82,7 @@ def build_max_heap(request, user_id: int) -> JsonResponse:
         'total_pages': paginator.num_pages
     })
 
-def signup(request):
+def signup(request: HttpRequest) -> HttpResponse:
     '''
     View for user signing up 
     '''
@@ -92,13 +92,14 @@ def signup(request):
             #save the new user
             user = form.save()
             login(request, user) 
-            return redirect('http://localhost:5173/')
+            # return redirect('http://localhost:5173/')
+            return redirect('/')
     else:
         form = UserForm()
     
     return render(request, 'signup.html', {'form': form})
 
-def login_view(request):
+def login_view(request: HttpRequest) -> HttpResponse:
     '''
     View for user to log in
     '''
@@ -107,20 +108,21 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('http://localhost:5173/') 
+            # return redirect('http://localhost:5173/')
+            return redirect('/') 
     else:
         form = UserAuthenticationForm()
     
     return render(request, 'login.html', {'form': form})
 
-def logout_view(request):
+def logout_view(request: HttpRequest) -> HttpResponse:
     '''
     View for user to log out
     '''
     logout(request)
     return redirect('login') 
 
-def authenticated_view(request):
+def authenticated_view(request: HttpRequest) -> JsonResponse:
     '''
     View to check if user is authenticated
     '''

@@ -76,7 +76,7 @@ export default defineComponent({
           dob: dob.value,
         });
         // console.log("Sending updated data:", updated);
-        const response = await fetch(`http://localhost:8000/api/user/update/${mainStore.userId}/`, {
+        const response = await fetch(`/api/user/update/${mainStore.userId}/`, {
           credentials: "include",
           method: "PUT",
           headers: {
