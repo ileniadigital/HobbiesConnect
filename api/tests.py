@@ -15,7 +15,7 @@ User = get_user_model()
 
 class HobbiesConnectTests(LiveServerTestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(10)
         # self.live_server_url = 'http://localhost:5173'
@@ -29,15 +29,15 @@ class HobbiesConnectTests(LiveServerTestCase):
             dob='1999-01-01'
         )
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.test_user.delete()
         User.objects.filter(email='newuser@email.com').delete()
         self.driver.quit()
         super().tearDown()
 
-    def signup(self):
+    def signup(self) -> None:
         '''
-        Test the signup
+        Helper function to sign up
         '''
         try:
             driver = self.driver
@@ -87,7 +87,7 @@ class HobbiesConnectTests(LiveServerTestCase):
             print(f'Error: {e}')
             raise
 
-    def login(self):
+    def login(self) -> None:
         try:
             driver = self.driver
             driver.get(f'{self.live_server_url}/login/')
@@ -116,8 +116,17 @@ class HobbiesConnectTests(LiveServerTestCase):
         except Exception as e:
             print(f'Error: {e}')
             raise
+    
+    '''
+    Edit user profile tests
+    - Update first name
+    - Update last name
+    - Update email
+    - Update date of birth
+    - Update password
+    '''
 
-    def test_new_user(self):
+    def test_new_user(self) -> None:
         '''
         Test the signup and login functionality
         '''
