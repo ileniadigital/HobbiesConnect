@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from typing import Any
 
 # Create your models here.
 
@@ -14,7 +15,7 @@ class CustomUserManager(BaseUserManager):
     Custom manager for User model.
     Creating regular user and superuser.
     '''
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email: str, password: str | None = None, **extra_fields: Any) -> 'User':
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
@@ -23,7 +24,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, email: str, password: str | None = None, **extra_fields: Any) -> 'User':
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -62,7 +63,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'dob']
     #method to count hobbies used in the heap view
     @staticmethod
-    def count_common_hobbies(user1, user2):
+    def count_common_hobbies(user1: 'User', user2: 'User') -> int:
         '''
         Static method to count common hobbies between two users.
         '''
@@ -74,7 +75,7 @@ class User(AbstractUser):
     
     objects = CustomUserManager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.first_name
 
 class Hobbies(models.Model):
@@ -85,7 +86,7 @@ class Hobbies(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
     
 
@@ -96,7 +97,7 @@ class UserHobby(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     hobby = models.ForeignKey(Hobbies, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.hobby.name
 
 
@@ -120,5 +121,5 @@ class Friendship(models.Model):
     accepted= models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.user.email} is friends with {self.friend.email} - Status: {self.status}"
