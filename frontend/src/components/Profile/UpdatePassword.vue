@@ -45,7 +45,7 @@ export default defineComponent({
 
         const updatePassword = async (): Promise<void> => {
             try {
-                const response = await fetch(`http://localhost:8000/user/update_password/${mainStore.userId}/`, {
+                const response = await fetch(`/user/update_password/${mainStore.userId}/`, {
                     credentials: 'include',
                     method: 'PUT',
                     headers: {

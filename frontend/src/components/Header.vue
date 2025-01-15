@@ -45,7 +45,7 @@ export default defineComponent({
     const logout = async (): Promise<void> => {
       try {
         console.log('Logging out');
-        const response = await fetch('http://localhost:8000/api/logout/', {
+        const response = await fetch('/api/logout/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
