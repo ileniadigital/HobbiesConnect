@@ -26,7 +26,7 @@ class HobbiesConnectTests(LiveServerTestCase):
             password='newUser123',
             first_name='New',
             last_name='User',
-            dob='1999-01-01'
+            dob='1999-01-01',
         )
 
     def tearDown(self) -> None:
@@ -67,8 +67,8 @@ class HobbiesConnectTests(LiveServerTestCase):
             first_name_input.send_keys(self.test_user.first_name)
             last_name_input.send_keys(self.test_user.last_name)
             dob_input.send_keys('01-01-1999')
-            password_input.send_keys('newPassword123')
-            password_confirmation_input.send_keys('newPassword123')
+            password_input.send_keys(self.test_user.password)
+            password_confirmation_input.send_keys(self.test_user.password)
 
             # Submit the form
             password_input.send_keys(Keys.RETURN)
@@ -87,7 +87,7 @@ class HobbiesConnectTests(LiveServerTestCase):
             print(f'Error: {e}')
             raise
 
-    def login(self) -> None:
+    def login(self, email, password) -> None:
         try:
             driver = self.driver
             driver.get(f'{self.live_server_url}/login/')
@@ -99,8 +99,8 @@ class HobbiesConnectTests(LiveServerTestCase):
             password_input = driver.find_element(By.NAME, 'password')
 
             # Enter the username and password
-            username_input.send_keys(self.test_user.email)
-            password_input.send_keys('newPassword123')
+            username_input.send_keys(email)
+            password_input.send_keys(password)
 
             # Click the login button
             login_button = driver.find_element(By.ID, 'login-button')
@@ -126,12 +126,47 @@ class HobbiesConnectTests(LiveServerTestCase):
     - Update password
     '''
 
+    def update_password(self) -> None:
+        '''
+        Helper function to update the password
+        '''
+        try:
+            # Find the current password, new password, and confirm new password input elements
+            current_password_input = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'current_password'))
+            )
+            new_password_input = self.driver.find_element(By.ID, 'new_password')
+            # Enter the current password, new password, and confirm new password
+            current_password_input.send_keys(self.test_user.password)
+            new_password_input.send_keys('updatedPassword123')
+
+            # Submit the form
+            self.driver.find_element(By.XPATH, '//button[text()="Update Password"]').click()
+            # Wait for the profile page to load
+            WebDriverWait(self.driver, 50).until(
+                EC.presence_of_element_located((By.ID, 'profile-page'))
+            )
+            time.sleep(3)
+
+            # Log out
+            self.driver.find_element(By.XPATH, '//button[text()="Logout"]').click()
+            time.sleep(1)
+
+            # Log in with the new password
+            self.test_user.password = 'updatedPassword123'
+            self.login(self.test_user.email, self.test_user.password)   
+
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
+
     def test_new_user(self) -> None:
         '''
         Test the signup and login functionality
         '''
         self.signup()
-        self.login()
+        self.login(self.test_user.email, self.test_user.password)
+        self.update_password()
 
 if __name__ == "__main__":
     unittest.main()
