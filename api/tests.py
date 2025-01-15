@@ -42,33 +42,25 @@ class HobbiesConnectTests(LiveServerTestCase):
         try:
             driver = self.driver
             driver.get(f'{self.live_server_url}/signup/')
-            # print("Navigated to signup page")
 
-            # Increase the wait time and add logging
             email_input = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.NAME, 'email'))
             )
-            # print("Email input found")
             first_name_input = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.NAME, 'first_name'))
             )
-            # print("First name input found")
             last_name_input = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.NAME, 'last_name'))
             )
-            # print("Last name input found")
             dob_input = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.NAME, 'dob'))
             )
-            # print("DOB input found")
             password_input = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.NAME, 'password1'))
             )
-            # print("Password input found")
             password_confirmation_input = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.NAME, 'password2'))
             )
-            # print("Password confirmation input found")
 
             # Enter the user details
             email_input.send_keys(self.test_user.email)
@@ -85,24 +77,11 @@ class HobbiesConnectTests(LiveServerTestCase):
             WebDriverWait(driver, 100).until(
                 EC.presence_of_element_located((By.ID, 'profile-page'))
             )
-            # print("Profile page loaded")
-            time.sleep(5)
+            time.sleep(2)
 
             # Log out
             driver.find_element(By.XPATH, '//button[text()="Logout"]').click()
-            # try:
-            #     logout_button = WebDriverWait(driver, 40).until(
-            #         EC.presence_of_element_located((By.ID, 'logout-button'))
-            #     )
-            #     logout_button.click()
-            # except TimeoutException:
-            #     driver.save_screenshot('timeout_exception.png')
-            #     raise
-            # # Check if the user is authenticated
-            # driver.get(f'{self.live_server_url}/api/authenticated/')
-            # auth_status = driver.find_element(By.TAG_NAME, 'body').text
-            # self.assertIn('"isAuthenticated": true', auth_status)
-            time.sleep(3)
+            time.sleep(1)
 
         except Exception as e:
             print(f'Error: {e}')
@@ -126,18 +105,13 @@ class HobbiesConnectTests(LiveServerTestCase):
             # Click the login button
             login_button = driver.find_element(By.ID, 'login-button')
             login_button.click()
-            time.sleep(5)
+            time.sleep(2)
 
             # Wait for the profile page to load
             WebDriverWait(driver, 100).until(
                 EC.presence_of_element_located((By.ID, 'profile-page'))
             )
-
-            # Check if the user is authenticated
-            # driver.get(f'{self.live_server_url}/api/authenticated/')
-            # auth_status = driver.find_element(By.TAG_NAME, 'body').text
-            # self.assertIn('"isAuthenticated": true', auth_status)
-            # time.sleep(5)
+            time.sleep(1)
 
         except Exception as e:
             print(f'Error: {e}')
