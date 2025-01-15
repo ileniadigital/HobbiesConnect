@@ -65,8 +65,8 @@ export default defineComponent({
     };
 
     // Accept request
-    const acceptRequest = (friendId: number): void => {
-      mainStore.acceptFriendRequest(friendId);
+    const acceptRequest = async (friendId: number): Promise<void> => {
+      await mainStore.acceptFriendRequest(friendId);
       fetchFriends();
     };
 

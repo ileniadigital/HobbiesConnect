@@ -13,6 +13,7 @@ export const useMainStore = defineStore('main', {
         userHobbies: [] as UserHobby[],
         pending_friend_requests: [] as Friendship[],
         friends: [] as Friendship[], 
+        similarUsers: [] as User[],
         isAuthenticated: false 
     }),
     actions: {
@@ -48,6 +49,20 @@ export const useMainStore = defineStore('main', {
                 console.error("Failed to fetch user data", error);
             }
         },
+        // Fetch similar users based on age filter
+        async fetchSimilarUsers(filter: { ageFrom: number, ageTo: number }): Promise<void> {
+            try {
+                const response = await fetch(`${BASE_URL}/api/similar-users/${this.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`, { credentials: 'include' });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch similar users');
+                }
+                const data = await response.json();
+                this.similarUsers = data.users;
+                console.log('Similar users:', this.similarUsers);
+            } catch (error) {
+                console.error('Error fetching similar users:', error);
+            }
+        },
         // Fetch hobbies data
         async fetchHobbies(): Promise<void> {
             try {
@@ -78,7 +93,6 @@ export const useMainStore = defineStore('main', {
                         description: uh.description
                     }
                 })) as UserHobby[];
-                // console.log("Hobbies user data", this.userHobbies);
             } catch (error) {
                 console.error("Failed to fetch user hobbies data", error);
             }
@@ -97,6 +111,30 @@ export const useMainStore = defineStore('main', {
                 console.log("Friends data", this.friends);
             } catch (error) {
                 console.error("Failed to fetch friends data", error);
+            }
+        },
+        // Add friend
+        async handleAddFriend(userId: number, friendId: number): Promise<void> {
+            try {
+                const response = await fetch(`${BASE_URL}/api/friendship/create/`, {
+                    credentials: 'include',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
+                    },
+                    body: JSON.stringify({ 
+                        user_id: userId,
+                        friend_id: friendId 
+                    })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to add friend');
+                }
+                console.log('Friend added:', data);
+            } catch (error) {
+                console.error('Error adding friend:', (error as any).message);
             }
         },
         // Accept friend request

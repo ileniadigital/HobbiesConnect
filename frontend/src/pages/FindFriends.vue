@@ -26,7 +26,6 @@ import Filter from "../components/FindFriends/Filter.vue";
 import Friend from "../components/FindFriends/Friend.vue";
 import Pagination from "../components/FindFriends/Pagination.vue";
 import { User } from "../utils/interfaces";
-import { getCsrfToken } from "../utils/csrf";
 
 export default defineComponent({
     components: {
@@ -36,7 +35,6 @@ export default defineComponent({
     },
     setup() {
         const mainStore = useMainStore();
-        const similarUsers = ref<User[]>([]);
         const paginatedFriends = ref<User[]>([]);
         const errorMessage = ref<string>('');
         const currentPage = ref<number>(1);
@@ -46,50 +44,18 @@ export default defineComponent({
 
         // Fetch similar users based on age filter
         const fetchSimilarUsers = async (filter: { ageFrom: number, ageTo: number }): Promise<void> => {
-            try {
-                const response = await fetch(`http://localhost:8000/api/similar-users/${mainStore.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`, { credentials: 'include' });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch similar users');
-                }
-                const data = await response.json();
-                similarUsers.value = data.users;
-                paginateFriends();
-                console.log('Similar users:', similarUsers.value);
-            } catch (error) {
-                console.error('Error fetching similar users:', error);
-                errorMessage.value = 'Error fetching similar users';
-            }
+            await mainStore.fetchSimilarUsers(filter);
+            paginateFriends();
         };
 
         const handleAddFriend = async ({ userId, friendId }: { userId: number, friendId: number }): Promise<void> => {
-            try {
-                const response = await fetch('http://localhost:8000/api/friendship/create/', {
-                    credentials: 'include',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCsrfToken() || '',
-                    },
-                    body: JSON.stringify({ 
-                        user_id: userId,
-                        friend_id: friendId 
-                    })
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.message || 'Failed to add friend');
-                }
-                console.log('Friend added:', data);
-                // alert('Friend request sent successfully!');
-            } catch (error) {
-                console.error('Error adding friend:', (error as any).message);
-            }
+            await mainStore.handleAddFriend(userId, friendId);
         };
 
         const paginateFriends = (): void => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
             const end = start + itemsPerPage.value;
-            paginatedFriends.value = similarUsers.value.slice(start, end);
+            paginatedFriends.value = mainStore.similarUsers.slice(start, end);
         };
 
         const changePage = (page: number): void => {
@@ -100,7 +66,7 @@ export default defineComponent({
         };
 
         const totalPages = computed<number>(() => {
-            return Math.ceil(similarUsers.value.length / itemsPerPage.value);
+            return Math.ceil(mainStore.similarUsers.length / itemsPerPage.value);
         });
 
         onMounted(async () => {
@@ -108,13 +74,12 @@ export default defineComponent({
             await fetchSimilarUsers({ ageFrom: ageFrom.value, ageTo: ageTo.value });
         });
 
-        watch(similarUsers, (): void => {
+        watch(mainStore.similarUsers, (): void => {
             paginateFriends();
         });
 
         return {
             title: "Find Friends",
-            similarUsers,
             errorMessage,
             currentPage,
             itemsPerPage,
