@@ -11,7 +11,7 @@
             </div>
           </div>
           <div class="form-group col-md-6 d-flex align-items-center">
-            <label for="first_name" class="col-form-label col-md-6">First Name</label>
+            <label for="first_name" class="col-form-label col-md-6" id="first_name">First Name</label>
             <div class="col-md-8">
               <input type="text" v-model="first_name" id="first_name" class="form-control" />
             </div>

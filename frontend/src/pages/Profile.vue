@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="h3">{{ title }}</div>
+    <div class="h3" id="profile-page">{{ title }}</div>
     <hr>
     <!-- <div class="h3">Hi, {{ name }}</div> -->
 
