@@ -37,10 +37,9 @@ export default defineComponent({
     setup() {
         const mainStore = useMainStore();
         const authStore = useAuthStore();
-        // const router = useRouter();
 
         onMounted(async () => {
-            const isAuthenticated = await authStore.checkAuthentication();
+            const isAuthenticated: boolean = await authStore.checkAuthentication();
             console.log(isAuthenticated);
             if (isAuthenticated) {
                 mainStore.fetchData();

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { User } from './interfaces';
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
+  state: () : { isAuthenticated: boolean; user: User | null; userid: number | null } => ({
     isAuthenticated: false,
     user: null as User | null,
     userid: null as number | null,
@@ -14,8 +14,8 @@ export const useAuthStore = defineStore('auth', {
         credentials: 'include',
       });
 
-      const data = await response.json();
-      console.log('Data', data);
+      const data: { isAuthenticated: boolean; user: User } = await response.json();
+      // console.log('Data', data);
       this.isAuthenticated = data.isAuthenticated;
 
       if (this.isAuthenticated) {
@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
         this.userid = null;
         window.location.href = ('http://localhost:8000/login');
       }
-      console.log('Is authenticated:', this.isAuthenticated);
+      // console.log('Is authenticated:', this.isAuthenticated);
       return this.isAuthenticated;
       } catch (error) {
       console.error('Error checking authentication:', error);
@@ -37,9 +37,6 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     get_user_id(): number | null {
       return this.user ? this.user.id : null;
-    },
-    get_user(): User | null {
-      return this.user;
     },
     get_authenticated(): boolean {
       return this.isAuthenticated;

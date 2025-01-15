@@ -34,6 +34,7 @@
         </div>
       </form>
       <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+      <div v-if="confirmationMessage" class="alert alert-success mt-3">{{ confirmationMessage }}</div>
     </div>
   </div>
 </template>
@@ -41,19 +42,21 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useMainStore } from "../../data/data";
+import { getCsrfToken } from "../../utils/csrf";
 
 export default defineComponent({
   setup() {
     const mainStore = useMainStore();
-    const title = ref("Profile");
-    const first_name = ref("");
-    const last_name = ref("");
-    const email = ref("");
-    const dob = ref("");
-    const userId = ref(1); // temporary
-    const errorMessage = ref("");
+    const title = ref<string>("Profile");
+    const first_name = ref<string>("");
+    const last_name = ref<string>("");
+    const email = ref<string>("");
+    const dob = ref<string>("");
+    const userId = ref<number>(1); // temporary
+    const errorMessage = ref<string>("");
+    const confirmationMessage = ref<string>("");
 
-    onMounted(async () => {
+    onMounted(async (): Promise<void> => {
       await mainStore.fetchData();
       if (mainStore.user) {
         first_name.value = mainStore.user.first_name || "No name";
@@ -64,21 +67,21 @@ export default defineComponent({
       }
     });
 
-    const updateUserProfile = async () => {
+    const updateUserProfile = async (): Promise<void> => {
       try {
-        const apiURL = `http://localhost:8000/api/user/update/${mainStore.userId}/`;
-        console.log("Updating profile with URL:", apiURL);
         const updated = JSON.stringify({
           first_name: first_name.value,
           last_name: last_name.value,
           email: email.value,
           dob: dob.value,
         });
-        console.log("Sending updated data:", updated);
-        const response = await fetch(apiURL, {
+        // console.log("Sending updated data:", updated);
+        const response = await fetch(`http://localhost:8000/api/user/update/${mainStore.userId}/`, {
+          credentials: "include",
           method: "PUT",
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
+            "X-CSRFToken": getCsrfToken() || "",
           },
           body: updated,
         });
@@ -86,13 +89,14 @@ export default defineComponent({
           const errorData = await response.json();
           throw new Error(errorData.error || `Error updating profile: ${response.statusText}`);
         }
-        errorMessage.value = ''; // Clear any previous error messages
-        // Handle successful profile update
+        confirmationMessage.value = "Profile updated successfully";
+        errorMessage.value = ""; // Clear any previous error messages
 
       } catch (error) {
         console.error("Error updating profile:", error);
         if (error instanceof Error) {
           errorMessage.value = error.message;
+          confirmationMessage.value = "";
         } else {
           errorMessage.value = String(error);
         }
@@ -108,6 +112,7 @@ export default defineComponent({
       userId,
       mainStore,
       errorMessage,
+      confirmationMessage,
       updateUserProfile,
     };
   },

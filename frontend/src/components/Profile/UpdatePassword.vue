@@ -23,6 +23,7 @@
                 </div>
             </form>
             <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+            <div v-if="confirmationMessage" class="alert alert-success mt-3">{{ confirmationMessage }}</div>
         </div>
     </div>
 </template>
@@ -30,20 +31,26 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useMainStore } from "../../data/data";
+import { useAuthStore } from "../../utils/auth";
+import { getCsrfToken } from "../../utils/csrf";
 
 export default defineComponent({
     setup() {
         const mainStore = useMainStore();
-        const currentPassword = ref("");
-        const newPassword = ref("");
-        const errorMessage = ref("");
+        const authStore = useAuthStore();
+        const currentPassword = ref<string>("");
+        const newPassword = ref<string>("");
+        const errorMessage = ref<string>("");
+        const confirmationMessage = ref<string>("");
 
-        const updatePassword = async () => {
+        const updatePassword = async (): Promise<void> => {
             try {
                 const response = await fetch(`http://localhost:8000/user/update_password/${mainStore.userId}/`, {
+                    credentials: 'include',
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
                     },
                     body: JSON.stringify({
                         current_password: currentPassword.value,
@@ -54,18 +61,23 @@ export default defineComponent({
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.error || 'Failed to update password');
+                } else {
+                    confirmationMessage.value = "Password updated successfully";
                 }
 
-                const data = await response.json();
-                console.log("Password updated:", data);
+                // const data = await response.json();
+                // console.log("Password updated:", data);
                 errorMessage.value = "";
 
                 // Clear the form
                 currentPassword.value = "";
                 newPassword.value = "";
+
+                await authStore.checkAuthentication();
             } catch (error: any) {
                 console.error('There was a problem with the fetch operation:', error);
                 errorMessage.value = error.message;
+                confirmationMessage.value = "";
             }
         };
 
@@ -73,7 +85,8 @@ export default defineComponent({
             currentPassword,
             newPassword,
             updatePassword,
-            errorMessage
+            errorMessage,
+            confirmationMessage
         };
     },
 });

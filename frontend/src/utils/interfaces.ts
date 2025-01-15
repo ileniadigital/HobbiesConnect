@@ -4,10 +4,13 @@ export interface User {
     first_name: string;
     last_name: string;
     dob: string;
-    is_staff: boolean;
-    is_superuser: boolean;
-    groups: string[];
-    user_permissions: string[];
+    is_staff?: boolean;
+    is_superuser?: boolean;
+    groups?: string[];
+    user_permissions?: string[];
+    hobbies?: Hobbies[];
+    age?: number;
+    common_hobbies_count?: number;
 }
 
 export interface Hobbies {

@@ -1,111 +1,98 @@
 <template>
-    <div class="h3">
-        {{ title }}
-    </div>
-    <!-- Add a filter -->
-    <Filter @filter-age="filterFriendsByAge" />
-    <!-- Friends List -->
-    <div v-if="paginatedFriends.length > 0">
-        <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.name">
-            <Friend :name="friend.name" :hobbies="friend.hobbies" :age="friend.age" />
+    <div>
+        <div class="h3">{{ title }}</div>
+        <!-- Add a filter -->
+        <Filter @filter="fetchSimilarUsers" />
+        <!-- Friends List -->
+        <div v-if="paginatedFriends.length > 0">
+            <div class="friend-card" v-for="friend in paginatedFriends" :key="friend.id">
+                <Friend :userId="mainStore.userId ?? 0" :friendId="friend.id"
+                    :name="friend.first_name + ' ' + friend.last_name" :age="friend.age ?? 0" :hobbies="friend.hobbies"
+                    @add-friend="handleAddFriend" />
+            </div>
         </div>
+        <div v-else class="alert alert-info mt-3">
+            No similar friends available
+        </div>
+        <!-- Pagination -->
+        <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="changePage" />
     </div>
-    <div v-else class="alert alert-info mt-3">
-        No similar friends available
-    </div>
-    <!-- Pagination -->
-    <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="changePage" />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useMainStore } from "../data/data";
-import Filter from "../components/Filter.vue";
-import Friend from "../components/Friend.vue";
-import Pagination from "../components/Pagination.vue";
+import Filter from "../components/FindFriends/Filter.vue";
+import Friend from "../components/FindFriends/Friend.vue";
+import Pagination from "../components/FindFriends/Pagination.vue";
+import { User } from "../utils/interfaces";
 
 export default defineComponent({
     components: {
         Filter,
         Friend,
         Pagination,
-
     },
     setup() {
         const mainStore = useMainStore();
-        const currentPage = ref(1);
-        const itemsPerPage = ref(10);
-        const ageFrom = ref(0);
-        const ageTo = ref(Infinity);
+        const paginatedFriends = ref<User[]>([]);
+        const errorMessage = ref<string>('');
+        const currentPage = ref<number>(1);
+        const itemsPerPage = ref<number>(10);
+        const ageFrom = ref<number>(0);
+        const ageTo = ref<number>(999);
 
-        // CHANGE THIS TO GET IT FROM MAIN STORE
-        const friends = ref([
-            { name: "Alice", age: 25, hobbies: ["reading", "hiking"] },
-            { name: "Bob", age: 30, hobbies: ["swimming", "biking"] },
-            { name: "Charlie", age: 35, hobbies: ["cooking", "painting"] },
-            { name: "David", age: 40, hobbies: ["gardening", "fishing"] },
-            { name: "Eve", age: 22, hobbies: ["dancing", "singing"] },
-            { name: "Frank", age: 28, hobbies: ["running", "gaming"] },
-            { name: "Grace", age: 32, hobbies: ["writing", "traveling"] },
-            { name: "Hank", age: 27, hobbies: ["photography", "skiing"] },
-            { name: "Ivy", age: 24, hobbies: ["knitting", "yoga"] },
-            { name: "Jack", age: 29, hobbies: ["surfing", "climbing"] },
-            { name: "Karen", age: 31, hobbies: ["drawing", "sculpting"] },
-            { name: "Leo", age: 26, hobbies: ["fishing", "hiking"] },
-            { name: "Mona", age: 33, hobbies: ["baking", "gardening"] },
-            { name: "Nate", age: 34, hobbies: ["cycling", "swimming"] },
-            { name: "Olivia", age: 23, hobbies: ["reading", "writing"] },
-            { name: "Paul", age: 36, hobbies: ["gaming", "coding"] },
-            { name: "Quinn", age: 37, hobbies: ["painting", "dancing"] },
-            { name: "Rachel", age: 38, hobbies: ["singing", "acting"] },
-            { name: "Steve", age: 39, hobbies: ["cooking", "biking"] },
-            { name: "Tina", age: 40, hobbies: ["yoga", "meditation"] },
-            { name: "Uma", age: 41, hobbies: ["hiking", "camping"] },
-            { name: "Victor", age: 42, hobbies: ["running", "swimming"] },
-            { name: "Wendy", age: 43, hobbies: ["gardening", "knitting"] },
-            { name: "Xander", age: 44, hobbies: ["climbing", "surfing"] },
-            { name: "Yara", age: 45, hobbies: ["painting", "drawing"] },
-            { name: "Zane", age: 46, hobbies: ["gaming", "coding"] }
-        ]);
-        const filteredFriends = computed(() => {
-            return friends.value.filter(friend => friend.age >= ageFrom.value && friend.age <= ageTo.value);
-        });
+        // Fetch similar users based on age filter
+        const fetchSimilarUsers = async (filter: { ageFrom: number, ageTo: number }): Promise<void> => {
+            await mainStore.fetchSimilarUsers(filter);
+            paginateFriends();
+        };
 
-        const paginatedFriends = computed(() => {
+        const handleAddFriend = async ({ userId, friendId }: { userId: number, friendId: number }): Promise<void> => {
+            await mainStore.handleAddFriend(userId, friendId);
+        };
+
+        const paginateFriends = (): void => {
             const start = (currentPage.value - 1) * itemsPerPage.value;
             const end = start + itemsPerPage.value;
-            return filteredFriends.value.slice(start, end);
-        });
+            paginatedFriends.value = mainStore.similarUsers.slice(start, end);
+        };
 
-        const totalPages = computed(() => {
-            return Math.ceil(filteredFriends.value.length / itemsPerPage.value);
-        });
-
-        const changePage = (page: number) => {
+        const changePage = (page: number): void => {
             if (page > 0 && page <= totalPages.value) {
                 currentPage.value = page;
+                paginateFriends();
             }
         };
 
-        const filterFriendsByAge = (ageFromValue: number, ageToValue: number) => {
-            ageFrom.value = ageFromValue;
-            ageTo.value = ageToValue;
-        };
+        const totalPages = computed<number>(() => {
+            return Math.ceil(mainStore.similarUsers.length / itemsPerPage.value);
+        });
+
+        onMounted(async () => {
+            await mainStore.fetchData();
+            await fetchSimilarUsers({ ageFrom: ageFrom.value, ageTo: ageTo.value });
+        });
+
+        watch(mainStore.similarUsers, (): void => {
+            paginateFriends();
+        });
 
         return {
             title: "Find Friends",
-            // name: mainStore.user.first_name,
+            errorMessage,
             currentPage,
             itemsPerPage,
             ageFrom,
             ageTo,
-            friends,
             paginatedFriends,
             totalPages,
             changePage,
-            filterFriendsByAge
+            fetchSimilarUsers,
+            handleAddFriend,
+            mainStore,
         };
-    }
+    },
 });
 </script>
 

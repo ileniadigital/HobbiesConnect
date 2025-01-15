@@ -39,10 +39,10 @@ export default defineComponent({
   setup() {
     const authStore = useAuthStore();
 
-    const redirectToLogin = () => {
+    const redirectToLogin = (): void => {
       authStore.checkAuthentication();
     };
-    const logout = async () => {
+    const logout = async (): Promise<void> => {
       try {
         console.log('Logging out');
         const response = await fetch('http://localhost:8000/api/logout/', {

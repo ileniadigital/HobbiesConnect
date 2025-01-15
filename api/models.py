@@ -42,7 +42,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    dob = models.DateField()
+    dob = models.DateField(null=True, blank=True)
     
     groups = models.ManyToManyField(
         'auth.Group',
