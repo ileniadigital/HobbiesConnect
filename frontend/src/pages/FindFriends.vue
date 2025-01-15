@@ -83,8 +83,6 @@ export default defineComponent({
                 // alert('Friend request sent successfully!');
             } catch (error) {
                 console.error('Error adding friend:', (error as any).message);
-                // const errorMessage = (error as Error).message;
-                // alert(`Error adding friend: ${errorMessage}`);
             }
         };
 

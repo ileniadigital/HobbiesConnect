@@ -467,7 +467,6 @@ def get_friendships(request: HttpRequest, user_id: int) -> JsonResponse:
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
-# @csrf_exempt
 def create_friendship(request):
     '''
     Create a new friendship instance when someone sends a friend request.
@@ -495,7 +494,6 @@ def create_friendship(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
-
 
 def accept_friend_request(request: HttpRequest, friendship_id: int) -> JsonResponse:
     """

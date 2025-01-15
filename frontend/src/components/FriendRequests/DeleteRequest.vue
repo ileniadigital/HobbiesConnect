@@ -12,7 +12,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="close">Cancel</button>
-                    <button type="button" class="btn btn-danger" @click="confirmDelete">Delete</button>
+                    <button type="button" class="btn btn-danger" @click="deleteRequest">Delete</button>
                 </div>
             </div>
         </div>
@@ -46,28 +46,8 @@ export default defineComponent({
         close(): void {
             this.$emit("close");
         },
-        async confirmDelete(): Promise<void> {
-            try {
-                const response = await fetch('http://localhost:8000/api/friendships/delete/', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        user_id: this.userId,
-                        friend_id: this.friendId,
-                    })
-                });
-                if (!response.ok) {
-                    throw new Error('Something went wrong');
-                }
-                const data = await response.json();
-                console.log("Request deleted:", data);
-                this.$emit('request-deleted');
-                this.close();
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-            }
+        deleteRequest(): void {
+            this.$emit("request-deleted", { userId: this.userId, friendId: this.friendId });
         }
     }
 });

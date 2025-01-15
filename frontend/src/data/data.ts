@@ -117,9 +117,26 @@ export const useMainStore = defineStore('main', {
             } catch (error) {
                 console.error("Failed to accept friend request", error);
             }
+        },
+        // Delete friend request or unfriend
+        async deleteFriendship(friendshipId: number): Promise<void> {
+            try {
+                const response = await fetch(`${BASE_URL}/friendship/delete/${friendshipId}/`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to delete friendship');
+                }
+                await this.fetchFriends();
+            } catch (error) {
+                console.error("Failed to delete friendship", error);
+            }
         }
-        //Delete friend request or unfriend
-        
     },
     getters: {
         get_user_id(): number | null {

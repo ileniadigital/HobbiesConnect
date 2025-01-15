@@ -31,7 +31,7 @@
 
     <!-- Delete Request Modal -->
     <DeleteRequest :visible="isDeleteModalVisible" :userId="userId" :friendId="selectedFriendId"
-      :status="selectedStatus" @close="isDeleteModalVisible = false" @request-deleted="fetchFriends" />
+      :status="selectedStatus" @close="isDeleteModalVisible = false" @request-deleted="handleDeleteRequest" />
   </div>
 </template>
 
@@ -77,6 +77,13 @@ export default defineComponent({
       isDeleteModalVisible.value = true;
     };
 
+    // Handle delete request
+    const handleDeleteRequest = async ({ friendId }: { friendId: number }): Promise<void> => {
+      await mainStore.deleteFriendship(friendId);
+      isDeleteModalVisible.value = false;
+      fetchFriends();
+    };
+
     onMounted(fetchFriends);
 
     return {
@@ -91,6 +98,7 @@ export default defineComponent({
       acceptRequest,
       openDeleteModal,
       fetchFriends,
+      handleDeleteRequest,
     };
   }
 });
