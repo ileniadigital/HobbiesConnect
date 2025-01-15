@@ -30,7 +30,7 @@ export default defineComponent({
     },
     emits: ["page-changed"],
     methods: {
-        changePage(page: number) {
+        changePage(page: number): void {
             if (page > 0 && page <= this.totalPages) {
                 this.$emit("page-changed", page);
             }

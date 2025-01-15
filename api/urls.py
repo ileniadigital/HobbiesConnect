@@ -21,12 +21,12 @@ from .views import main_spa
 
 urlpatterns = [
     path('', main_spa, name='main_spa'),
+    path('spa/', main_spa, name='main_spa'),
     path('signup/', views.signup, name='signup'),
     path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('similar-users/', build_max_heap, name='similar_users'),
     path('authenticated/', authenticated_view, name='authenticated'),
-    path('spa/', main_spa, name='main_spa'),
+    path('logout/', views.logout_view, name='logout'),
+    path('similar-users/<int:user_id>', build_max_heap, name='similar_users'),
     # User paths
     path('user/', get_all_users, name='get_all_users'),
     path('user/<int:user_id>/', get_user_by_id, name='get_user_by_id'),
@@ -47,7 +47,8 @@ urlpatterns = [
     # User and Hobby paths
     path('hobbies/add_user_hobby/', add_hobby_and_user_hobby, name='add_hobby_and_user_hobby'),
     # Friendship paths
-    path('user/<int:user_id>/friendships/', get_friendship, name='get_friendship'),
-    # path('friendship/add/', add_friendship, name='add_friendship'),
-    
+    path('user/<int:user_id>/friendships/', get_friendships, name='get_friendships'),
+    path('friendship/create/', create_friendship, name='create_friendship'),
+    path('friendship/accept/<int:friendship_id>/', accept_friend_request, name='accept_friend_request'),
+    path('friendship/delete/<int:friendship_id>/', unfriend_delete_friend, name='unfriend_delete_friend'),
 ]

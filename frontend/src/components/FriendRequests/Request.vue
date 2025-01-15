@@ -1,5 +1,5 @@
 <template>
-    <div class="card pending-card" style="width: 24rem;">
+    <div class="card pending-card" style="width: 24rem">
         <div class="card-body d-flex justify-content-between align-items-center">
             <div>
                 <h5 class="card-title">{{ name }}</h5>
@@ -42,6 +42,7 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 24rm;
 }
 
 .button-group {

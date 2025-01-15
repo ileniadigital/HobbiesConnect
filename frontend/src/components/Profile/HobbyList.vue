@@ -23,11 +23,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, watch } from "vue";
 import { useMainStore } from "../../data/data";
 import AddHobby from "./AddHobby.vue";
 import DeleteHobby from "./DeleteHobby.vue";
-import { UserHobby } from "../../utils/interfaces";
+import { UserHobby, Hobbies } from "../../utils/interfaces";
 
 export default defineComponent({
     components: {
@@ -37,18 +37,33 @@ export default defineComponent({
     setup() {
         const mainStore = useMainStore();
         const userHobbies = ref<UserHobby[]>([]);
-        const isAddHobbyModalVisible = ref(false);
-        const isDeleteHobbyModalVisible = ref(false);
+        const isAddHobbyModalVisible = ref<boolean>(false);
+        const isDeleteHobbyModalVisible = ref<boolean>(false);
         const selectedHobbyId = ref<number | null>(null);
-        const userId = ref(mainStore.userId);
+        const userId = ref<number>(mainStore.get_user_id ?? 0);
 
         const fetchUserHobbies = async () => {
             await mainStore.fetchData();
             userHobbies.value = mainStore.userHobbies;
         };
 
+        watch(
+            () => mainStore.get_user_id,
+            async (newUserId: number | null) => {
+                if (newUserId) {
+                    userId.value = newUserId;
+                    await fetchUserHobbies();
+                }
+            },
+            { immediate: true }
+        );
+
+        onMounted(async () => {
+            await mainStore.fetchData();
+        });
+
         // Filter hobbies to existing ones from master list the user does not have
-        const filteredHobbies = () => {
+        const filteredHobbies = (): Hobbies[] => {
             const userHobbyIds = userHobbies.value.map(uHobby => uHobby.hobby.id);
             return mainStore.hobbies.filter(hobby => !userHobbyIds.includes(hobby.id));
         };
@@ -61,8 +76,9 @@ export default defineComponent({
             userId.value = userHobbyId;
             selectedHobbyId.value = hobbyId;
             isDeleteHobbyModalVisible.value = true;
+            // this.userId = mainStore.get_user_id;
             console.log("Selected hobby id:", selectedHobbyId.value);
-            console.log("User id:", userId.value);
+            console.log("User id in hobby list:", userId.value);
         };
 
         onMounted(fetchUserHobbies);

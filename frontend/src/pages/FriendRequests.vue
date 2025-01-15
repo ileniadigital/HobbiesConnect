@@ -4,15 +4,15 @@
       {{ title }}
     </div>
     <hr />
-    <!-- <div class="h3">Hi, {{ name }}</div> -->
 
     <div class="row">
       <!-- Pending Requests -->
       <div class="col-md-6">
         <h2>Pending Requests</h2>
         <ul class="list-unstyled">
-          <li v-for="request in pendingRequests" :key="request.id">
-            <Request :name="request.friend" :status="request.status" :createdAt="request.created_at"
+          <li v-for="request in pendingRequests" :key="request.id" class="mb-3">
+            <Request :name="request.user" :status="request.status" :createdAt="request.created_at"
+              @accept-request="acceptRequest(request.id)"
               @delete-request="openDeleteModal(request.id, request.status)" />
           </li>
         </ul>
@@ -21,8 +21,8 @@
       <div class="col-md-6">
         <h2>My Friends</h2>
         <ul class="list-unstyled">
-          <li v-for="friend in acceptedRequests" :key="friend.id">
-            <Request :name="friend.friend" :status="friend.status" :createdAt="friend.created_at"
+          <li v-for="friend in acceptedRequests" :key="friend.id" class="mb-3">
+            <Request :name="friend.user === user_first_name ? friend.friend : friend.user" :status="friend.status" :createdAt="friend.created_at"
               @delete-request="openDeleteModal(friend.id, friend.status)" />
           </li>
         </ul>
@@ -31,7 +31,7 @@
 
     <!-- Delete Request Modal -->
     <DeleteRequest :visible="isDeleteModalVisible" :userId="userId" :friendId="selectedFriendId"
-      :status="selectedStatus" @close="isDeleteModalVisible = false" @request-deleted="fetchFriends" />
+      :status="selectedStatus" @close="isDeleteModalVisible = false" @request-deleted="handleDeleteRequest" />
   </div>
 </template>
 
@@ -49,40 +49,56 @@ export default defineComponent({
   },
   setup() {
     const mainStore = useMainStore();
-    const friends = ref<Friendship[]>([]);
     const pendingRequests = ref<Friendship[]>([]);
     const acceptedRequests = ref<Friendship[]>([]);
-    const isDeleteModalVisible = ref(false);
+    const isDeleteModalVisible = ref<boolean>(false);
     const selectedFriendId = ref<number>(-1);
     const selectedStatus = ref<string>("none");
-    const userId = ref(mainStore.userId);
+    const user_first_name = ref(mainStore.user?.first_name ?? "");
+    const userId = ref(mainStore.userId ?? 0);
 
-    const fetchFriends = async () => {
+    // Fetch friends
+    const fetchFriends = async (): Promise<void> => {
       await mainStore.fetchData();
-      friends.value = mainStore.friends;
-      pendingRequests.value = friends.value.filter(friend => !friend.accepted && friend.status === "PENDING");
-      acceptedRequests.value = friends.value.filter(friend => friend.accepted || friend.status === "ACCEPTED");
+      pendingRequests.value = mainStore.pending_friend_requests;
+      acceptedRequests.value = mainStore.friends;
     };
 
-    const openDeleteModal = (friendId: number, status: string) => {
+    // Accept request
+    const acceptRequest = async (friendId: number): Promise<void> => {
+      await mainStore.acceptFriendRequest(friendId);
+      fetchFriends();
+    };
+
+    // Open delete modal
+    const openDeleteModal = (friendId: number, status: string): void => {
       selectedFriendId.value = friendId;
       selectedStatus.value = status;
       isDeleteModalVisible.value = true;
+    };
+
+    // Handle delete request
+    const handleDeleteRequest = async ({ friendId }: { friendId: number }): Promise<void> => {
+      await mainStore.deleteFriendship(friendId);
+      isDeleteModalVisible.value = false;
+      fetchFriends();
     };
 
     onMounted(fetchFriends);
 
     return {
       title: "Friend Requests",
-      // name: mainStore.user?.first_name,
       pendingRequests,
       acceptedRequests,
       isDeleteModalVisible,
       selectedFriendId,
       selectedStatus,
       userId,
+      user_first_name,
+      acceptRequest,
       openDeleteModal,
       fetchFriends,
+      handleDeleteRequest,
     };
   }
 });

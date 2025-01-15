@@ -1,4 +1,48 @@
-<!-- login.html -->
+<!-- login.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg custom-navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand" to="/">HobbiesConnect</h1>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+    <h2>Login</h2>
+    <div class="container">
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary submit">Login</button>
+        </form>
+        <hr>
+        <div class="switch-button">
+            <p>Don't have an account?</p>
+            {% url 'signup' as signup_url %}
+            <button onclick="window.location.href='{{ signup_url }}'" class="btn btn-primary">Sign Up</button>    
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-left brand">
+            HobbiesConnect
+        </div>
+        <div class="footer-center">
+            &copy; 2024-25 Amy Anigboro, Mariam Thabti, Sai Sandeep Vemula, Ilenia Maietta
+        </div>
+    </footer>
+    
+</body> -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +67,7 @@
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary submit">Login</button>
+            <button type="submit" class="btn btn-primary submit" id="login-button">Login</button>
         </form>
         <hr>
         <div class="switch-button">
@@ -40,6 +84,5 @@
             &copy; 2024-25 Amy Anigboro, Mariam Thabti, Sai Sandeep Vemula, Ilenia Maietta
         </div>
     </footer>
-    
 </body>
 </html>
