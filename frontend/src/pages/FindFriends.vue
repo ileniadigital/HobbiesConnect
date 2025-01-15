@@ -26,6 +26,7 @@ import Filter from "../components/FindFriends/Filter.vue";
 import Friend from "../components/FindFriends/Friend.vue";
 import Pagination from "../components/FindFriends/Pagination.vue";
 import { User } from "../utils/interfaces";
+import { getCsrfToken } from "../utils/csrf";
 
 export default defineComponent({
     components: {
@@ -46,7 +47,7 @@ export default defineComponent({
         // Fetch similar users based on age filter
         const fetchSimilarUsers = async (filter: { ageFrom: number, ageTo: number }): Promise<void> => {
             try {
-                const response = await fetch(`http://localhost:8000/api/similar-users/${mainStore.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`);
+                const response = await fetch(`http://localhost:8000/api/similar-users/${mainStore.userId}?age_from=${filter.ageFrom}&age_to=${filter.ageTo}`, { credentials: 'include' });
                 if (!response.ok) {
                     throw new Error('Failed to fetch similar users');
                 }
@@ -63,11 +64,16 @@ export default defineComponent({
         const handleAddFriend = async ({ userId, friendId }: { userId: number, friendId: number }): Promise<void> => {
             try {
                 const response = await fetch('http://localhost:8000/api/friendship/create/', {
+                    credentials: 'include',
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
                     },
-                    body: JSON.stringify({ user_id: userId, friend_id: friendId })
+                    body: JSON.stringify({ 
+                        user_id: userId,
+                        friend_id: friendId 
+                    })
                 });
                 const data = await response.json();
                 if (!response.ok) {

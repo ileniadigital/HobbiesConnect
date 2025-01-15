@@ -47,10 +47,10 @@ urlpatterns = [
     # User and Hobby paths
     path('hobbies/add_user_hobby/', add_hobby_and_user_hobby, name='add_hobby_and_user_hobby'),
     # Friendship paths
-    path('user/<int:user_id>/friendships/', get_friendship, name='get_friendship'),
+    path('user/<int:user_id>/friendships/', get_friendships, name='get_friendships'),
     path('friendship/create/', create_friendship, name='create_friendship'),
-    path('friendship/update/', update_friendship_status, name='update_friendship_status'),
-    # path('friendship/delete/', delete_friendship, name='delete_friendship'),
+    path('friendship/accept/<int:friendship_id>/', accept_friend_request, name='accept_friend_request'),
+    path('friendship/delete/<int:friendship_id>', unfriend_delete_friend, name='unfriend_delete_friend'),
     # path('friendship/add/', add_friendship, name='add_friendship'),
     
 ]

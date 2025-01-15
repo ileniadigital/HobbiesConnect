@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { User, Hobbies, UserHobby, Friendship } from '../utils/interfaces';
 import { useAuthStore } from '../utils/auth';
+import { getCsrfToken } from '../utils/csrf';
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -10,6 +11,7 @@ export const useMainStore = defineStore('main', {
         userId: null as number | null,
         hobbies: [] as Hobbies[],
         userHobbies: [] as UserHobby[],
+        pending_friend_requests: [] as Friendship[],
         friends: [] as Friendship[], 
         isAuthenticated: false 
     }),
@@ -88,12 +90,36 @@ export const useMainStore = defineStore('main', {
                 if (!friendshipResponse.ok) {
                     throw new Error('Failed to fetch friends data');
                 }
-                this.friends = await friendshipResponse.json() as Friendship[];
-                // console.log("Friends data", this.friends);
+                const friendshipData = await friendshipResponse.json();
+                this.pending_friend_requests = friendshipData.pending_requests as Friendship[];
+                this.friends = friendshipData.friends as Friendship[];
+                console.log("Pending friend requests", this.pending_friend_requests);
+                console.log("Friends data", this.friends);
             } catch (error) {
                 console.error("Failed to fetch friends data", error);
             }
+        },
+        // Accept friend request
+        async acceptFriendRequest(friendshipId: number): Promise<void> {
+            try {
+                const response = await fetch(`${BASE_URL}/friendship/accept/${friendshipId}/`, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken() || '',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to accept friend request');
+                }
+                await this.fetchFriends();
+            } catch (error) {
+                console.error("Failed to accept friend request", error);
+            }
         }
+        //Delete friend request or unfriend
+        
     },
     getters: {
         get_user_id(): number | null {

@@ -8,6 +8,18 @@ from django.core.paginator import Paginator
 from .models import User
 from .utils import calculate_age, filter_users_by_age, filter_users_by_non_friends
 from .forms import UserForm, UserAuthenticationForm
+from api.models import Hobbies, UserHobby, PageView, User, Friendship
+from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
+from django.core.handlers.wsgi import WSGIRequest
+from django.db.models import QuerySet, Q
+from django.contrib.auth.models import auth, AbstractBaseUser
+from rest_framework import status, mixins
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.decorators import action
+from typing import Union
 from api.models import Hobbies, UserHobby, User, Friendship
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from .models import User, Hobbies, UserHobby, Friendship
@@ -366,7 +378,6 @@ def get_user_hobbies(request: HttpRequest, user_id: int) -> JsonResponse:
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
-
 def add_user_hobby(request: HttpRequest) -> JsonResponse:
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -414,36 +425,56 @@ def get_all_friendships(request: HttpRequest) -> JsonResponse:
     friendships = Friendship.objects.all()
     return JsonResponse({'friendships': list(friendships.values())})
 
-def get_friendship(request: HttpRequest, user_id: int) -> JsonResponse:
+def get_friendships(request: HttpRequest, user_id: int) -> JsonResponse:
     '''
-    Get user's friends
+    Get user's pending friend requests and accepted friends
     '''
     try:
         user = User.objects.get(id=user_id)
-        friendships = Friendship.objects.filter(user=user) | Friendship.objects.filter(friend=user)
-        friendships_data = [
+        
+        # Pending friend requests where the user is the friend
+        pending_requests = Friendship.objects.filter(friend=user, status='PENDING')
+        pending_requests_data = [
             {
                 'id': friendship.id,
                 'user': friendship.user.first_name,
                 'friend': friendship.friend.first_name,
                 'status': friendship.status,
-                'accepted': friendship.accepted,
                 'created_at': friendship.created_at
             }
-            for friendship in friendships
+            for friendship in pending_requests
         ]
-        return JsonResponse(friendships_data, safe=False)
+        
+        # Accepted friendships where the user is either the user or the friend
+        friends = Friendship.objects.filter(
+            (Q(user=user) | Q(friend=user)) & Q(status='ACCEPTED')
+        )
+        friends_data = [
+            {
+                'id': friendship.id,
+                'user': friendship.user.first_name,
+                'friend': friendship.friend.first_name,
+                'status': friendship.status,
+                'created_at': friendship.created_at
+            }
+            for friendship in friends
+        ]
+        
+        return JsonResponse({
+            'pending_requests': pending_requests_data,
+            'friends': friends_data
+        }, safe=False)
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
-@csrf_exempt
+# @csrf_exempt
 def create_friendship(request):
     '''
     Create a new friendship instance when someone sends a friend request.
     '''
     if request.method == 'POST':
         try:
-            print(request.body)
+            # print(request.body)
             data = json.loads(request.body)
             user_id = data.get('user_id')
             friend_id = data.get('friend_id')
@@ -465,32 +496,34 @@ def create_friendship(request):
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-@csrf_exempt
-def update_friendship_status(request):
-    '''
-    Update friendship status when someone accepts or rejects a friend request.
-    '''
-    if request.method == 'PUT':
-        try:
-            user = User.objects.get(id=user_id)
-            data = json.loads(request.body)
-            current_password = data.get('current_password')
-            new_password = data.get('new_password')
 
-            if not user.check_password(current_password):
-                return JsonResponse({'error': 'Current password is incorrect'}, status=400)
+def accept_friend_request(request: HttpRequest, friendship_id: int) -> JsonResponse:
+    """
+    Accept a friend request by updating the friendship status to 'ACCEPTED' and setting accepted to True
+    """
+    try:
+        friendship = Friendship.objects.get(id=friendship_id)
+        friendship.status = 'ACCEPTED'
+        friendship.accepted = True
+        friendship.save()
+        return JsonResponse({'message': 'Friend request accepted successfully'})
+    except Friendship.DoesNotExist:
+        return JsonResponse({'error': 'Friendship not found'}, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
-            if not new_password:
-                return JsonResponse({'error': 'New password cannot be empty'}, status=400)
+def unfriend_delete_friend(request: HttpRequest, friendship_id: int) -> JsonResponse:
+    """
+    Delete a friendship by ID
+    """
+    try:
+        friendship = Friendship.objects.get(id=friendship_id)
+        friendship.delete()
+        return JsonResponse({'message': 'Friendship deleted successfully'}, status=200)
+    except Friendship.DoesNotExist:
+        return JsonResponse({'error': 'Friendship not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
-            user.set_password(new_password)
-            user.save()
-            return JsonResponse({'message': 'Password updated successfully'})
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'User not found'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
