@@ -19,10 +19,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
     def setUp(self) -> None:
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(10)
-        # self.live_server_url = 'http://localhost:5173'
-        # self.live_server_url = 'http://localhost:8000'
         self.frontend_url = f'{self.live_server_url}/static/'
-
 
         # Delete all users
         User.objects.filter(email='newuser@email.com').delete()
@@ -44,6 +41,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         # )
         # print(f"Test User ID: {self.test_user.id}")
         # Test other user object
+
         self.other_user = User.objects.create_user(
             email='otheruser@email.com',
             password='otherUser123',
@@ -51,7 +49,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             last_name='User',
             dob='1999-01-02',
         )
-        print(f"Other User ID: {self.other_user.id}")
         super().setUp()
 
     def tearDown(self) -> None:
