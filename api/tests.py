@@ -466,10 +466,11 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.login(self.test_user_email, self.test_user_password)
         self.update_password()
         self.update_user_details()
+        self.update_new_user_hobbies()
+        self.update_user_hobbies()
         self.login(self.test_user_email, self.test_user_password)
         self.send_friend_request()
         self.accept_friend_request()
-        self.update_user_hobbies()
         # self.filter_users_by_age()
 
 if __name__ == "__main__":
