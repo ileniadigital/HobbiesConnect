@@ -1,23 +1,24 @@
-# TO-ADD on ReadMe
-
-- List of group members with a short description (one sentence) of what each member was assigned to do, and what they actually did in terms of contributing to the final deliverable (we can use tasks assignment in github)
-- the URL of your deployed application
-- the username and password for the admin user
-- the username and passwords of at least 5 of the test users
-
 # Group 7
-
+## READ.ME content
+- Member assigned and finished tasks
+- URL of deployed application
+- Admin user log in details
+- Log in details for test users
+- Notes on E2E selenium-based testing
+- Instruction from original template repo
+  
+# Member assigned and finished tasks
 | Member                         | Assigned                                                                                 | Finished tasks                                                                                       |
 | ------------------------------ | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Sai Sandeep Vemula (220224206) | Friendship models and views and front end, Friend Requests page (back end and front end) | Friendship model and views, log in and authentication, Friends Request and Find Friends Back-end     |
-| Ilenia Maietta (220322742)     | UserHobby model and views, Hobby list (front end and back end)                           | UserHobby model and views, Hobby List front and back-end, Find Friends and Friends Request Front-End |
-| Amy Anigboro (220476137)       | Hobby model and views, Update Profile and Password (front end and back end)              | Hobby model and views, Update Profile and Password, Front End Error messages                         |
-| Mariam Thabti (2103028471)     | User model and views, authentication and heap for hobbies                                | User model and views, log in, sign up and authentication, maximum heap for hobbies                   |
+| Sai Sandeep Vemula (220224206) | Friendship models and views and front end, Friend Requests page back-end and front-end | Friendship model and views, log in and authentication, Friends Request and Find Friends back-end, Authentication, Testing   |
+| Ilenia Maietta (220322742)     | UserHobby model and views, Hobby list front-end and back-end                           | UserHobby model and views, Hobby List front-end and back-end, Find Friends and Friends Request front-end, Front-end Error messages, Authentication, Testing |
+| Amy Anigboro (220476137)       | Hobby model and views, Update Profile and Password front-end and back-end            | Hobby model and views, Update Profile and Password front-end and back-end, Front-end Error messages, Testing                        |
+| Mariam Thabti (2103028471)     | User model and views, authentication and heap for hobbies                                | User model and views, log in, sign up and authentication, maximum heap for hobbies, Authentication, Testing                  |
 
 # URL of Deployed Application
+[https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk](https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk)
 
 # Admin User Log In Details
-
 - Username: admin@email.com
 - Password: admin
 
@@ -49,7 +50,19 @@
 24. User: **Liam**, username: `LiamLawson@gmail.com`, password: `helloworld123`
 25. User: **George**, username: `GeorgeRussell@gmail.com`, password: `helloworld123`
 
+# Notes on E2E selenium-based testing
+The testing is set up to run continuously, as if a person was manually testing the website. We set up a series of helper functions, called in a class called test_new_user in the following order:
+1. Account creation/ sign up a new user called 'New User', and then it logs out.
+2. Log in: it logs in with the 'New User' credentials
+3. Editing all the user's data on their profile page: it updates the password, first and last name ('UpdatedFirstName UpdatedLastNam'), email('updateduser@email.com') and date of birth ('02-11-2003').
+4. It adds a new hobby that is not available in the dropdown (Biking), then adds every hobby from the dropdown list of hobbies.
+5. It goes to the 'Find Friends' page and filters the users by age
+6. It goes to the 'Find Friends' page and sends a friend request to the user with the most hobbies in common 'Other User'. It then logs out.
+7. It logs in as the 'Other User' and goes to the 'Friend Requests' page and accepts the request. It then logs out.
+8. It logs back in as the 'UpdatedFirstName UpdatedLastNam' and verifies 'Other User' and 'UpdatedFirstName UpdatedLastName' are friends.
 
+**Note: sometimes the tests may seem to be stuck: they are not, the assertions are being checked.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Template for ECS639U Group Coursework
 
 This template should be used as the starting point for your group coursework in the module ECS639U Web Programming (at Queen Mary University of London). Use Git (github.qmul.ac.uk) to collaborate on the coursework with your group members. Module leader: Paulo Oliva <[p.oliva@qmul.ac.uk](mailto:p.oliva@qmul.ac.uk)>
