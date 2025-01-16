@@ -376,6 +376,38 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         except Exception as e:
             print(f'Error: {e}')
             raise
+    def delete_user_hobby(self) -> None:
+        '''
+        Helper function to delete a specific hobby
+        '''
+        try:
+            driver = self.driver
+
+            # Find the "Delete" button for the specified hobby
+            delete_button = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.XPATH,f'//li[div[contains(text(), "Cooking")]]//button[text()="Delete"]'))
+            )
+            driver.execute_script("arguments[0].click();", delete_button)
+
+    
+            WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'modal'))
+            )
+            time.sleep(2)
+            
+            confirm_delete_button = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable((By.ID, 'deleteHobby-button'))
+            )
+            confirm_delete_button.click()
+            
+
+            WebDriverWait(driver, 15).until_not(
+                EC.presence_of_element_located((By.XPATH, f'//li[div[contains(text(), "Cooking")]]'))
+            )
+
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
 
     def filter_users_by_age(self) -> None:
         '''
@@ -512,6 +544,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.update_user_details()
         self.update_new_user_hobbies()
         self.update_user_hobbies()
+        self.delete_user_hobby()
         self.filter_users_by_age()
         self.send_friend_request()
         self.accept_friend_request()
