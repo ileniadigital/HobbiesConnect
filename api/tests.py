@@ -374,6 +374,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
                 except IndexError:
                     # No more options available in the dropdown
                     break
+
             # Close the modal
             close_modal_button = WebDriverWait(self.driver, 20).until(
                 EC.element_to_be_clickable((By.XPATH, '//button[text()="Close"]'))
@@ -451,7 +452,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
                 EC.presence_of_element_located((By.XPATH, '//button[text()="Accept"]'))
             )
             accept_request_button.click()
-            time.sleep(1)
+            time.sleep(2)
 
         except Exception as e:
             print(f'Error: {e}')
@@ -464,35 +465,23 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
                 EC.presence_of_element_located((By.LINK_TEXT, 'Find Friends'))
             )
             find_friends_button.click()
+            time.sleep(2)
 
             # Find the age input fields
             age_filter_min_input = WebDriverWait(self.driver, 20).until(
                 EC.presence_of_element_located((By.XPATH, '//*[@id="ageFrom"]'))
             )
-            age_filter_max_input = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="ageTo"]'))
-            )
-
-            # Use JavaScript to clear the age input fields
             self.driver.execute_script("arguments[0].value = '';", age_filter_min_input)
-            self.driver.execute_script("arguments[0].value = '';", age_filter_max_input)
-            time.sleep(1)
-            
-            # Clear the age input fields
-            age_filter_min_input.clear()
-            age_filter_max_input.clear()
-            time.sleep(1)
-
-            # Approach 2: Use send_keys to select and delete text
-            age_filter_max_input.clear()
-            age_filter_max_input.send_keys(Keys.CONTROL + "a")
-            age_filter_max_input.send_keys(Keys.DELETE)
-            time.sleep(1)
-
             # Find the lower bound age filter input
             age_filter_min_input.send_keys('25')
             time.sleep(1)
 
+            age_filter_max_input = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="ageTo"]'))
+            )
+            self.driver.execute_script("arguments[0].value = '';", age_filter_max_input)
+            time.sleep(1)
+            
             # Find the upper bound age filter input
             age_filter_max_input.send_keys('31')
             time.sleep(1)
