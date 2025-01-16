@@ -64,7 +64,6 @@ The testing is set up to run continuously, as if a person was manually testing t
 | Chilli@gmail.com          | Carlos         | Sainz         | Carlos#Qs91&!9        |
 | KimiRaik@gmail.com        | Kimi           | Räikkönen     | Kimi1@9Asw"2          |
 
-
 ## Local development
 
 To run this project in your development machine, follow these steps:
