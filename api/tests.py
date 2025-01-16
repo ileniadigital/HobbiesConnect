@@ -1,6 +1,7 @@
 from django.test import LiveServerTestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth import get_user_model
+from api.models import Hobbies, UserHobby
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,7 +13,6 @@ import time
 from selenium.common.exceptions import TimeoutException
 
 User = get_user_model()
-
 
 class HobbiesConnectTests(StaticLiveServerTestCase):
 
@@ -32,16 +32,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.test_user_last_name = 'User'
         self.test_user_dob = '1999-01-01'
 
-        # self.test_user = User.objects.create_user(
-        #     email=self.test_user_email,
-        #     password=self.test_user_password,
-        #     first_name=self.test_user_first_name,
-        #     last_name=self.test_user_last_name,
-        #     dob=self.test_user_dob,
-        # )
-        # print(f"Test User ID: {self.test_user.id}")
         # Test other user object
-
         self.other_user = User.objects.create_user(
             email='otheruser@email.com',
             password='otherUser123',
@@ -49,6 +40,26 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             last_name='User',
             dob='1999-01-02',
         )
+
+        # Additional test user
+        self.additional_user = User.objects.create_user(
+            email='additionaluser@email.com',
+            password='additionalUser123',
+            first_name='Additional',
+            last_name='User',
+            dob='2005-01-03',
+        )
+
+        # Create test hobbies
+        hobby1 = Hobbies.objects.create(id=1, name='Reading', description='Reading books')
+        hobby2 = Hobbies.objects.create(id=2, name='Swimming', description='Swimming in the pool')
+
+        # Associate hobbies with other_user
+        UserHobby.objects.create(user=self.other_user, hobby=hobby1)
+        UserHobby.objects.create(user=self.other_user, hobby=hobby2)
+
+        # Associate hobbies with additional_user
+        UserHobby.objects.create(user=self.additional_user, hobby=hobby1)
         super().setUp()
 
     def tearDown(self) -> None:
@@ -140,14 +151,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             print(f'Error: {e}')
             raise
     
-    '''
-    Edit user profile tests
-    - Update first name
-    - Update last name
-    - Update email
-    - Update date of birth
-    - Update password
-    '''
 
     def update_password(self) -> None:
         '''
@@ -182,6 +185,67 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         except Exception as e:
             print(f'Error: {e}')
             raise
+
+    def update_user_details(self) -> None:
+        '''
+        Edit user profile tests
+        - Update first name
+        - Update last name
+        - Update email
+        - Update date of birth
+        '''
+        try:
+            
+            driver = self.driver
+
+            # find the fields and input the new details
+            # first name change
+            first_name_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'first_name'))
+            )
+            first_name_input.clear()
+            first_name_input.send_keys('UpdatedFirstName')
+            self.test_user_first_name = 'UpdatedFirstName'
+            time.sleep(2)
+
+            # last name change
+            last_name_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'last_name'))
+            )
+            last_name_input.clear()
+            last_name_input.send_keys('UpdatedLastName')
+            self.test_user_last_name = 'UpdatedLastName'
+            time.sleep(2)
+            
+            # email change
+            email_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'email'))
+            )
+            email_input.clear()
+            email_input.send_keys('updateduser@email.com')
+            self.test_user_email = 'updateduser@email.com'
+            time.sleep(2)
+
+            # date of birth change
+            dob_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'dob'))
+            )
+            dob_input.clear()  
+            dob_input.send_keys('02-11-2003')  
+            self.test_user_dob = '02-11-2003'
+            time.sleep(1)
+
+            #submit the update form
+            update_button = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[text()="Update Profile"]'))
+            )
+            update_button.click()
+            time.sleep(2)
+
+        except Exception as e:
+            print(f'Error during profile update test: {e}')
+            raise
+
 
     '''
     Find Friends with filtering
@@ -236,7 +300,8 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         '''
         try:
             # Log in with the other user
-            self.login(self.other_user.email, 'helloworld123')
+            self.login(self.other_user.email, 'otherUser123')
+            time.sleep(5)
         except Exception as e:
             print(f'Error: {e}')
             raise
@@ -252,13 +317,13 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         5) Sending a friend request
         6) Login as the other user and accept the friend requests sent
         '''
-        # self.setUp()
         self.signup()
         self.login(self.test_user_email, self.test_user_password)
-        self.update_password()
+        # self.update_password()
+        self.update_user_details()
+        self.login(self.test_user_email, self.test_user_password)
         # self.filter_users_by_age()
         # self.accept_friend_request()
-        # self.tearDown()
 
 if __name__ == "__main__":
     unittest.main()
