@@ -353,15 +353,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         except Exception as e:
             print(f'Error: {e}')
             raise
-
-  
-
-
-
-
-    
-
-
     '''
     Find Friends with filtering
     - ENsure a list of users is displayed
