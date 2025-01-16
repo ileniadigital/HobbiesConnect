@@ -151,19 +151,6 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': database.config()
 }
-
-
-if os.getenv('ENV') == 'test':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'test_db_name',
-            'USER': 'test_user',
-            'PASSWORD': 'test_password',
-            'HOST': 'test_db_host',
-            'PORT': '5432',
-        }
-    }
     
 AUTH_USER_MODEL = 'api.User'
 # Password validation
