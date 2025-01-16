@@ -376,14 +376,78 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
                     break
 
             # Close the modal
-            close_modal_button = WebDriverWait(self.driver, 20).until(
+            close_modal_button = WebDriverWait(driver, 20).until(
                 EC.element_to_be_clickable((By.XPATH, '//button[text()="Close"]'))
             )
             close_modal_button.click()
+            WebDriverWait(driver, 20).until(
+                EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-content"]'))
+            )
             time.sleep(2)
+
+            # Verify the hobbies are added
+            time.sleep(2)
+            # for option in dropdown_options:
+            #     assert option.text in driver.page_source
+
         except Exception as e:
             print(f'Error: {e}')
             raise
+    
+    def filter_users_by_age(self) -> None:
+        '''
+        Helper function to filter users by age
+        '''
+        try:
+            # Find the users page
+            find_friends_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.LINK_TEXT, 'Find Friends'))
+            )
+            find_friends_button.click()
+            time.sleep(2)
+
+            # Find the age input fields
+            age_filter_min_input = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="ageFrom"]'))
+            )
+            self.driver.execute_script("arguments[0].value = '';", age_filter_min_input)
+            # Find the lower bound age filter input
+            age_filter_min_input.send_keys('25')
+            time.sleep(1)
+
+            age_filter_max_input = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="ageTo"]'))
+            )
+            self.driver.execute_script("arguments[0].value = '';", age_filter_max_input)
+            time.sleep(1)
+            
+            # Find the upper bound age filter input
+            age_filter_max_input.send_keys('31')
+            time.sleep(1)
+
+            # Find the filter button
+            filter_button = WebDriverWait(self.driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[contains(@class, "btn btn-primary") and text()="Filter"]'))
+            )
+            time.sleep(1)
+
+            # Click the filter button
+            filter_button.click()
+            time.sleep(1)
+
+            # Verify the users are filtered by age
+            users = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, 'user-card'))
+            )
+            for user in users:
+                age_text = user.find_element(By.CLASS_NAME, 'age').text
+                age = int(''.join(filter(str.isdigit, age_text)))
+                assert 25 <= age <= 31
+
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
+
     '''
     Send friend request
     - Search for another user
@@ -458,58 +522,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             print(f'Error: {e}')
             raise
 
-    def filter_users_by_age(self) -> None:
-        try:
-            # Find the users page
-            find_friends_button = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.LINK_TEXT, 'Find Friends'))
-            )
-            find_friends_button.click()
-            time.sleep(2)
-
-            # Find the age input fields
-            age_filter_min_input = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="ageFrom"]'))
-            )
-            self.driver.execute_script("arguments[0].value = '';", age_filter_min_input)
-            # Find the lower bound age filter input
-            age_filter_min_input.send_keys('25')
-            time.sleep(1)
-
-            age_filter_max_input = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="ageTo"]'))
-            )
-            self.driver.execute_script("arguments[0].value = '';", age_filter_max_input)
-            time.sleep(1)
-            
-            # Find the upper bound age filter input
-            age_filter_max_input.send_keys('31')
-            time.sleep(1)
-
-            # Find the filter button
-            filter_button = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.LINK_TEXT, 'Filter'))
-            )
-            time.sleep(1)
-
-            # Click the filter button
-            filter_button.click()
-            time.sleep(1)
-
-            # Verify the users are filtered by age
-            users = WebDriverWait(self.driver, 20).until(
-                EC.presence_of_all_elements_located((By.CLASS_NAME, 'user-card'))
-            )
-            for user in users:
-                age_text = user.find_element(By.CLASS_NAME, 'age').text
-                age = int(''.join(filter(str.isdigit, age_text)))
-                assert 25 <= age <= 31
-
-        except Exception as e:
-            print(f'Error: {e}')
-            raise
-
-
     def test_new_user(self) -> None:
         '''
         Test the following user actions:
@@ -522,10 +534,10 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         '''
         self.signup()
         self.login(self.test_user_email, self.test_user_password)
-        # self.update_password()
-        # self.update_user_details()
-        # self.update_new_user_hobbies()
-        # self.update_user_hobbies()
+        self.update_password()
+        self.update_user_details()
+        self.update_new_user_hobbies()
+        self.update_user_hobbies()
         # self.login(self.test_user_email, self.test_user_password)
         # self.send_friend_request()
         # self.accept_friend_request()
