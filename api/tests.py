@@ -40,8 +40,8 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         #     dob=self.test_user_dob,
         # )
         # print(f"Test User ID: {self.test_user.id}")
-        # Test other user object
 
+        # Test other user object
         self.other_user = User.objects.create_user(
             email='otheruser@email.com',
             password='otherUser123',
@@ -236,7 +236,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         '''
         try:
             # Log in with the other user
-            self.login(self.other_user.email, 'helloworld123')
+            self.login(self.other_user.email, 'otherUser123')
         except Exception as e:
             print(f'Error: {e}')
             raise
@@ -252,13 +252,11 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         5) Sending a friend request
         6) Login as the other user and accept the friend requests sent
         '''
-        # self.setUp()
-        self.signup()
-        self.login(self.test_user_email, self.test_user_password)
-        self.update_password()
+        # self.signup()
+        # self.login(self.test_user_email, self.test_user_password)
+        # self.update_password()
         # self.filter_users_by_age()
-        # self.accept_friend_request()
-        # self.tearDown()
+        self.accept_friend_request()
 
 if __name__ == "__main__":
     unittest.main()
