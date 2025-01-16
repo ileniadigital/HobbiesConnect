@@ -74,8 +74,12 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
+<<<<<<<<< Temporary merge branch 1
     "https://group7-web-apps-ec22898.apps.a.comp-teach.qmul.ac.uk",
     "https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk"
+=========
+    "http://127.0.0.1:8000",
+>>>>>>>>> Temporary merge branch 2
 ]
 
 CORS_ALLOW_CREDENTIALS = True

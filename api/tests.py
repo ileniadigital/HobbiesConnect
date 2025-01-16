@@ -285,6 +285,83 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             print(f'Error during profile update test: {e}')
             raise
 
+
+    def update_user_hobbies(self) -> None:
+        try:
+            driver = self.driver
+            # Create a new hobby
+            new_hobby_name = "Biking"
+            new_hobby_description = "Outdoor cycling activity"
+
+            # Click on the "Add Hobby" button 
+            add_hobby_modal_button = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[text()="Add Hobby"]'))
+            )
+            add_hobby_modal_button.click()
+
+            # Fill out the new hobby form
+            hobby_name_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'hobby'))
+            )
+            hobby_name_input.send_keys(new_hobby_name)
+            time.sleep(2)
+
+            hobby_description_input = driver.find_element(By.ID, 'description')
+            hobby_description_input.send_keys(new_hobby_description)
+            time.sleep(2)
+
+            # Click "Create Hobby" button
+            create_hobby_button = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[text()="Create Hobby"]'))
+            )
+            create_hobby_button.click()
+           
+            time.sleep(2)
+
+            # # Add an existing hobby
+            # add_hobby_modal_button = WebDriverWait(driver, 20).until(
+            #     EC.element_to_be_clickable((By.XPATH, '//button[text()="Add Hobby"]'))
+            # )
+            # add_hobby_modal_button.click()
+            
+
+            # # Open the dropdown and select a hobby
+            # dropdown = WebDriverWait(driver, 20).until(
+            #     EC.presence_of_element_located((By.ID, 'hobbySelect'))
+            # )
+            # dropdown.click()
+        
+            # existing_hobby = "Reading"
+            # hobby_option = WebDriverWait(driver, 20).until(
+            #     EC.presence_of_element_located((By.XPATH, f'//option[text()="{existing_hobby}"]'))
+            # )
+            # hobby_option.click()
+
+            # add_hobby_confirm_button = WebDriverWait(driver, 20).until(
+            #     EC.element_to_be_clickable((By.XPATH, '//button[text()="Add Hobby"]'))
+            # )
+            # driver.execute_script("arguments[0].click();", add_hobby_confirm_button)
+            # time.sleep(2)
+
+
+            # WebDriverWait(driver, 20).until(
+            #     EC.presence_of_element_located((By.XPATH, f'//*[text()="{existing_hobby}"]'))
+
+            # )
+            # time.sleep(3)
+
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
+
+  
+
+
+
+
+    
+
+
     '''
     Find Friends with filtering
     - ENsure a list of users is displayed
@@ -360,6 +437,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.update_password()
         self.update_user_details()
         self.login(self.test_user_email, self.test_user_password)
+        self.update_user_hobbies()
         # self.filter_users_by_age()
         # self.accept_friend_request()
 
