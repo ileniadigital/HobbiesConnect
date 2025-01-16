@@ -205,6 +205,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             )
             first_name_input.clear()
             first_name_input.send_keys('UpdatedFirstName')
+            self.test_user_first_name = 'UpdatedFirstName'
             time.sleep(2)
 
             # last name change
@@ -213,6 +214,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             )
             last_name_input.clear()
             last_name_input.send_keys('UpdatedLastName')
+            self.test_user_last_name = 'UpdatedLastName'
             time.sleep(2)
             
             # email change
@@ -221,6 +223,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             )
             email_input.clear()
             email_input.send_keys('updateduser@email.com')
+            self.test_user_email = 'updateduser@email.com'
             time.sleep(2)
 
             # date of birth change
@@ -229,6 +232,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             )
             dob_input.clear()  
             dob_input.send_keys('02-11-2003')  
+            self.test_user_dob = '02-11-2003'
             time.sleep(1)
 
             #submit the update form
@@ -313,13 +317,13 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         5) Sending a friend request
         6) Login as the other user and accept the friend requests sent
         '''
-        # self.setUp()
-        # self.signup()
-        # self.login(self.test_user_email, self.test_user_password)
+        self.signup()
+        self.login(self.test_user_email, self.test_user_password)
         # self.update_password()
-        # self.update_user_details()
+        self.update_user_details()
+        self.login(self.test_user_email, self.test_user_password)
         # self.filter_users_by_age()
-        self.accept_friend_request()
+        # self.accept_friend_request()
 
 if __name__ == "__main__":
     unittest.main()
