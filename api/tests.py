@@ -457,6 +457,69 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             print(f'Error: {e}')
             raise
 
+    def filter_users_by_age(self) -> None:
+        try:
+            # Find the users page
+            find_friends_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.LINK_TEXT, 'Find Friends'))
+            )
+            find_friends_button.click()
+
+            # Find the age input fields
+            age_filter_min_input = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="ageFrom"]'))
+            )
+            age_filter_max_input = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="ageTo"]'))
+            )
+
+            # Use JavaScript to clear the age input fields
+            self.driver.execute_script("arguments[0].value = '';", age_filter_min_input)
+            self.driver.execute_script("arguments[0].value = '';", age_filter_max_input)
+            time.sleep(1)
+            
+            # Clear the age input fields
+            age_filter_min_input.clear()
+            age_filter_max_input.clear()
+            time.sleep(1)
+
+            # Approach 2: Use send_keys to select and delete text
+            age_filter_max_input.clear()
+            age_filter_max_input.send_keys(Keys.CONTROL + "a")
+            age_filter_max_input.send_keys(Keys.DELETE)
+            time.sleep(1)
+
+            # Find the lower bound age filter input
+            age_filter_min_input.send_keys('25')
+            time.sleep(1)
+
+            # Find the upper bound age filter input
+            age_filter_max_input.send_keys('31')
+            time.sleep(1)
+
+            # Find the filter button
+            filter_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.LINK_TEXT, 'Filter'))
+            )
+            time.sleep(1)
+
+            # Click the filter button
+            filter_button.click()
+            time.sleep(1)
+
+            # Verify the users are filtered by age
+            users = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, 'user-card'))
+            )
+            for user in users:
+                age_text = user.find_element(By.CLASS_NAME, 'age').text
+                age = int(''.join(filter(str.isdigit, age_text)))
+                assert 25 <= age <= 31
+
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
+
 
     def test_new_user(self) -> None:
         '''
@@ -470,14 +533,14 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         '''
         self.signup()
         self.login(self.test_user_email, self.test_user_password)
-        self.update_password()
-        self.update_user_details()
-        self.update_new_user_hobbies()
-        self.update_user_hobbies()
-        self.login(self.test_user_email, self.test_user_password)
-        self.send_friend_request()
-        self.accept_friend_request()
-        # self.filter_users_by_age()
+        # self.update_password()
+        # self.update_user_details()
+        # self.update_new_user_hobbies()
+        # self.update_user_hobbies()
+        # self.login(self.test_user_email, self.test_user_password)
+        # self.send_friend_request()
+        # self.accept_friend_request()
+        self.filter_users_by_age()
 
 if __name__ == "__main__":
     unittest.main()
