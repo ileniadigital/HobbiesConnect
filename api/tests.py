@@ -22,8 +22,16 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.frontend_url = f'{self.live_server_url}/static/'
 
         # Delete all users
-        User.objects.filter(email='newuser@email.com').delete()
-        User.objects.filter(email='otheruser@email.com').delete()
+        User.objects.filter(email__in=[
+            'newuser@email.com',
+            'otheruser@email.com',
+            'additionaluser@email.com',
+            'user1@example.com',
+            'user2@example.com',
+            'user3@example.com',
+            'user4@example.com',
+            'user5@example.com'
+        ]).delete()
 
         # Test user object
         self.test_user_email = 'newuser@email.com'
@@ -31,6 +39,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.test_user_first_name = 'New'
         self.test_user_last_name = 'User'
         self.test_user_dob = '1999-01-01'
+        # store hobbies
 
         # Test other user object
         self.other_user = User.objects.create_user(
@@ -41,31 +50,62 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             dob='1999-01-02',
         )
 
-        # Additional test user
-        self.additional_user = User.objects.create_user(
-            email='additionaluser@email.com',
-            password='additionalUser123',
-            first_name='Additional',
-            last_name='User',
-            dob='2005-01-03',
-        )
+        # Create test users
+        self.users = []
+        for i in range(1, 6):
+            user = User.objects.create_user(
+                email=f'user{i}@example.com',
+                password=f'user{i}Password123',
+                first_name=f'User{i}',
+                last_name=f'LastName{i}',
+                dob=f'200{i}-01-0{i}'
+            )
+            self.users.append(user)
 
         # Create test hobbies
         hobby1 = Hobbies.objects.create(id=1, name='Reading', description='Reading books')
         hobby2 = Hobbies.objects.create(id=2, name='Swimming', description='Swimming in the pool')
+        hobby3= Hobbies.objects.create(id=3, name='Running', description='Running in the park')
+        hobby4 = Hobbies.objects.create(id=4, name='Cooking', description='Cooking meals')
+        hobby5 = Hobbies.objects.create(id=5, name='Gaming', description='Playing video games')
 
         # Associate hobbies with other_user
         UserHobby.objects.create(user=self.other_user, hobby=hobby1)
         UserHobby.objects.create(user=self.other_user, hobby=hobby2)
+        UserHobby.objects.create(user=self.other_user, hobby=hobby3)
+        UserHobby.objects.create(user=self.other_user, hobby=hobby4)
+        UserHobby.objects.create(user=self.other_user, hobby=hobby5)
 
-        # Associate hobbies with additional_user
-        UserHobby.objects.create(user=self.additional_user, hobby=hobby1)
+        # Associate hobbies with users1
+        UserHobby.objects.create(user=self.users[0], hobby=hobby1)
+        UserHobby.objects.create(user=self.users[0], hobby=hobby2)
+        UserHobby.objects.create(user=self.users[0], hobby=hobby3)
+        UserHobby.objects.create(user=self.users[0], hobby=hobby4)
+
+        # Associate hobbies with users2
+        UserHobby.objects.create(user=self.users[1], hobby=hobby1)
+        UserHobby.objects.create(user=self.users[1], hobby=hobby2)
+        UserHobby.objects.create(user=self.users[1], hobby=hobby3)
+
+        # Associate hobbies with users3
+        UserHobby.objects.create(user=self.users[2], hobby=hobby1)
+        UserHobby.objects.create(user=self.users[2], hobby=hobby2)
+
+        # Associate hobbies with users4
+        UserHobby.objects.create(user=self.users[3], hobby=hobby1)
         super().setUp()
 
     def tearDown(self) -> None:
-        # self.test_user.delete()
-        User.objects.filter(email='newuser@email.com').delete()
-        User.objects.filter(email='otheruser@email.com').delete()
+        User.objects.filter(email__in=[
+            'newuser@email.com',
+            'otheruser@email.com',
+            'additionaluser@email.com',
+            'user1@example.com',
+            'user2@example.com',
+            'user3@example.com',
+            'user4@example.com',
+            'user5@example.com'
+        ]).delete()
         self.driver.quit()
         super().tearDown()
 
@@ -181,7 +221,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             # Log in with the new password
             self.test_user_password = 'updatedPassword123'
             self.login(self.test_user_email, self.test_user_password)   
-
         except Exception as e:
             print(f'Error: {e}')
             raise
@@ -245,7 +284,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         except Exception as e:
             print(f'Error during profile update test: {e}')
             raise
-
 
     '''
     Find Friends with filtering
@@ -319,7 +357,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         '''
         self.signup()
         self.login(self.test_user_email, self.test_user_password)
-        # self.update_password()
+        self.update_password()
         self.update_user_details()
         self.login(self.test_user_email, self.test_user_password)
         # self.filter_users_by_age()
