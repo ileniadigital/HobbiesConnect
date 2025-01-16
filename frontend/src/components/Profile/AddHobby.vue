@@ -21,7 +21,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="close">Close</button>
-                            <button type="button" class="btn btn-primary" @click="addExistingHobby">Add Hobby</button>
+                            <button type="button" class="btn btn-primary" id="addHobby-button"
+                                @click="addExistingHobby">Add Hobby</button>
                         </div>
                     </div>
                     <!-- Create a new hobby -->
@@ -39,7 +40,8 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="close">Close</button>
-                                <button type="submit" class="btn btn-primary">Create Hobby</button>
+                                <button type="submit" class="btn btn-primary" id="createHobby-button">Create
+                                    Hobby</button>
                             </div>
                         </form>
                     </div>

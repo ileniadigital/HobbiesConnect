@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -62,17 +62,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'project.urls'
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
+    "http://127.0.0.1:8000",
     "https://group7-web-apps-ec22898.apps.a.comp-teach.qmul.ac.uk",
     "https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk"
 ]
 
-# new code
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
+    "http://127.0.0.1:8000",
     "https://group7-web-apps-ec22898.apps.a.comp-teach.qmul.ac.uk",
     "https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk"
 ]
@@ -201,6 +203,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 LOGIN_REDIRECT_URL = '/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/stable/ref/settings/#default-auto-field

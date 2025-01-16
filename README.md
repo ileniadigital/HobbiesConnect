@@ -1,11 +1,15 @@
 # Group 7
 ## READ.ME content
-- Member assigned and finished tasks
 - URL of deployed application
+- Member assigned and finished tasks
+- Notes on E2E selenium-based testing
 - Admin user log in details
 - Log in details for test users
-- Notes on E2E selenium-based testing
-- Instruction from original template repo
+- Local development
+
+# URL of Deployed Application
+[https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk](https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk)
+
   
 # Member assigned and finished tasks
 | Member                         | Assigned                                                                                 | Finished tasks                                                                                       |
@@ -14,41 +18,6 @@
 | Ilenia Maietta (220322742)     | UserHobby model and views, Hobby list front-end and back-end                           | UserHobby model and views, Hobby List front-end and back-end, Find Friends and Friends Request front-end, Front-end Error messages, Authentication, Testing |
 | Amy Anigboro (220476137)       | Hobby model and views, Update Profile and Password front-end and back-end            | Hobby model and views, Update Profile and Password front-end and back-end, Front-end Error messages, Testing                        |
 | Mariam Thabti (2103028471)     | User model and views, authentication and heap for hobbies                                | User model and views, log in, sign up and authentication, maximum heap for hobbies, Authentication, Testing                  |
-
-# URL of Deployed Application
-[https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk](https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk)
-
-# Admin User Log In Details
-- Username: admin@email.com
-- Password: admin
-
-# Login details for Test Users
-
-1. User: **Ilenia**, username: `ec22792@qmul.ac.uk`, password: `helloworld123`
-2. User: **Sandeep**, username: `ec22898@qmul.ac.uk`, password: `helloworld123`
-3. User: **Mariam**, username: `ec22860@qmul.ac.uk`, password: `helloworld123`
-4. User: **Amy**, username: `ec22496@qmul.ac.uk`, password: `helloworld123`
-5. User: **Konrad**, username: `Konrad@gmail.com`, password: `helloworld123`
-6. User: **Gabrielle**, username: `Gabrielle@gmail.com`, password: `helloworld123`
-7. User: **Taylor**, username: `Taylor@gmail.com`, password: `helloworld123`
-8. User: **Rahul**, username: `Rahul@gmail.com`, password: `helloworld123`
-9. User: **Abdullah**, username: `Abdullah@gmail.com`, password: `helloworld123`
-10. User: **Nora**, username: `Nora@gmail.com`, password: `helloworld123`
-11. User: **Charles**, username: `CharlesLeclerc@gmail.com`, password: `helloworld123`
-12. User: **LewisHamilton**, username: `LewisHamilton@gmail.com`, password: `helloworld123`
-13. User: **OscarPiastri**, username: `OscarPiastri@gmail.com`, password: `helloworld123`
-14. User: **FernandoAlonso**, username: `FernandoAlonso@gmail.com`, password: `helloworld123`
-15. User: **LandoNorris**, username: `LandoNorris@gmail.com`, password: `helloworld123`
-16. User: **Nico Hulkenberg**, username: `NicoHulk@gmail.com`, password: `helloworld123`
-17. User: **Alexander Albon**, username: `AlexAlbon@gmail.com`, password: `helloworld123`
-18. User: **Pierre Gasly**, username: `PierreGasly@gmail.com`, password: `helloworld123`
-19. User: **Carlos**, username: `Chilli@gmail.com`, password: `helloworld123`
-20. User: **Oliver**, username: `Ollie@gmail.com`, password: `helloworld123`
-21. User: **Yuki**, username: `YukiTsu@gmail.com`, password: `helloworld123`
-22. User: **Lance**, username: `LanceStrolled@gmail.com`, password: `helloworld123`
-23. User: **Max**, username: `SuperMax@gmail.com`, password: `helloworld123`
-24. User: **Liam**, username: `LiamLawson@gmail.com`, password: `helloworld123`
-25. User: **George**, username: `GeorgeRussell@gmail.com`, password: `helloworld123`
 
 # Notes on E2E selenium-based testing
 The testing is set up to run continuously, as if a person was manually testing the website. We set up a series of helper functions, called in a class called test_new_user in the following order:
@@ -61,11 +30,39 @@ The testing is set up to run continuously, as if a person was manually testing t
 7. It logs in as the 'Other User' and goes to the 'Friend Requests' page and accepts the request. It then logs out.
 8. It logs back in as the 'UpdatedFirstName UpdatedLastNam' and verifies 'Other User' and 'UpdatedFirstName UpdatedLastName' are friends.
 
-**Note: sometimes the tests may seem to be stuck: they are not, the assertions are being checked.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Template for ECS639U Group Coursework
+# Admin User Log In Details
+- Username: admin@email.com
+- Password: admin
 
-This template should be used as the starting point for your group coursework in the module ECS639U Web Programming (at Queen Mary University of London). Use Git (github.qmul.ac.uk) to collaborate on the coursework with your group members. Module leader: Paulo Oliva <[p.oliva@qmul.ac.uk](mailto:p.oliva@qmul.ac.uk)>
+# Login details for Test Users
+
+| EMAIL                     | FIRST NAME     | LAST NAME     | PASSWORD              |
+|---------------------------|----------------|---------------|-----------------------|
+| ec22792@qmul.ac.uk        | Ilenia         | Maietta       | Ilenia!Qz82$#1        |
+| ec22898@qmul.ac.uk        | Sai Sandeep    | Vemula        | Sandeep@Wm71*&2       |
+| ec22496@qmul.ac.uk        | Amy            | Anigboro      | Amy*Lp48^@4           |
+| ec22860@qmul.ac.uk        | Mariam         | Thabti        | Mariam#Rt93^%3        |
+| Gabrielle@gmail.com       | Gabrielle      | G             | Gabrielle@Xn64$#6     |
+| Taylor@gmail.com          | Taylor         | Dodd          | Taylor!Vm82@^7        |
+| Konrad@gmail.com          | Konrad         | K             | Konrad#Qs56&!5        | 
+| Nora@gmail.com            | Nora           | H             | Nora@Wp39!@0          |
+| LiamLawson@gmail.com      | Liam           | Lawson        | Lawson@Np83!$4        |
+| Rahul@gmail.com           | Rahul Ray      | Lee           | Rahul#Yt93*&8         |
+| Abdullah@gmail.com        | Abdullah       | Zulfiqar      | Abdullah$Jk74#^9      |
+| YukiTsu@gmail.com         | Yuki           | Tsunoda       | Yuki@Lp84&*@1         |
+| Ollie@gmail.com           | Oliver         | Bearman       | Oliver!Xp38^$0        |
+| LanceStrolled@gmail.com   | Lance          | Stroll        | Strolled#Jm73!@2      |
+| GeorgeRussell@gmail.com   | George         | Russell       | GeorgeT#Xm74&@5       |
+| LandoNorris@gmail.com     | Lando          | Norris        | LandoNowins#Zt64&!5   |
+| SuperMax@gmail.com        | Max            | Verstappen    | SupaMax$Qw92^&3       |
+| AlexAlbon@gmail.com       | Alexander      | Albon         | AlexAlbon!Ym74^&7     |
+| PierreGasly@gmail.com     | Pierre         | Gasly         | Pierre@Wk82*@8        |
+| CharlesLeclerc@gmail.com  | Charles        | Leclerc       | Leclerc^Tn82$#1       |
+| NicoHulk@gmail.com        | Nico           | Hulkenberg    | NicoHulk@Jp93$#6      |
+| FernandoAlonso@gmail.com  | Fernando       | Alonso        | NandoAlonso!Xp56^@4   |
+| LewisHamilton@gmail.com   | Lewis          | Hamilton      | Ham@Vm73*&2           |
+| Chilli@gmail.com          | Carlos         | Sainz         | Carlos#Qs91&!9        |
+| KimiRaik@gmail.com        | Kimi           | Räikkönen     | Kimi1@9Asw"2          |
 
 ## Local development
 
@@ -76,49 +73,28 @@ To run this project in your development machine, follow these steps:
 2. Download this repo as a zip and add the files to your own private repo.
 
 3. Install Pyhton dependencies (main folder):
-
    ```console
    $ pip install -r requirements.txt
    ```
 
 4. Create a development database:
-
    ```console
    $ python manage.py migrate
    ```
 
 5. Install JavaScript dependencies (from 'frontend' folder):
-
    ```console
    $ npm install
    ```
 
 6. If everything is alright, you should be able to start the Django development server from the main folder:
-
    ```console
    $ python manage.py runserver
    ```
 
 7. and the Vue server from the 'frontend' sub-folder:
-
    ```console
    $ npm run dev
    ```
 
 8. Open your browser and go to http://localhost:5173, you will be greeted with a template page.
-
-## OpenShift deployment
-
-Once your project is ready to be deployed you will need to 'build' the Vue app and place it in Django's static folder.
-
-1. The build command in package.json and the vite.config.ts files have already been modified so that when running 'npm run build' the generated JavaScript and CSS files will be placed in the mainapp static folder, and the index.html file will be placed in the templates folder:
-
-   ```console
-   $ npm run build
-   ```
-
-2. You should then follow the instruction on QM+ on how to deploy your app on EECS's OpenShift live server.
-
-## License
-
-This code is dedicated to the public domain to the maximum extent permitted by applicable law, pursuant to [CC0](http://creativecommons.org/publicdomain/zero/1.0/).

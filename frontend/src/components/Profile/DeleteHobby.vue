@@ -11,7 +11,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="close">Cancel</button>
-                    <button type="button" class="btn btn-danger" @click="confirmDelete">Delete</button>
+                    <button type="button" class="btn btn-danger" id="deleteHobby-button"@click="confirmDelete">Delete</button>
                 </div>
             </div>
         </div>

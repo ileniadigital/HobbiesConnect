@@ -22,7 +22,7 @@
           </li>
         </ul>
         <!-- Login/logout button depending -->
-        <button v-if="isAuthenticated" class="btn" @click="logout">Logout</button>
+        <button v-if="isAuthenticated" class="btn" @click="logout" id="logout-button">Logout</button>
         <button v-else class="btn" @click="redirectToLogin">Login</button>
       </div>
     </div>

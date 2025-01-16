@@ -69,17 +69,19 @@ def build_max_heap(request: HttpRequest, user_id: int) -> JsonResponse:
             'common_hobbies_count': -common_hobbies_count
         })
 
-    # Paginate results limited to 10 users
-    paginator = Paginator(sorted_users, 10)
-    page_number = request.GET.get('page', 1)
-    page = paginator.get_page(page_number)
+    # # Paginate results limited to 10 users
+    # paginator = Paginator(sorted_users, 10)
+    # page_number = request.GET.get('page', 1)
+    # page = paginator.get_page(page_number)
 
+    
     return JsonResponse({
-        'users': list(page.object_list),
-        'has_next': page.has_next(),
-        'has_previous': page.has_previous(),
-        'page_number': page.number,
-        'total_pages': paginator.num_pages
+        'users': sorted_users,
+        # 'users': list(page.object_list),
+        # 'has_next': page.has_next(),
+        # 'has_previous': page.has_previous(),
+        # 'page_number': page.number,
+        # 'total_pages': paginator.num_pages
     })
 
 def signup(request: HttpRequest) -> HttpResponse:
