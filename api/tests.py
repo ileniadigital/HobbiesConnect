@@ -41,6 +41,15 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             dob='1999-01-02',
         )
 
+        # Additional test user
+        self.additional_user = User.objects.create_user(
+            email='additionaluser@email.com',
+            password='additionalUser123',
+            first_name='Additional',
+            last_name='User',
+            dob='2005-01-03',
+        )
+
         # Create test hobbies
         hobby1 = Hobbies.objects.create(id=1, name='Reading', description='Reading books')
         hobby2 = Hobbies.objects.create(id=2, name='Swimming', description='Swimming in the pool')
@@ -49,6 +58,8 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         UserHobby.objects.create(user=self.other_user, hobby=hobby1)
         UserHobby.objects.create(user=self.other_user, hobby=hobby2)
 
+        # Associate hobbies with additional_user
+        UserHobby.objects.create(user=self.additional_user, hobby=hobby1)
         super().setUp()
 
     def tearDown(self) -> None:
