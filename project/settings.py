@@ -65,14 +65,16 @@ ROOT_URLCONF = 'project.urls'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
-    "https://group7-web-apps-ec22898.apps.a.comp-teach.qmul.ac.uk"
+    "https://group7-web-apps-ec22898.apps.a.comp-teach.qmul.ac.uk",
+    "https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk"
 ]
 
 # new code
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
-    "https://group7-web-apps-ec22898.apps.a.comp-teach.qmul.ac.uk"
+    "https://group7-web-apps-ec22898.apps.a.comp-teach.qmul.ac.uk",
+    "https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
