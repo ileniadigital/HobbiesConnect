@@ -39,11 +39,6 @@ The testing is set up to run continuously, as if a person was manually testing t
 
 Note: please do not scroll while running the tests and ensure to keep the header visible at all times, especially while deleting the hobby, and when filtering the users, because the redirection does not work if the header is not visible.
 
-## Running the local version
-
-Please run 'collectstatic' files beforehand, and use the [localhost:8000](localhost:8000) to run it.
-The passwords for every user in the **local** version are 'helloworld123', while for the deployed version they are written below.
-
 # Admin User Log In Details
 
 - Username: admin@email.com
@@ -78,6 +73,10 @@ The passwords for every user in the **local** version are 'helloworld123', while
 | LewisHamilton@gmail.com  | Lewis       | Hamilton   | Ham@Vm73\*&2        |
 | Chilli@gmail.com         | Carlos      | Sainz      | Carlos#Qs91&!9      |
 | KimiRaik@gmail.com       | Kimi        | Räikkönen  | Kimi1@9Asw"2        |
+
+## Passwords for local deployment
+
+The passwords for every user in the **local** version are 'helloworld123', while for the deployed version they are written below.
 
 ## Local development
 
