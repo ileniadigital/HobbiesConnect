@@ -287,6 +287,9 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
 
 
     def update_new_user_hobbies(self) -> None:
+        '''
+        Helper function to update user hobbies with a new one that does not exist
+        '''
         try:
             driver = self.driver
             # Create a new hobby
@@ -323,6 +326,9 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             raise
 
     def update_user_hobbies(self) -> None:
+        '''
+        Helper function to update user hobbies from existing dropdowns
+        '''
         driver= self.driver
         try:
             # Click add hobby modal button
