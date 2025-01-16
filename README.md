@@ -61,7 +61,7 @@ The testing is set up to run continuously, as if a person was manually testing t
 7. It logs in as the 'Other User' and goes to the 'Friend Requests' page and accepts the request. It then logs out.
 8. It logs back in as the 'UpdatedFirstName UpdatedLastNam' and verifies 'Other User' and 'UpdatedFirstName UpdatedLastName' are friends.
 
-**Note: sometimes the tests may seem to be stuck: they are not, the assertions are being checked.
+**Note: sometimes the tests may seem to be stuck: they are not, we added time.sleep(x) to help check the content of the webpage
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Template for ECS639U Group Coursework
 
