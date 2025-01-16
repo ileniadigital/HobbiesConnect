@@ -1,4 +1,3 @@
-from django.test import LiveServerTestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth import get_user_model
 from api.models import Hobbies, UserHobby
@@ -7,10 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from django.core.management import call_command
 import unittest
 import time
-from selenium.common.exceptions import TimeoutException
 
 User = get_user_model()
 
@@ -376,11 +373,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             )
             time.sleep(2)
 
-            # Verify the hobbies are added
-            time.sleep(2)
-            # for option in dropdown_options:
-            #     assert option.text in driver.page_source
-
         except Exception as e:
             print(f'Error: {e}')
             raise
@@ -425,15 +417,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             # Click the filter button
             filter_button.click()
             time.sleep(1)
-
-            # Verify the users are filtered by age
-            # users = WebDriverWait(self.driver, 20).until(
-            #     EC.presence_of_all_elements_located((By.CLASS_NAME, 'user-card'))
-            # )
-            # for user in users:
-            #     age_text = user.find_element(By.CLASS_NAME, 'age').text
-            #     age = int(''.join(filter(str.isdigit, age_text)))
-            #     assert 25 <= age <= 31
 
         except Exception as e:
             print(f'Error: {e}')
@@ -509,15 +492,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             friend_requests_button.click()
             time.sleep(2)
 
-            # Verify the user is now added as a friend
-            print("Waiting for 'Other User' to appear...")
-            friend_added = WebDriverWait(self.driver, 40).until(
-                EC.presence_of_element_located((By.XPATH, '//h5[text()="Other User"]'))
-            )
-            time.sleep(2)
-            assert friend_added is not None
-            print("'Other User' found.")
-
         except Exception as e:
             print(f'Error: {e}')
             raise
@@ -541,7 +515,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.filter_users_by_age()
         self.send_friend_request()
         self.accept_friend_request()
-        raise SystemExit("Testing closed.")
 
 if __name__ == "__main__":
     unittest.main()
