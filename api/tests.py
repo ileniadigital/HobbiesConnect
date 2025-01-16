@@ -140,14 +140,6 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             print(f'Error: {e}')
             raise
     
-    '''
-    Edit user profile tests
-    - Update first name
-    - Update last name
-    - Update email
-    - Update date of birth
-    - Update password
-    '''
 
     def update_password(self) -> None:
         '''
@@ -182,6 +174,63 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         except Exception as e:
             print(f'Error: {e}')
             raise
+
+    def update_user_details(self) -> None:
+        '''
+        Edit user profile tests
+        - Update first name
+        - Update last name
+        - Update email
+        - Update date of birth
+        '''
+        try:
+            
+            driver = self.driver
+
+            # find the fields and input the new details
+            # first name change
+            first_name_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'first_name'))
+            )
+            first_name_input.clear()
+            first_name_input.send_keys('UpdatedFirstName')
+            time.sleep(2)
+
+            # last name change
+            last_name_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'last_name'))
+            )
+            last_name_input.clear()
+            last_name_input.send_keys('UpdatedLastName')
+            time.sleep(2)
+            
+            # email change
+            email_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'email'))
+            )
+            email_input.clear()
+            email_input.send_keys('updateduser@email.com')
+            time.sleep(2)
+
+            # date of birth change
+            dob_input = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.ID, 'dob'))
+            )
+            dob_input.clear()  
+            dob_input.send_keys('02-11-2003')  
+            time.sleep(1)
+
+            #submit the update form
+            update_button = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[text()="Update Profile"]'))
+            )
+            update_button.click()
+            time.sleep(2)
+
+        except Exception as e:
+            print(f'Error during profile update test: {e}')
+            raise
+
 
     '''
     Find Friends with filtering
@@ -252,9 +301,11 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         5) Sending a friend request
         6) Login as the other user and accept the friend requests sent
         '''
-        # self.signup()
-        # self.login(self.test_user_email, self.test_user_password)
-        # self.update_password()
+        # self.setUp()
+        self.signup()
+        self.login(self.test_user_email, self.test_user_password)
+        self.update_password()
+        self.update_user_details()
         # self.filter_users_by_age()
         self.accept_friend_request()
 
