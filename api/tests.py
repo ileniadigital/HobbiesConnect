@@ -286,7 +286,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             raise
 
 
-    def update_user_hobbies(self) -> None:
+    def update_new_user_hobbies(self) -> None:
         try:
             driver = self.driver
             # Create a new hobby
@@ -318,75 +318,65 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
            
             time.sleep(2)
 
-            # # Add an existing hobby
-            # add_hobby_modal_button = WebDriverWait(driver, 20).until(
-            #     EC.element_to_be_clickable((By.XPATH, '//button[text()="Add Hobby"]'))
-            # )
-            # add_hobby_modal_button.click()
-            
-
-            # # Open the dropdown and select a hobby
-            # dropdown = WebDriverWait(driver, 20).until(
-            #     EC.presence_of_element_located((By.ID, 'hobbySelect'))
-            # )
-            # dropdown.click()
-        
-            # existing_hobby = "Reading"
-            # hobby_option = WebDriverWait(driver, 20).until(
-            #     EC.presence_of_element_located((By.XPATH, f'//option[text()="{existing_hobby}"]'))
-            # )
-            # hobby_option.click()
-
-            # add_hobby_confirm_button = WebDriverWait(driver, 20).until(
-            #     EC.element_to_be_clickable((By.XPATH, '//button[text()="Add Hobby"]'))
-            # )
-            # driver.execute_script("arguments[0].click();", add_hobby_confirm_button)
-            # time.sleep(2)
-
-
-            # WebDriverWait(driver, 20).until(
-            #     EC.presence_of_element_located((By.XPATH, f'//*[text()="{existing_hobby}"]'))
-
-            # )
-            # time.sleep(3)
-
         except Exception as e:
             print(f'Error: {e}')
             raise
-    '''
-    Find Friends with filtering
-    - Ensure a list of users is displayed
-    - Apply filter by age
-    - Verify the filtered results
-    '''
-    def filter_users_by_age(self) -> None:
+
+    def update_user_hobbies(self) -> None:
+        driver= self.driver
         try:
-            # Find the users page
-            self.driver.get(f'{self.live_server_url}/findfriends/')
-            # Find the filter button
-            # filter_button = WebDriverWait(self.driver, 20).until(
-            #     EC.presence_of_element_located((By.ID, 'filter-button'))
-            # )
-            # filter_button.click()
-            # time.sleep(1)
+            # Click add hobby modal button
+            add_hobby_modal_button = WebDriverWait(self.driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[text()="Add Hobby"]'))
+            )
+            add_hobby_modal_button.click()
+            
+            # Loop to add each hobby from the dropdown
+            while True:
+                try:
+                    # Find all options in the dropdown
+                    dropdown_options = WebDriverWait(driver, 20).until(
+                        EC.presence_of_all_elements_located((By.TAG_NAME, 'option'))
+                    )
 
-            # # Find the age filter input
-            # age_filter_input = WebDriverWait(self.driver, 20).until(
-            #     EC.presence_of_element_located((By.ID, 'age-filter'))
-            # )
-            # age_filter_input.send_keys('22')
-            # time.sleep(1)
+                    # Click the first available option
+                    option = dropdown_options[1]
+                    option.click()
+                    time.sleep(1)
 
-            # # Click the filter button
-            # filter_button.click()
-            # time.sleep(2)
+                    # Close the dropdown menu by clicking outside or pressing Escape
+                    body = driver.find_element(By.TAG_NAME, 'body')
+                    body.click()  # Click outside the dropdown
+                    # Alternatively, you can use the Escape key
+                    # body.send_keys(Keys.ESCAPE)
+                    time.sleep(1)
 
-            # # Verify the filtered results
-            # users = self.driver.find_elements(By.CLASS_NAME, 'user')
+                    # Click add hobby confirm button inside the modal
+                    add_hobby_confirm_button = WebDriverWait(driver, 20).until(
+                        EC.element_to_be_clickable((By.ID, 'addHobby-button'))
+                    )
+                    add_hobby_confirm_button.click()
+                    time.sleep(2)
+
+                    # Reopen the modal to add the next hobby
+                    add_hobby_modal_button = WebDriverWait(driver, 20).until(
+                        EC.element_to_be_clickable((By.XPATH, '//button[text()="Add Hobby"]'))
+                    )
+                    add_hobby_modal_button.click()
+                    time.sleep(2)
+
+                except IndexError:
+                    # No more options available in the dropdown
+                    break
+            # Close the modal
+            close_modal_button = WebDriverWait(self.driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[text()="Close"]'))
+            )
+            close_modal_button.click()
+            time.sleep(2)
         except Exception as e:
             print(f'Error: {e}')
             raise
-
     '''
     Send friend request
     - Search for another user
@@ -476,10 +466,11 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.login(self.test_user_email, self.test_user_password)
         self.update_password()
         self.update_user_details()
-        self.login(self.test_user_email, self.test_user_password)
-        self.send_friend_request()
-        self.accept_friend_request()
+        self.update_new_user_hobbies()
         self.update_user_hobbies()
+        # self.login(self.test_user_email, self.test_user_password)
+        # self.send_friend_request()
+        # self.accept_friend_request()
         # self.filter_users_by_age()
 
 if __name__ == "__main__":
