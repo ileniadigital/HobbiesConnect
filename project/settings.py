@@ -71,7 +71,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://group7-web-apps-ec22792.apps.a.comp-teach.qmul.ac.uk"
 ]
 
-# new code
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
