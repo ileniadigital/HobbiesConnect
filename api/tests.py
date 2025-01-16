@@ -355,7 +355,7 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             raise
     '''
     Find Friends with filtering
-    - ENsure a list of users is displayed
+    - Ensure a list of users is displayed
     - Apply filter by age
     - Verify the filtered results
     '''
@@ -382,16 +382,50 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             # time.sleep(2)
 
             # # Verify the filtered results
-            # users = self.driver.find_elements(By.CLASS_NAME, 'user
+            # users = self.driver.find_elements(By.CLASS_NAME, 'user')
         except Exception as e:
             print(f'Error: {e}')
             raise
+
     '''
     Send friend request
     - Search for another user
     - Send request
     - Verify request sent
     '''
+    def send_friend_request(self) -> None:
+        '''
+        Helper function to send friend request
+        '''
+        try:
+            # Click on the "Find Friends" button in the header
+            find_friends_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.LINK_TEXT, 'Find Friends'))
+            )
+            find_friends_button.click()
+            time.sleep(10)
+            
+            # Find the first user (most similar) and click on send friend request
+            send_request_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//button[text()="Send Friend Request"]'))
+            )
+            send_request_button.click()
+            time.sleep(20)
+
+            # Verify the request was sent
+            request_sent_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//button[text()="Friend Request Sent"]'))
+            )
+            time.sleep(20)
+            assert request_sent_button is not None
+
+            # Log out
+            self.driver.find_element(By.XPATH, '//button[text()="Logout"]').click()
+            time.sleep(1)
+
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
 
     '''
     Accept friend request
@@ -408,6 +442,21 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
             # Log in with the other user
             self.login(self.other_user.email, 'otherUser123')
             time.sleep(5)
+
+            # Click on the "Friend Requests" button in the header
+            friend_requests_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.LINK_TEXT, 'Friend Requests'))
+            )
+            friend_requests_button.click()
+            time.sleep(10)
+
+            # Find the first friend request in the pending requests and click on accept request
+            accept_request_button = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//button[text()="Accept"]'))
+            )
+            accept_request_button.click()
+            time.sleep(1)
+
         except Exception as e:
             print(f'Error: {e}')
             raise
@@ -428,9 +477,10 @@ class HobbiesConnectTests(StaticLiveServerTestCase):
         self.update_password()
         self.update_user_details()
         self.login(self.test_user_email, self.test_user_password)
+        self.send_friend_request()
+        self.accept_friend_request()
         self.update_user_hobbies()
         # self.filter_users_by_age()
-        # self.accept_friend_request()
 
 if __name__ == "__main__":
     unittest.main()
