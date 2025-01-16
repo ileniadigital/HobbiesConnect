@@ -1,4 +1,5 @@
-from django.contrib.staticfiles.testing import LiveServerTestCase
+from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth import get_user_model
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,25 +14,50 @@ from selenium.common.exceptions import TimeoutException
 User = get_user_model()
 
 
-class HobbiesConnectTests(LiveServerTestCase):
+class HobbiesConnectTests(StaticLiveServerTestCase):
 
     def setUp(self) -> None:
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(10)
         # self.live_server_url = 'http://localhost:5173'
-        self.live_server_url = 'http://localhost:8000'
+        # self.live_server_url = 'http://localhost:8000'
+        self.frontend_url = f'{self.live_server_url}/static/'
+
+
+        # Delete all users
+        User.objects.filter(email='newuser@email.com').delete()
+        User.objects.filter(email='otheruser@email.com').delete()
+
         # Test user object
-        self.test_user = User.objects.create_user(
-            email='newuser@email.com',
-            password='newUser123',
-            first_name='New',
+        self.test_user_email = 'newuser@email.com'
+        self.test_user_password = 'newHelloWorld123'
+        self.test_user_first_name = 'New'
+        self.test_user_last_name = 'User'
+        self.test_user_dob = '1999-01-01'
+
+        # self.test_user = User.objects.create_user(
+        #     email=self.test_user_email,
+        #     password=self.test_user_password,
+        #     first_name=self.test_user_first_name,
+        #     last_name=self.test_user_last_name,
+        #     dob=self.test_user_dob,
+        # )
+        # print(f"Test User ID: {self.test_user.id}")
+        # Test other user object
+        self.other_user = User.objects.create_user(
+            email='otheruser@email.com',
+            password='otherUser123',
+            first_name='Other',
             last_name='User',
-            dob='1999-01-01',
+            dob='1999-01-02',
         )
+        print(f"Other User ID: {self.other_user.id}")
+        super().setUp()
 
     def tearDown(self) -> None:
-        self.test_user.delete()
+        # self.test_user.delete()
         User.objects.filter(email='newuser@email.com').delete()
+        User.objects.filter(email='otheruser@email.com').delete()
         self.driver.quit()
         super().tearDown()
 
@@ -63,12 +89,12 @@ class HobbiesConnectTests(LiveServerTestCase):
             )
 
             # Enter the user details
-            email_input.send_keys(self.test_user.email)
-            first_name_input.send_keys(self.test_user.first_name)
-            last_name_input.send_keys(self.test_user.last_name)
+            email_input.send_keys(self.test_user_email)
+            first_name_input.send_keys(self.test_user_first_name)
+            last_name_input.send_keys(self.test_user_last_name)
             dob_input.send_keys('01-01-1999')
-            password_input.send_keys(self.test_user.password)
-            password_confirmation_input.send_keys(self.test_user.password)
+            password_input.send_keys(self.test_user_password)
+            password_confirmation_input.send_keys(self.test_user_password)
 
             # Submit the form
             password_input.send_keys(Keys.RETURN)
@@ -137,7 +163,7 @@ class HobbiesConnectTests(LiveServerTestCase):
             )
             new_password_input = self.driver.find_element(By.ID, 'new_password')
             # Enter the current password, new password, and confirm new password
-            current_password_input.send_keys(self.test_user.password)
+            current_password_input.send_keys(self.test_user_password)
             new_password_input.send_keys('updatedPassword123')
 
             # Submit the form
@@ -153,20 +179,89 @@ class HobbiesConnectTests(LiveServerTestCase):
             time.sleep(1)
 
             # Log in with the new password
-            self.test_user.password = 'updatedPassword123'
-            self.login(self.test_user.email, self.test_user.password)   
+            self.test_user_password = 'updatedPassword123'
+            self.login(self.test_user_email, self.test_user_password)   
 
         except Exception as e:
             print(f'Error: {e}')
             raise
 
+    '''
+    Find Friends with filtering
+    - ENsure a list of users is displayed
+    - Apply filter by age
+    - Verify the filtered results
+    '''
+    def filter_users_by_age(self) -> None:
+        try:
+            # Find the users page
+            self.driver.get(f'{self.live_server_url}/findfriends/')
+            # Find the filter button
+            # filter_button = WebDriverWait(self.driver, 20).until(
+            #     EC.presence_of_element_located((By.ID, 'filter-button'))
+            # )
+            # filter_button.click()
+            # time.sleep(1)
+
+            # # Find the age filter input
+            # age_filter_input = WebDriverWait(self.driver, 20).until(
+            #     EC.presence_of_element_located((By.ID, 'age-filter'))
+            # )
+            # age_filter_input.send_keys('22')
+            # time.sleep(1)
+
+            # # Click the filter button
+            # filter_button.click()
+            # time.sleep(2)
+
+            # # Verify the filtered results
+            # users = self.driver.find_elements(By.CLASS_NAME, 'user
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
+    '''
+    Send friend request
+    - Search for another user
+    - Send request
+    - Verify request sent
+    '''
+
+    '''
+    Accept friend request
+    - Log in with another user
+    - Go to friend request section
+    - Accept the request
+    - Verify the user is now a friend
+    '''
+    def accept_friend_request(self) -> None:
+        '''
+        Helper function to accept friend request
+        '''
+        try:
+            # Log in with the other user
+            self.login(self.other_user.email, 'helloworld123')
+        except Exception as e:
+            print(f'Error: {e}')
+            raise
+
+
     def test_new_user(self) -> None:
         '''
-        Test the signup and login functionality
+        Test the following user actions:
+        1) User sign up
+        2) User login
+        3) Update user details
+        4) Users page with testing of filtering by age
+        5) Sending a friend request
+        6) Login as the other user and accept the friend requests sent
         '''
+        # self.setUp()
         self.signup()
-        self.login(self.test_user.email, self.test_user.password)
+        self.login(self.test_user_email, self.test_user_password)
         self.update_password()
+        # self.filter_users_by_age()
+        # self.accept_friend_request()
+        # self.tearDown()
 
 if __name__ == "__main__":
     unittest.main()
