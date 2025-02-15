@@ -39,11 +39,6 @@ The testing is set up to run continuously, as if a person was manually testing t
 
 Note: please do not scroll while running the tests and ensure to keep the header visible at all times, especially while deleting the hobby, and when filtering the users, because the redirection does not work if the header is not visible.
 
-# Admin User Log In Details
-
-- Username: admin@email.com
-- Password: admin
-
 # Login details for Test Users
 
 | EMAIL                    | FIRST NAME  | LAST NAME  | PASSWORD            |
